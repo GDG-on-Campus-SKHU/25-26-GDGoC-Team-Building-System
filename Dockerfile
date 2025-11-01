@@ -1,13 +1,13 @@
 # 1단계: 빌드
 FROM openjdk:21-jdk-slim AS builder
 WORKDIR /app
-COPY gradlew .
+COPY gradlew gradlew
 COPY gradle gradle
 COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 RUN chmod +x ./gradlew
-RUN ./gradlew build -x test
+RUN ./gradlew build -x test --stacktrace
 
 # 2단계: 런타임
 FROM eclipse-temurin:21-jre-jammy
