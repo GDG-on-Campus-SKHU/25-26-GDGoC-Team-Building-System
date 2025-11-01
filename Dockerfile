@@ -7,7 +7,7 @@ COPY build.gradle .
 COPY settings.gradle .
 COPY src src
 RUN chmod +x ./gradlew
-RUN ./gradlew build -x test --stacktrace
+RUN ./gradlew build -x test
 
 # 2단계: 런타임
 FROM eclipse-temurin:21-jre-jammy
