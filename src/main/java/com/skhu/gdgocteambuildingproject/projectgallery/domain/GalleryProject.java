@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.domain;
 
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GalleryProject {
+public class GalleryProject extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

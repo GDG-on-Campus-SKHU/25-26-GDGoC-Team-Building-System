@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Idea {
+public class Idea extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
