@@ -22,9 +22,6 @@ import java.util.List;
 @Table(name = "user")
 public class User extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     @NotBlank(message = "이메일은 필수 입력값입니다.")
     private String email;

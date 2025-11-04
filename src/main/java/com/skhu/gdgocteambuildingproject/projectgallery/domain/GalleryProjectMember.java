@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.domain;
 
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.*;
@@ -10,10 +11,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class GalleryProjectMember {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class GalleryProjectMember extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     private MemberRole role;

@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.community.domain;
 
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -9,10 +10,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Recruitment {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class Recruitment extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private RecruitmentProject project;

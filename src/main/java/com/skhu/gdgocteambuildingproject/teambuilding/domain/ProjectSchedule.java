@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
 
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -11,10 +12,7 @@ import java.time.LocalDate;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProjectSchedule {
-
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ProjectSchedule extends BaseEntity {
 
     private LocalDate startDate;
     private LocalDate endDate;

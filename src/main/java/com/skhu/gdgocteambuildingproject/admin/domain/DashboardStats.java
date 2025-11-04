@@ -1,9 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.domain;
 
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,11 +9,8 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class DashboardStats {
+public class DashboardStats extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
     private int totalUsers;
     private int activeProjects;
     private int ongoingTeamBuildings;
