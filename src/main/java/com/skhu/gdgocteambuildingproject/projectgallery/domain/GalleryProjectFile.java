@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.domain;
 
+import com.skhu.gdgocteambuildingproject.global.aws.File;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

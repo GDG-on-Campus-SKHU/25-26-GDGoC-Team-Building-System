@@ -33,6 +33,8 @@ public class User extends BaseEntity {
             message = "비밀번호는 영문, 숫자, 특수문자를 모두 포함해야 합니다."
     )
     private String password;
+
+    @Size(max = 5, message = "이름은 최대 5자까지 입력 가능합니다.")
     private String name;
     private String number;
     private String introduction;
