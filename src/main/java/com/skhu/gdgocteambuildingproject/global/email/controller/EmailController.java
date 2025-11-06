@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.global.email.controller;
 
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailService;
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailVerificationService;
+import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,13 +17,19 @@ public class EmailController {
 
     private final EmailService emailService;
     private final EmailVerificationService emailVerificationService;
+    private final UserRepository userRepository;
 
     // 인증번호 발송 요청
     @PostMapping("/send")
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
+        if (!userRepository.existsByEmail(email)) {
+            return ResponseEntity.badRequest().body("등록되지 않은 이메일입니다.");
+        }
+
         String code = emailService.generateVerificationCode();
         emailVerificationService.saveCode(email, code);
         emailService.sendVerificationEmail(email, code);
+
         return ResponseEntity.ok("인증번호가 전송되었습니다.");
     }
 
