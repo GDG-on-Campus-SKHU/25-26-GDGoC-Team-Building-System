@@ -28,18 +28,6 @@ spring:
       max-file-size: 5MB
       max-request-size: 5MB
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    name: ${GOOGLE_EMAIL}
-    password: ${GOOGLE_APP_PASSWORD}
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
-
 springdoc:
   api-docs:
     path: /v3/api-docs
