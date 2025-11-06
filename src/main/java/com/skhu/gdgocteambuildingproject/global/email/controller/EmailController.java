@@ -22,7 +22,7 @@ public class EmailController {
     // 인증번호 요청
     @PostMapping("/send")
     @Transactional
-    public ResponseEntity<String> sendCode(@RequestParam String email) {
+    public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
         String code = emailService.generateVerificationCode();
 
         repository.findByEmail(email).ifPresentOrElse(
@@ -37,7 +37,8 @@ public class EmailController {
     // 인증번호 확인
     @PostMapping("/verify")
     @Transactional
-    public ResponseEntity<String> verifyCode(@RequestParam String email, @RequestParam String code) {
+    public ResponseEntity<String> verifyCode(@RequestParam("email") String email,
+                                             @RequestParam("code") String code) {
         EmailVerification ev = repository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("해당 이메일로 요청된 인증이 없습니다."));
 
