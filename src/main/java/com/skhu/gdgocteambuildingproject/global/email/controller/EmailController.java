@@ -22,6 +22,7 @@ public class EmailController {
     // 인증번호 발송 요청
     @PostMapping("/send")
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
+        //회원가입한 이메일인 경우
         if (!userRepository.existsByEmail(email)) {
             return ResponseEntity.badRequest().body("등록되지 않은 이메일입니다.");
         }
