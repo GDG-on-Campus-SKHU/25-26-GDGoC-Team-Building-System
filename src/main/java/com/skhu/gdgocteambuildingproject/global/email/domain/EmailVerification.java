@@ -10,10 +10,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class EmailVerification extends BaseEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
     @Column(nullable = false, unique = true)
     private String email;
 
@@ -22,14 +18,4 @@ public class EmailVerification extends BaseEntity {
 
     @Column(nullable = false)
     private boolean verified = false;
-
-    public EmailVerification(String email, String code) {
-        this.email = email;
-        this.code = code;
-        this.verified = false;
-    }
-
-    public void markVerified() {
-        this.verified = true;
-    }
 }
