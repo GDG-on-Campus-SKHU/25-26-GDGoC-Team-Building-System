@@ -15,19 +15,19 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    // 인증번호 생성
+    // 6자리 인증번호 생성
     public String generateVerificationCode() {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < 6; i++) {
-            code.append(random.nextInt(10)); // 0~9 랜덤 숫자
+            code.append(random.nextInt(10));
         }
         return code.toString();
     }
 
-    // 이메일 발송
+    // 이메일 전송
     public void sendVerificationEmail(String to, String code) {
-        String subject = "[GDG Team Project] 비밀번호 재설정 인증번호";
+        String subject = "[GDGoC Team Project] 비밀번호 재설정 인증번호";
         String content = """
                 <div style='font-family: Arial;'>
                     <h3>비밀번호 재설정을 위한 인증번호입니다.</h3>
@@ -47,7 +47,7 @@ public class EmailService {
 
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException("이메일 전송에 실패했습니다: " + e.getMessage());
+            throw new RuntimeException("이메일 전송 실패: " + e.getMessage());
         }
     }
 }
