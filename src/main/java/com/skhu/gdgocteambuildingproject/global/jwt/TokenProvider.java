@@ -22,6 +22,7 @@ import java.util.Date;
 @Component
 public class TokenProvider {
 
+    private static final String ROLE_CLAIM = "Role";
     private final Key key;
     private final long accessTokenValidityTime;
     private final CustomUserDetailsService customUserDetailsService;
@@ -44,6 +45,7 @@ public class TokenProvider {
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
+                .claim(ROLE_CLAIM, user.getRole().name())
                 .setIssuedAt(now)
                 .setExpiration(expiryDate)
                 .signWith(key, SignatureAlgorithm.HS256)
