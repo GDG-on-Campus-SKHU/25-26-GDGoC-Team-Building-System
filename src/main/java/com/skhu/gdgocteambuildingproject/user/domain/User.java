@@ -43,6 +43,12 @@ public class User extends BaseEntity {
         this.approved = approved;
     }
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TechStack> techStacks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Grade> grades = new ArrayList<>();
+
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
                 String part, String generation) {
@@ -59,9 +65,7 @@ public class User extends BaseEntity {
         this.approved = true;
     }
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TechStack> techStacks = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Grade> grades = new ArrayList<>();
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
