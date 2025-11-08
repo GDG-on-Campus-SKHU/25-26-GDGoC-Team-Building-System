@@ -35,7 +35,7 @@ public class AuthService {
                 passwordEncoder.encode(dto.getPassword()),
                 dto.getName(),
                 dto.getNumber(),
-                dto.getIntroduction(),
+                null,
                 dto.getSchool(),
                 dto.getRole(),
                 dto.getPosition(),
