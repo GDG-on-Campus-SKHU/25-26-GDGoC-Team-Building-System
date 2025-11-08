@@ -24,13 +24,10 @@ public class SignUpRequestDto {
     private String passwordConfirm;
 
     @NotBlank
+    @Pattern(regexp = "^\\d{3}-\\d{3,4}-\\d{4}$", message = "전화번호는 010-1234-5678 형식으로 입력해야 합니다.")
     private String number;
 
-    private String introduction;
-
-    @NotBlank
     private String school;
-
     private String generation;
     private String part;
 
