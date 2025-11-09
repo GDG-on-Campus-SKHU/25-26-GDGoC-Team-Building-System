@@ -7,9 +7,10 @@ spring:
   profiles:
     active: local
   datasource:
-    url: jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME}?useSSL=false&characterEncoding=UTF-8&serverTimezone=Asia/Seoul
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: ${SPRING_DATASOURCE_URL}
+    username: ${SPRING_DATASOURCE_USERNAME}
+    password: ${SPRING_DATASOURCE_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
   # 로컬 테스트가 가능하도록 루트 디렉토리의 .env 파일을 인식하도록 설정
   config:
     import: optional:file:.env[.properties]
@@ -31,8 +32,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    name: ${GOOGLE_EMAIL}
-    password: ${GOOGLE_APP_PASSWORD}
+    username: ${SPRING_MAIL_USERNAME}
+    password: ${SPRING_MAIL_PASSWORD}
     properties:
       mail:
         smtp:
