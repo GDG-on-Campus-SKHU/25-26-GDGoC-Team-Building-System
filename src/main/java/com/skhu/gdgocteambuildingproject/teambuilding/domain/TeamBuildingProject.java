@@ -15,8 +15,10 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamBuildingProject extends BaseEntity {
 
+    @Column(nullable = false)
     private String name;
-    private int maxMemberCount;
+    @Column(nullable = false)
+    private Integer maxMemberCount;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Idea> ideas = new ArrayList<>();
