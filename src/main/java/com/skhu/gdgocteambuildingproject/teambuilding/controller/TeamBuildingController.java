@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TeamBuildingController {
     private final TeamBuildingService teamBuildingService;
 
-    @GetMapping
+    @GetMapping("/projects")
     @Operation(
             summary = "프로젝트 정보 및 일정 조회",
             description = "예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다. 현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다. 예정된 프로젝트가 없을 경우 404 응답을 반환합니다."
