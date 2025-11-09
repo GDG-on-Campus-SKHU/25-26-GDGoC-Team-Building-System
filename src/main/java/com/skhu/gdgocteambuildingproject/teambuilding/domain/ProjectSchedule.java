@@ -15,10 +15,9 @@ import java.time.LocalDate;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProjectSchedule extends BaseEntity {
 
-    @Column(nullable = false)
     private LocalDateTime startDate;
-    @Column(nullable = false)
     private LocalDateTime endDate;
+
     @Column(nullable = false)
     private String name;
 
