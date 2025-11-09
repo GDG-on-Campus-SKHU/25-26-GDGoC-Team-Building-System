@@ -80,8 +80,8 @@ jobs:
 
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin "$ECR_REGISTRY"
             docker pull "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-            docker stop sikbbang-app || true
-            docker rm sikbbang-app || true
+            docker stop teamBuildingSystem-app || true
+            docker rm teamBuildingSystem-app || true
 
             docker run -d --name sikbbang-app --restart unless-stopped \
               -p 8080:8080 \
@@ -90,6 +90,7 @@ jobs:
               -e DB_HOST="${{ secrets.DB_HOST }}" \
               -e DB_PORT="${{ secrets.DB_PORT }}" \
               -e DB_NAME="${{ secrets.DB_NAME }}" \
+              -e SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
               -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \

@@ -7,7 +7,7 @@ spring:
   profiles:
     active: local
   datasource:
-    url: ${DB_HOST}
+    url: ${SPRING_DATASOURCE_URL:jdbc:mysql://${DB_HOST}:${DB_PORT:3306}/${DB_NAME}}
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
   # 로컬 테스트가 가능하도록 루트 디렉토리의 .env 파일을 인식하도록 설정
