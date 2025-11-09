@@ -19,8 +19,8 @@ public class TeamBuildingProject extends BaseEntity {
     private int maxMemberCount;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Idea> ideas = new ArrayList<>();
+    private final List<Idea> ideas = new ArrayList<>();
 
-    @OneToOne(mappedBy = "project", cascade = CascadeType.ALL)
-    private ProjectSchedule schedule;
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ProjectSchedule> schedules = new ArrayList<>();
 }
