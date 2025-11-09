@@ -93,9 +93,11 @@ jobs:
               -e SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" \
               -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
               -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
+              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET }}" \
               -e JWT_ACCESS_EXPIRATION="${{ secrets.JWT_ACCESS_EXPIRATION }}" \
               -e JWT_ACCESS_HEADER="${{ secrets.JWT_ACCESS_HEADER }}" \
               -e JWT_REFRESH_EXPIRATION="${{ secrets.JWT_REFRESH_EXPIRATION }}" \
               -e JWT_REFRESH_HEADER="${{ secrets.JWT_REFRESH_HEADER }}" \
+              -e GOOGLE_EMAIL="${{ secrets.GOOGLE_EMAIL }}" \
+              -e GOOGLE_APP_PASSWORD="${{ secrets.GOOGLE_APP_PASSWORD }}" \
               "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
