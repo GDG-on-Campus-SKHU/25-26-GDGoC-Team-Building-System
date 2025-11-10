@@ -21,8 +21,8 @@ public class Idea extends BaseEntity {
     private String title;
     private String introduction;
     private String description;
-    private String preferredPart;
 
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private IdeaStatus registerStatus;
 
@@ -30,10 +30,13 @@ public class Idea extends BaseEntity {
     private User user;
 
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<IdeaMemberComposition> memberCompositions = new ArrayList<>();
+    private final List<IdeaMemberComposition> memberCompositions = new ArrayList<>();
 
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<IdeaEnrollment> enrollments = new ArrayList<>();
+    private final List<IdeaEnrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<IdeaMember> members = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private TeamBuildingProject project;
