@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class TeamBuildingServiceImpl implements TeamBuildingService {
+public class ProjectServiceImpl implements ProjectService {
 
     private final TeamBuildingProjectRepository projectRepository;
 

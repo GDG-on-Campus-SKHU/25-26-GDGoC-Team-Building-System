@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.TeamBuildingInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.service.TeamBuildingService;
+import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamBuildingController {
-    private final TeamBuildingService teamBuildingService;
+    private final ProjectService projectService;
 
     @GetMapping("/projects")
     @Operation(
@@ -29,7 +29,7 @@ public class TeamBuildingController {
             description = "예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다. 현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다. 예정된 프로젝트가 없을 경우 404 응답을 반환합니다."
     )
     private ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo() {
-        TeamBuildingInfoResponseDto responseDto = teamBuildingService.findCurrentProjectInfo();
+        TeamBuildingInfoResponseDto responseDto = projectService.findCurrentProjectInfo();
 
         return ResponseEntity.ok(responseDto);
     }
