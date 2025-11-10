@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.Column;
