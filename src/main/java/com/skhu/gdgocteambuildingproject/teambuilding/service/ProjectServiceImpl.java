@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,6 +24,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public TeamBuildingInfoResponseDto findCurrentProjectInfo() {
         List<TeamBuildingProject> allProjects = projectRepository.findAll();
 
