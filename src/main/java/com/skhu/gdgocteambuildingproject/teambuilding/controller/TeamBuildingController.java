@@ -1,6 +1,9 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -9,7 +12,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -22,15 +27,43 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamBuildingController {
     private final ProjectService projectService;
+    private final IdeaService ideaService;
 
     @GetMapping("/projects")
     @Operation(
             summary = "프로젝트 정보 및 일정 조회",
-            description = "예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다. 현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다. 예정된 프로젝트가 없을 경우 404 응답을 반환합니다."
+            description = """
+                    예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다.
+                    
+                    현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다.
+                    
+                    예정된 프로젝트가 없을 경우 404 응답을 반환합니다."""
     )
-    private ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo() {
-        TeamBuildingInfoResponseDto responseDto = projectService.findCurrentProjectInfo();
+    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo() {
+        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo();
 
-        return ResponseEntity.ok(responseDto);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/projects/{projectId}/ideas")
+    @Operation(
+            summary = "아이디어 조회",
+            description = """
+                    프로젝트에 게시된 아이디어를 조회합니다.
+                    
+                    sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
+                    
+                    order: ASC 또는 DESC"""
+    )
+    public ResponseEntity<IdeaTitleInfoPageResponseDto> findIdeas(
+            @PathVariable long projectId,
+            @RequestParam int page,
+            @RequestParam int size,
+            @RequestParam String sortBy,
+            @RequestParam SortOrder order
+    ) {
+        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
     }
 }

@@ -40,4 +40,14 @@ public class Idea extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     private TeamBuildingProject project;
+
+    public int getMaxMemberCount() {
+        return memberCompositions.stream()
+                .mapToInt(IdeaMemberComposition::getCount)
+                .sum();
+    }
+
+    public int getCurrentMemberCount() {
+        return members.size();
+    }
 }
