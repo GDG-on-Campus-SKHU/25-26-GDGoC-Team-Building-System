@@ -13,6 +13,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     private final GalleryProjectInfoMapper galleryProjectInfoMapper;
 
     @Override
+    @Transactional(readOnly = true)
     public GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Long projectId) {
         GalleryProject galleryProject = galleryProjectRepository.findById(projectId)
                 .orElseThrow(() -> new GalleryProjectNotExistException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
@@ -32,6 +34,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public GalleryProjectListResponseDto findGalleryProjectList(String generation) {
         if (generation == null || generation.isEmpty()) {
             return findAllGalleryProjectList();
