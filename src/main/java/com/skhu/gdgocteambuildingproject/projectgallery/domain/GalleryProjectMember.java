@@ -14,13 +14,17 @@ import lombok.NoArgsConstructor;
 public class GalleryProjectMember extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private MemberRole role;
 
+    @Column(nullable = false)
     private String part;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private GalleryProject project;
 }
