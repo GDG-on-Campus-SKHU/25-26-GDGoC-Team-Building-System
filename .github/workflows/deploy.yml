@@ -19,15 +19,15 @@ jobs:
         with:
           java-version: '21'
           distribution: 'temurin'
-      
+
       - name: Create application.yml
         run: |
           mkdir -p src/main/resources
           echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
-          
+
       - name: Grant execute permission for gradlew
         run: chmod +x ./gradlew
-      
+
       - name: Build with Gradle
         run: ./gradlew build -x test
 
@@ -47,9 +47,9 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v2
         with:
-          aws-access-key-id:     ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region:            ${{ secrets.AWS_REGION }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Login to Amazon ECR
         id: login-ecr
@@ -62,39 +62,70 @@ jobs:
           IMAGE_TAG="${{ github.sha }}"
 
           docker build -t "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" .
+          docker tag  "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+          docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
       - name: Deploy to EC2 instance
         uses: appleboy/ssh-action@master
         with:
-          host:      ${{ secrets.EC2_HOST }}
-          username:  ${{ secrets.EC2_USERNAME }}
-          key:       ${{ secrets.EC2_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           script: |
-            aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
-            aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-            aws configure set region ${{ secrets.AWS_REGION }}
-            ECR_REPOSITORY=${{ secrets.ECR_REPOSITORY }}
+            set -euo pipefail
+              
+            # 이미지 정보 준비
             ECR_REGISTRY="${{ steps.login-ecr.outputs.registry }}"
+            ECR_REPOSITORY="${{ secrets.ECR_REPOSITORY }}"
             IMAGE_TAG="${{ github.sha }}"
+            IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+              
+            # 1) ECR 로그인 & 최신 이미지 pull
+            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
+              | docker login --username AWS --password-stdin "$ECR_REGISTRY"
+            docker pull "$IMAGE"
+              
+            # 2) /home/ec2-user/app.env 새로 생성 (기존 것 백업)
+            ENV_FILE="/home/ec2-user/app.env"
+            test -f "$ENV_FILE" && cp "$ENV_FILE" "$ENV_FILE.bak.$(date +%F_%H%M%S)" || true
+              
+            cat > "$ENV_FILE" <<EOF
+            TZ=Asia/Seoul
+            SPRING_PROFILES_ACTIVE=local
 
-            aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin "$ECR_REGISTRY"
-            docker pull "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-            docker stop sikbbang-app || true
-            docker rm sikbbang-app || true
+            # --- DB ---
+            SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}
+            SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}
+            SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
+        
+            # --- Mail ---
+            SPRING_MAIL_HOST=smtp.gmail.com
+            SPRING_MAIL_PORT=587
+            SPRING_MAIL_USERNAME=${{ secrets.GOOGLE_EMAIL }}
+            SPRING_MAIL_PASSWORD=${{ secrets.GOOGLE_APP_PASSWORD }}
+            SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
+            SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
+        
+            # --- JWT ---
+            JWT_SECRET=${{ secrets.JWT_SECRET }}
+            JWT_ACCESS_EXPIRATION=${{ secrets.JWT_ACCESS_EXPIRATION }}
+            EOF
+              
+            chmod 600 "$ENV_FILE"
+              
+            # 3) 기존 컨테이너 내려주고 삭제
+            docker stop teamBuildingSystem-app || true
+            docker rm   teamBuildingSystem-app || true
+              
+            # 4) 새 컨테이너 실행 (env-file 기반)
+            docker run -d --name teamBuildingSystem-app --restart unless-stopped \
+            --env-file "$ENV_FILE" \
+            -p 8080:8080 \
+            "$IMAGE"
+        
+            # 5) 컨테이너 상태/로그 한 번 확인(로그 전체는 안 찍음, 구동 확인만)
+            sleep 2
+            docker ps --filter name=teamBuildingSystem-app
+            docker logs --tail=20 teamBuildingSystem-app || true
 
-            docker run -d --name sikbbang-app --restart unless-stopped \
-              -p 8080:8080 \
-              -e TZ=Asia/Seoul \
-              -e SPRING_PROFILES_ACTIVE=local \
-              -e DB_HOST="${{ secrets.DB_HOST }}" \
-              -e DB_PORT="${{ secrets.DB_PORT }}" \
-              -e DB_NAME="${{ secrets.DB_NAME }}" \
-              -e DB_USERNAME="${{ secrets.DB_USERNAME }}" \
-              -e DB_PASSWORD="${{ secrets.DB_PASSWORD }}" \
-              -e JWT_SECRET_KEY="${{ secrets.JWT_SECRET_KEY }}" \
-              -e JWT_ACCESS_EXPIRATION="${{ secrets.JWT_ACCESS_EXPIRATION }}" \
-              -e JWT_ACCESS_HEADER="${{ secrets.JWT_ACCESS_HEADER }}" \
-              -e JWT_REFRESH_EXPIRATION="${{ secrets.JWT_REFRESH_EXPIRATION }}" \
-              -e JWT_REFRESH_HEADER="${{ secrets.JWT_REFRESH_HEADER }}" \
-              "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
