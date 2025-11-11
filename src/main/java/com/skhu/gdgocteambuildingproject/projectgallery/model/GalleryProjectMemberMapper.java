@@ -19,7 +19,7 @@ public class GalleryProjectMemberMapper {
         return GalleryProjectMemberResponseDto.builder()
                 .memberRole(member.getRole())
                 .name(member.getUser().getName())
-                .part(member.getPart())
+                .part(member.getPart().getKoreanName())
                 .build();
     }
 }
