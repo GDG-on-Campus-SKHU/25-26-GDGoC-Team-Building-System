@@ -19,7 +19,7 @@ public class GalleryProjectInfoMapper {
                 .projectName(project.getProjectName())
                 .generation(project.getGeneration())
                 .shortDescription(project.getShortDescription())
-                .serviceStatus(project.getServiceStatus())
+                .serviceStatus(project.getServiceStatus().name())
                 .description(project.getDescription())
                 .members(memberMapper.map(project.getMembers()))
                 .files(fileMapper.map(project.getFiles()))

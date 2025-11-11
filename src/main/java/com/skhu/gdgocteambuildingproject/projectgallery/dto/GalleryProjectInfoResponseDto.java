@@ -1,6 +1,5 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.dto;
 
-import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
 import lombok.Builder;
 
 import java.util.List;
@@ -11,7 +10,7 @@ public record GalleryProjectInfoResponseDto(
         String projectName,
         String generation,
         String shortDescription,
-        ServiceStatus serviceStatus,
+        String serviceStatus,
         String description,
         List<GalleryProjectMemberResponseDto> members,
         List<GalleryProjectFileInfoResponseDto> files

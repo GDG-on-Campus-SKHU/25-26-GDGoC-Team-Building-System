@@ -17,7 +17,7 @@ public class GalleryProjectMemberMapper {
 
     private GalleryProjectMemberResponseDto fromEntity(GalleryProjectMember member) {
         return GalleryProjectMemberResponseDto.builder()
-                .memberRole(member.getRole())
+                .memberRole(member.getRole().name())
                 .name(member.getUser().getName())
                 .part(member.getPart().getKoreanName())
                 .build();
