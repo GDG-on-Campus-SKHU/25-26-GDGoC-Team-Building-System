@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.domain;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.*;
@@ -18,7 +19,8 @@ public class GalleryProjectMember extends BaseEntity {
     private MemberRole role;
 
     @Column(nullable = false)
-    private String part;
+    @Enumerated(EnumType.STRING)
+    private Part part;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
