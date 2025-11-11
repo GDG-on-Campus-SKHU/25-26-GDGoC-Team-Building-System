@@ -1,10 +1,12 @@
 package com.skhu.gdgocteambuildingproject.user.domain;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -37,11 +39,7 @@ public class User extends BaseEntity {
 
     // 승인 여부
     @Column(nullable = false)
-    private boolean approved = false;
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
+    private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
@@ -49,6 +47,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
 
+    @Builder
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
                 String part, String generation) {
@@ -62,10 +61,17 @@ public class User extends BaseEntity {
         this.position = position;
         this.part = part;
         this.generation = generation;
-        this.approved = true;
     }
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void approve() {
+        this.approvalStatus = ApprovalStatus.APPROVED;
+    }
+
+    public void reject() {
+        this.approvalStatus = ApprovalStatus.REJECTED;
     }
 }
