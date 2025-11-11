@@ -16,7 +16,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GalleryProject extends BaseEntity {
 
-    private String name;
+    private String projectName;
     private String generation;
     private String shortDescription;
 
