@@ -16,17 +16,23 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class GalleryProject extends BaseEntity {
 
-    private String name;
+    @Column(nullable = false)
+    private String projectName;
+    @Column(nullable = false)
     private String generation;
+    @Column(nullable = false)
     private String shortDescription;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private ServiceStatus serviceStatus;
 
     @Lob
+    @Column(nullable = false)
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private User user;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
