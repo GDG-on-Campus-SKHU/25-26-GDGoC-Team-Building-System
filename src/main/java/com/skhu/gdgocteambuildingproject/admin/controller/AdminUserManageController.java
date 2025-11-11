@@ -40,7 +40,7 @@ public class AdminUserManageController implements AdminUserManageApi {
     }
 
     @Override
-    @GetMapping("/members")
+    @GetMapping("/users")
     public ResponseEntity<UserInfoPageResponseDto> getAllUsers(
             @RequestParam(defaultValue = DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = DEFAULT_SIZE) int size,
