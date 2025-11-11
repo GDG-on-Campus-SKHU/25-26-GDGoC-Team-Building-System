@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.auth.dto.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -64,7 +65,7 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        if (!user.isApproved()) {
+        if (user.getApprovalStatus().equals(ApprovalStatus.WAITING)) {
             throw new IllegalStateException("관리자 승인 대기 중입니다.");
         }
 
