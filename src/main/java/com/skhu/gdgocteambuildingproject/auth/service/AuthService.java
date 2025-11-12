@@ -30,19 +30,7 @@ public class AuthService {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
 
-        User user = User.builder()
-                .email(dto.getEmail())
-                .password(passwordEncoder.encode(dto.getPassword()))
-                .name(dto.getName())
-                .number(dto.getNumber())
-                .introduction(dto.getIntroduction())
-                .school(dto.getSchool())
-                .role(dto.getRole())
-                .position(dto.getPosition())
-                .part(dto.getPart())
-                .generation(dto.getGeneration())
-                .build();
-
+        User user = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
 
         String accessToken = tokenProvider.createAccessToken(user);
