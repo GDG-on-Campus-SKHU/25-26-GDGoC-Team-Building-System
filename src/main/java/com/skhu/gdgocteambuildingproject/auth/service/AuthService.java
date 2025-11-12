@@ -46,9 +46,14 @@ public class AuthService {
         userRepository.save(user);
 
         String accessToken = tokenProvider.createAccessToken(user);
+        String refreshToken = tokenProvider.createRefreshToken(user);
+
+        user.updateRefreshToken(refreshToken);
+        userRepository.save(user);
 
         return new LoginResponseDto(
                 accessToken,
+                refreshToken,
                 user.getEmail(),
                 user.getName(),
                 user.getRole().name()
@@ -69,6 +74,12 @@ public class AuthService {
         }
 
         String accessToken = tokenProvider.createAccessToken(user);
-        return new LoginResponseDto(accessToken, user.getEmail(), user.getName(), user.getRole().name());
+        String refreshToken = tokenProvider.createRefreshToken(user);
+
+        user.updateRefreshToken(refreshToken);
+        userRepository.save(user);
+
+        return new LoginResponseDto(accessToken, refreshToken, user.getEmail(), user.getName(), user.getRole().name());
     }
+
 }
