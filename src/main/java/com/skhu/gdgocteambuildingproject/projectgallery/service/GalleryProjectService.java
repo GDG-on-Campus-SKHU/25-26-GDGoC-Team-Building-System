@@ -6,5 +6,5 @@ import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectListRe
 public interface GalleryProjectService {
     GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Long projectId);
 
-    GalleryProjectListResponseDto findGalleryProjectList(String generation);
+    GalleryProjectListResponseDto findGalleryProjects(String generation);
 }

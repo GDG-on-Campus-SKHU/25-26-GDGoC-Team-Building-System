@@ -46,7 +46,7 @@ public class GalleryProjectController {
                     해당하는 프로젝트가 없을 경우, 404 응답을 반환합니다.
                     """
     )
-    private ResponseEntity<GalleryProjectListResponseDto> findGalleryProjectList(@RequestParam(defaultValue = "") String generation) {
-        return ResponseEntity.ok(galleryProjectService.findGalleryProjectList(generation));
+    private ResponseEntity<GalleryProjectListResponseDto> findGalleryProjects(@RequestParam(defaultValue = "") String generation) {
+        return ResponseEntity.ok(galleryProjectService.findGalleryProjects(generation));
     }
 }

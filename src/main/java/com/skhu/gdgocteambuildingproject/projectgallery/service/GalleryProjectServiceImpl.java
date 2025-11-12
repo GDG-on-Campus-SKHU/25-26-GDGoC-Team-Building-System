@@ -35,33 +35,33 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GalleryProjectListResponseDto findGalleryProjectList(String generation) {
+    public GalleryProjectListResponseDto findGalleryProjects(String generation) {
         if (generation == null || generation.isEmpty()) {
-            return findAllGalleryProjectList();
+            return findAllGalleryProjects();
         }
 
-        return findGalleryProjectListByGeneration(generation);
+        return findGalleryProjectsByGeneration(generation);
     }
 
-    private GalleryProjectListResponseDto findAllGalleryProjectList() {
-        List<GalleryProject> galleryProjectList =
+    private GalleryProjectListResponseDto findAllGalleryProjects() {
+        List<GalleryProject> galleryProjects =
                 galleryProjectRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
 
-        return mapToGalleryProjectListResponseDto(galleryProjectList);
+        return mapToGalleryProjectsResponseDto(galleryProjects);
     }
 
-    private GalleryProjectListResponseDto findGalleryProjectListByGeneration(String generation) {
-        List<GalleryProject> galleryProjectList =
+    private GalleryProjectListResponseDto findGalleryProjectsByGeneration(String generation) {
+        List<GalleryProject> galleryProjects =
                 galleryProjectRepository.findByGenerationOrderByCreatedAtDesc(generation);
 
-        return mapToGalleryProjectListResponseDto(galleryProjectList);
+        return mapToGalleryProjectsResponseDto(galleryProjects);
     }
 
-    private GalleryProjectListResponseDto mapToGalleryProjectListResponseDto(List<GalleryProject> galleryProjectList) {
-        throwIfGalleryProjectListEmpty(galleryProjectList);
+    private GalleryProjectListResponseDto mapToGalleryProjectsResponseDto(List<GalleryProject> galleryProjects) {
+        throwIfGalleryProjectListEmpty(galleryProjects);
 
         return galleryProjectInfoMapper.mapToListDto(
-                galleryProjectList.stream()
+                galleryProjects.stream()
                         .map(galleryProjectInfoMapper::mapToSummary)
                         .toList()
         );
