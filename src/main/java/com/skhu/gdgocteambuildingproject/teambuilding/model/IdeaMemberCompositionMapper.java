@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaMemberCompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaMemberCompositionResponseDto;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;

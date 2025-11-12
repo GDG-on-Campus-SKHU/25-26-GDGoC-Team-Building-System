@@ -1,9 +1,9 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaCreatorInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaDetailInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaMemberCompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaMemberCompositionResponseDto;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
