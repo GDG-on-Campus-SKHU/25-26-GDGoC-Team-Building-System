@@ -55,7 +55,8 @@ public class TeamBuildingController {
                     
                     sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
                     
-                    order: ASC 또는 DESC"""
+                    order: ASC 또는 DESC
+                    """
     )
     public ResponseEntity<IdeaTitleInfoPageResponseDto> findIdeas(
             @PathVariable long projectId,
@@ -72,7 +73,11 @@ public class TeamBuildingController {
     @GetMapping("/projects/{projectId}/ideas/{ideaId}")
     @Operation(
             summary = "아이디어 조회",
-            description = "프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다."
+            description = """
+                    프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI;
+                    """
     )
     public ResponseEntity<IdeaDetailInfoResponseDto> findIdeaDetails(
             @PathVariable long projectId,
