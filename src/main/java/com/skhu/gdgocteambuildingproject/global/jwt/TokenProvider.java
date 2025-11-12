@@ -52,6 +52,19 @@ public class TokenProvider {
                 .compact();
     }
 
+    // RefreshToken 생성
+    public String createRefreshToken(User user) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + accessTokenValidityTime * 7); // 예: 7배
+
+        return Jwts.builder()
+                .setSubject(user.getId().toString())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     // 토큰에서 사용자 인증 정보 추출
     public Authentication getAuthentication(String token) {
         String userPk = getUserPk(token);
