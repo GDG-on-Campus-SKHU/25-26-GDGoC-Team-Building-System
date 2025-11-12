@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.dto;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
 
 import java.util.List;
 import lombok.Builder;

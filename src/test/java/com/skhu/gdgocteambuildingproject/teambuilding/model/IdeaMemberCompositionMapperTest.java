@@ -11,7 +11,7 @@ import static org.mockito.Mockito.when;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaMemberCompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaMemberCompositionResponseDto;
 import java.util.List;
 import java.util.Map;
 import org.junit.jupiter.api.BeforeEach;

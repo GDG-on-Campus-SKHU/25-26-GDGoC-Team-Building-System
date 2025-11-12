@@ -4,9 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaCreatorInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaDetailInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaMemberCompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaMemberCompositionResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.Test;
