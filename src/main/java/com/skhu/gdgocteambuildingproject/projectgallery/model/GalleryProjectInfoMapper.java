@@ -36,9 +36,11 @@ public class GalleryProjectInfoMapper {
                 .projectName(project.getProjectName())
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())
-                .fileUrl(fileMapper.map(project.getFiles()).stream()
+                .fileUrl(
+                        fileMapper.map(project.getFiles()).stream()
                             .findFirst()
-                            .orElse(null))
+                            .orElse(null)
+                )
                 .build();
     }
 
