@@ -35,7 +35,9 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Part part;
     private String generation;
+
     private boolean deleted;
+    private String refreshToken;
 
     // 승인 여부
     @Column(nullable = false)
@@ -69,5 +71,9 @@ public class User extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void updateRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }
