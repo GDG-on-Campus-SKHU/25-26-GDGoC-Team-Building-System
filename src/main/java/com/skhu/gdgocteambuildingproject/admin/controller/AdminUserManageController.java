@@ -18,11 +18,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdminUserManageController implements AdminUserManageApi {
 
-    public static final String DEFAULT_PAGE = "0";
-    public static final String DEFAULT_SIZE = "20";
-    public static final String DEFAULT_SORT_BY = "id";
-    public static final String DEFAULT_ORDER = "ASC";
-
     private final AdminUserManageServiceImpl adminUserManageService;
 
     @Override
