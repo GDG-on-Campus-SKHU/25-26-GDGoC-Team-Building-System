@@ -13,8 +13,10 @@ import lombok.NoArgsConstructor;
 public class GalleryProjectFile extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private File file;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private GalleryProject project;
 }
