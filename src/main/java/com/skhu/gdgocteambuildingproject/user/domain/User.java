@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.user.domain;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
@@ -51,6 +52,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
 
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Idea> ideas = new ArrayList<>();
+
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
                 String part, String generation) {
@@ -69,5 +73,13 @@ public class User extends BaseEntity {
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    /**
+     * User - Idea 연관관계 편의 메서드
+     */
+    public void addIdea(Idea idea) {
+        ideas.add(idea);
+        idea.setCreator(this);
     }
 }

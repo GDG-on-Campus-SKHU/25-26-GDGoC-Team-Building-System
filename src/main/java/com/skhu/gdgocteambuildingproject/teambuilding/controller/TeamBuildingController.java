@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
@@ -8,12 +9,15 @@ import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import java.security.Principal;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -47,6 +51,29 @@ public class TeamBuildingController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/projects/{projectId}/ideas")
+    @Operation(
+            summary = "아이디어 생성(게시)",
+            description = """
+                    새로운 아이디어를 생성해 게시합니다.
+                    임시 저장된 아이디어는 자동으로 제거됩니다.
+                    이미 게시한 아이디어가 있으면 예외를 던져 400을 응답합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    public ResponseEntity<IdeaDetailInfoResponseDto> createIdea(
+            Principal principal,
+            @PathVariable long projectId,
+            @RequestBody IdeaCreateRequestDto requestDto
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        IdeaDetailInfoResponseDto response = ideaService.postIdea(projectId, userId, requestDto);
+
+        return ResponseEntity.ok(response);
+    }
+
     @GetMapping("/projects/{projectId}/ideas")
     @Operation(
             summary = "아이디어 조회",
@@ -76,7 +103,7 @@ public class TeamBuildingController {
             description = """
                     프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다.
                     
-                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI;
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
     public ResponseEntity<IdeaDetailInfoResponseDto> findIdeaDetails(
@@ -86,5 +113,9 @@ public class TeamBuildingController {
         IdeaDetailInfoResponseDto response = ideaService.findIdeaDetail(projectId, ideaId);
 
         return ResponseEntity.ok(response);
+    }
+
+    private long getUserIdFrom(Principal principal) {
+        return Long.parseLong(principal.getName());
     }
 }
