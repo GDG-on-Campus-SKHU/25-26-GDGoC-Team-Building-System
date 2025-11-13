@@ -39,13 +39,13 @@ public class AuthService {
         user.updateRefreshToken(refreshToken);
         userRepository.save(user);
 
-        return new LoginResponseDto(
-                accessToken,
-                refreshToken,
-                user.getEmail(),
-                user.getName(),
-                user.getRole().name()
-        );
+        return LoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
     }
 
     @Transactional(readOnly = true)
