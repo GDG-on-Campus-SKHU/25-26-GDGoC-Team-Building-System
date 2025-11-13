@@ -47,7 +47,11 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
-    public IdeaDetailInfoResponseDto createIdea(long projectId, long userId, IdeaCreateRequestDto requestDto) {
+    public IdeaDetailInfoResponseDto createIdea(
+            long projectId,
+            long userId,
+            IdeaCreateRequestDto requestDto
+    ) {
         if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
             validateContents(requestDto);
         }
