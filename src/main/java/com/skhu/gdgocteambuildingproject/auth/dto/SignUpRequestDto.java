@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.auth.dto;
 
+import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.validation.constraints.Email;
@@ -36,4 +37,19 @@ public class SignUpRequestDto {
 
     private UserPosition position; // MEMBER / CORE / ORGANIZER
     private UserRole role;         // SKHU_MEMBER / OTHERS
+
+    public User toEntity(String encodedPassword) {
+        return User.builder()
+                .email(this.email)
+                .password(encodedPassword)
+                .name(this.name)
+                .number(this.number)
+                .introduction(this.introduction)
+                .school(this.school)
+                .role(this.role)
+                .position(this.position)
+                .part(this.part)
+                .generation(this.generation)
+                .build();
+    }
 }
