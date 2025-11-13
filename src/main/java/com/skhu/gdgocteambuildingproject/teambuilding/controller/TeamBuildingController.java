@@ -76,13 +76,15 @@ public class TeamBuildingController {
 
     @GetMapping("/projects/{projectId}/ideas")
     @Operation(
-            summary = "아이디어 조회",
+            summary = "아이디어 목록 조회",
             description = """
                     프로젝트에 게시된 아이디어 목록을 조회합니다.
                     
                     sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
                     
                     order: ASC 또는 DESC
+                    
+                    recruitingOnly: 모집 중인 아이디어만 보기(인원이 최대로 차지 않은 아이디어만 보기)
                     """
     )
     public ResponseEntity<IdeaTitleInfoPageResponseDto> findIdeas(
@@ -90,16 +92,17 @@ public class TeamBuildingController {
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String sortBy,
-            @RequestParam SortOrder order
+            @RequestParam SortOrder order,
+            @RequestParam boolean recruitingOnly
     ) {
-        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order);
+        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order, recruitingOnly);
 
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/projects/{projectId}/ideas/{ideaId}")
     @Operation(
-            summary = "아이디어 조회",
+            summary = "아이디어 상세 조회",
             description = """
                     프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다.
                     
