@@ -80,7 +80,7 @@ public class TeamBuildingController {
 
     @GetMapping("/projects/{projectId}/ideas")
     @Operation(
-            summary = "아이디어 조회",
+            summary = "아이디어 목록 조회",
             description = """
                     프로젝트에 게시된 아이디어 목록을 조회합니다.
                     
@@ -103,7 +103,7 @@ public class TeamBuildingController {
 
     @GetMapping("/projects/{projectId}/ideas/{ideaId}")
     @Operation(
-            summary = "아이디어 조회",
+            summary = "아이디어 상세 조회",
             description = """
                     프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다.
                     
