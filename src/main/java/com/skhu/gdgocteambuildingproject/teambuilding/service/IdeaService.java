@@ -1,7 +1,8 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaTitleInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
 
 public interface IdeaService {
     IdeaTitleInfoPageResponseDto findIdeas(
@@ -10,5 +11,10 @@ public interface IdeaService {
             int size,
             String sortBy,
             SortOrder order
+    );
+
+    IdeaDetailInfoResponseDto findIdeaDetail(
+            long projectId,
+            long ideaId
     );
 }

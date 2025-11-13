@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.user.domain;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.persistence.*;
@@ -32,7 +33,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserPosition position;
 
-    private String part;
+    @Enumerated(EnumType.STRING)
+    private Part part;
     private String generation;
     private boolean deleted;
 
@@ -62,7 +64,7 @@ public class User extends BaseEntity {
         this.school = school;
         this.role = role;
         this.position = position;
-        this.part = part;
+        this.part = Part.valueOf(part);
         this.generation = generation;
         this.approved = true;
     }

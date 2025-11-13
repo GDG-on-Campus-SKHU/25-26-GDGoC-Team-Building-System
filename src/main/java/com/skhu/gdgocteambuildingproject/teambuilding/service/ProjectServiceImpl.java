@@ -3,7 +3,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.exception.ProjectNotExistException;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectFilter;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;

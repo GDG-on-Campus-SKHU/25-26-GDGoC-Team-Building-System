@@ -1,11 +1,15 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
+
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaTitleInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaTitleInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaTitleInfoMapper;
 import java.util.List;
 import lombok.AccessLevel;
@@ -23,6 +27,7 @@ public class IdeaServiceImpl implements IdeaService {
     private final IdeaRepository ideaRepository;
 
     private final IdeaTitleInfoMapper ideaTitleInfoMapper;
+    private final IdeaDetailInfoMapper ideaDetailInfoMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -45,6 +50,18 @@ public class IdeaServiceImpl implements IdeaService {
                 .ideas(ideaDtos)
                 .pageInfo(PageInfo.from(ideas))
                 .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public IdeaDetailInfoResponseDto findIdeaDetail(
+            long projectId,
+            long ideaId
+    ) {
+        Idea idea = ideaRepository.findByIdAndProjectId(ideaId, projectId)
+                .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
+
+        return ideaDetailInfoMapper.map(idea);
     }
 
     private Pageable setupPagination(

@@ -1,8 +1,9 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.IdeaTitleInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -26,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 )
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamBuildingController {
+
     private final ProjectService projectService;
     private final IdeaService ideaService;
 
@@ -49,7 +51,7 @@ public class TeamBuildingController {
     @Operation(
             summary = "아이디어 조회",
             description = """
-                    프로젝트에 게시된 아이디어를 조회합니다.
+                    프로젝트에 게시된 아이디어 목록을 조회합니다.
                     
                     sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
                     
@@ -63,6 +65,20 @@ public class TeamBuildingController {
             @RequestParam SortOrder order
     ) {
         IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/projects/{projectId}/ideas/{ideaId}")
+    @Operation(
+            summary = "아이디어 조회",
+            description = "프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다."
+    )
+    public ResponseEntity<IdeaDetailInfoResponseDto> findIdeaDetails(
+            @PathVariable long projectId,
+            @PathVariable long ideaId
+    ) {
+        IdeaDetailInfoResponseDto response = ideaService.findIdeaDetail(projectId, ideaId);
 
         return ResponseEntity.ok(response);
     }
