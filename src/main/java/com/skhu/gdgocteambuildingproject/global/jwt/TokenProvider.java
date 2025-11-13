@@ -23,6 +23,7 @@ import java.util.Date;
 public class TokenProvider {
 
     private static final String ROLE_CLAIM = "Role";
+    private static final int REFRESH_TOKEN_MULTIPLIER = 7;
     private final Key key;
     private final long accessTokenValidityTime;
     private final CustomUserDetailsService customUserDetailsService;
@@ -55,7 +56,7 @@ public class TokenProvider {
     // RefreshToken 생성
     public String createRefreshToken(User user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + accessTokenValidityTime * 7); // 예: 7배
+        Date expiryDate = new Date(now.getTime() + accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER);
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
