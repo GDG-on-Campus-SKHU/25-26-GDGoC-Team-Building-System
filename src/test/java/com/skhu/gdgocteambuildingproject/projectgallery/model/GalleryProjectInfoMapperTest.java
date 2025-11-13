@@ -66,14 +66,14 @@ class GalleryProjectInfoMapperTest {
         when(fileMapper.map(project.getFiles())).thenReturn(mockFiles);
 
         // when
-        GalleryProjectInfoResponseDto result = infoMapper.map(project);
+        GalleryProjectInfoResponseDto result = infoMapper.mapToInfo(project);
 
         // then
         assertThat(result.galleryProjectId()).isEqualTo(PROJECT_ID);
         assertThat(result.projectName()).isEqualTo(PROJECT_NAME);
         assertThat(result.generation()).isEqualTo(GENERATION);
         assertThat(result.shortDescription()).isEqualTo(SHORT_DESCRIPTION);
-        assertThat(result.serviceStatus()).isEqualTo(SERVICE_STATUS);
+        assertThat(result.serviceStatus()).isEqualTo(SERVICE_STATUS.name());
         assertThat(result.description()).isEqualTo(DESCRIPTION);
         assertThat(result.members()).isEqualTo(mockMembers);
         assertThat(result.files()).isEqualTo(mockFiles);
