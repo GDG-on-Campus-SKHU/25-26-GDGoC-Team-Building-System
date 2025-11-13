@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.user.domain;
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.persistence.*;
@@ -78,6 +79,8 @@ public class User extends BaseEntity {
 
     public void reject() {
         this.approvalStatus = ApprovalStatus.REJECTED;
+    }
+
     /**
      * User - Idea 연관관계 편의 메서드
      */
