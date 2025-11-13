@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.user.domain;
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.persistence.*;
@@ -41,11 +42,7 @@ public class User extends BaseEntity {
 
     // 승인 여부
     @Column(nullable = false)
-    private boolean approved = false;
-
-    public void setApproved(boolean approved) {
-        this.approved = approved;
-    }
+    private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
@@ -70,11 +67,18 @@ public class User extends BaseEntity {
         this.position = position;
         this.part = Part.valueOf(part);
         this.generation = generation;
-        this.approved = true;
     }
 
     public void updatePassword(String newPassword) {
         this.password = newPassword;
+    }
+
+    public void approve() {
+        this.approvalStatus = ApprovalStatus.APPROVED;
+    }
+
+    public void reject() {
+        this.approvalStatus = ApprovalStatus.REJECTED;
     }
 
     /**
