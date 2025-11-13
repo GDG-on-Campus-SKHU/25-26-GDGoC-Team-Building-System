@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.controller;
 
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.service.GalleryProjectService;
@@ -10,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,5 +50,36 @@ public class GalleryProjectController {
     )
     private ResponseEntity<GalleryProjectListResponseDto> findGalleryProjects(@RequestParam(defaultValue = "") String generation) {
         return ResponseEntity.ok(galleryProjectService.findGalleryProjects(generation));
+    }
+
+    @GetMapping("/{projectId}/members/search")
+    @Operation(
+            summary = "갤러리 생성시 팀원 등록을 위한 유저 목록 조회",
+            description =
+                    """
+                    프로젝트 갤러리에서 팀원을 등록하기 위해 모든 유저를 검색합니다.
+                    
+                    프로젝트 갤러리에서 해당 프로젝트의 id로 유저가 해당 팀의 팀원인지 판독합니다.        
+                    """
+    )
+    private ResponseEntity<MemberSearchListResponseDto> searchMemberList(@RequestParam String name, @PathVariable Long projectId) {
+        return ResponseEntity.ok(galleryProjectService.searchMemberByName(projectId, name));
+    }
+
+    @PostMapping("/{projectId}/members/select")
+    @Operation(
+            summary = "유저 목록 조회 창에서 팀원으로 등록할 멤버 선택",
+            description =
+                    """
+                    프로젝트 갤러리의 팀원 등록을 위한 유저 목록 조회 창에서 유저를 선택합니다.
+                    
+                    이미 등록된 유저는 등록하려고 할 경우, 400 응답을 반환합니다.
+                    
+                    또한, 해당하는 프로젝트가 없을 경우, 404 응답을 반환합니다.
+                    """
+    )
+    private ResponseEntity<Void> selectMember(@RequestParam Long userId, @PathVariable Long projectId) {
+        galleryProjectService.addMemberToProject(projectId, userId);
+        return ResponseEntity.ok().build();
     }
 }

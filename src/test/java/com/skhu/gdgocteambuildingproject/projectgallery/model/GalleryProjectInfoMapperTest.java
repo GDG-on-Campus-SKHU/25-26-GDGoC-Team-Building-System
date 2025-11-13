@@ -62,7 +62,7 @@ class GalleryProjectInfoMapperTest {
                         .build()
         );
 
-        when(memberMapper.map(project.getMembers())).thenReturn(mockMembers);
+        when(memberMapper.mapMembersInfo(project.getMembers())).thenReturn(mockMembers);
         when(fileMapper.map(project.getFiles())).thenReturn(mockFiles);
 
         // when
@@ -78,7 +78,7 @@ class GalleryProjectInfoMapperTest {
         assertThat(result.members()).isEqualTo(mockMembers);
         assertThat(result.files()).isEqualTo(mockFiles);
 
-        verify(memberMapper).map(project.getMembers());
+        verify(memberMapper).mapMembersInfo(project.getMembers());
         verify(fileMapper).map(project.getFiles());
     }
 }
