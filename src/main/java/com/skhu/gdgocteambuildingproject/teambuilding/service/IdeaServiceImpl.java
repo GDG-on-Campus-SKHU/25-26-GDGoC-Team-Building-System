@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CONTENTS_EMPTY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
@@ -22,6 +23,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaTitleInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.AccessLevel;
@@ -45,13 +47,17 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
-    public IdeaDetailInfoResponseDto postIdea(long projectId, long userId, IdeaCreateRequestDto requestDto) {
+    public IdeaDetailInfoResponseDto createIdea(long projectId, long userId, IdeaCreateRequestDto requestDto) {
+        if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
+            validateContents(requestDto);
+        }
+
         TeamBuildingProject project = findProjectBy(projectId);
         User creator = findUserBy(userId);
 
         Idea postedIdea = ideaRepository.findByCreatorAndProject(creator, project)
-                .map(idea -> postExistIdea(idea, requestDto))
-                .orElseGet(() -> postNewIdea(creator, project, requestDto));
+                .map(idea -> updateExistIdea(idea, requestDto))
+                .orElseGet(() -> saveNewIdea(creator, project, requestDto));
 
         return ideaDetailInfoMapper.map(postedIdea);
     }
@@ -91,29 +97,36 @@ public class IdeaServiceImpl implements IdeaService {
         return ideaDetailInfoMapper.map(idea);
     }
 
-    private Idea postNewIdea(
+    private void validateContents(IdeaCreateRequestDto requestDto) {
+        if (StringUtils.isBlank(requestDto.title())
+                || StringUtils.isBlank(requestDto.introduction())
+                || StringUtils.isBlank(requestDto.description())
+                || StringUtils.isBlank(requestDto.topic())
+        ) {
+            throw new IllegalArgumentException(IDEA_CONTENTS_EMPTY.getMessage());
+        }
+    }
+
+    private Idea saveNewIdea(
             User creator,
             TeamBuildingProject project,
             IdeaCreateRequestDto requestDto
     ) {
-        Idea idea = buildIdea(requestDto, IdeaStatus.REGISTERED, project, creator);
+        Idea idea = buildIdea(requestDto, project, creator);
         updateIdeaCompositions(idea, requestDto.compositions());
         creator.addIdea(idea);
 
-        ideaRepository.save(idea);
-
-        return idea;
+        return ideaRepository.save(idea);
     }
 
-    private void validateIdeaNotRegistered(Idea idea) {
-        if (idea.getRegisterStatus() == IdeaStatus.REGISTERED) {
+    private void validateIdeaModifiable(Idea idea) {
+        if (idea.getRegisterStatus() != IdeaStatus.TEMPORARY) {
             throw new IllegalStateException(REGISTERED_IDEA_ALREADY_EXIST.getMessage());
         }
     }
 
     private Idea buildIdea(
             IdeaCreateRequestDto ideaDto,
-            IdeaStatus status,
             TeamBuildingProject project,
             User creator
     ) {
@@ -122,27 +135,29 @@ public class IdeaServiceImpl implements IdeaService {
                 .title(ideaDto.title())
                 .introduction(ideaDto.introduction())
                 .description(ideaDto.description())
-                .registerStatus(status)
+                .registerStatus(ideaDto.registerStatus())
                 .project(project)
                 .creator(creator)
                 .build();
     }
 
-    private Idea postExistIdea(
+    private Idea updateExistIdea(
             Idea idea,
             IdeaCreateRequestDto requestDto
     ) {
-        validateIdeaNotRegistered(idea);
+        validateIdeaModifiable(idea);
 
         idea.updateTexts(
                 requestDto.topic(),
                 requestDto.title(),
-                idea.getIntroduction(),
+                requestDto.introduction(),
                 requestDto.description()
         );
         updateIdeaCompositions(idea, requestDto.compositions());
 
-        idea.register();
+        if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
+            idea.register();
+        }
 
         return idea;
     }

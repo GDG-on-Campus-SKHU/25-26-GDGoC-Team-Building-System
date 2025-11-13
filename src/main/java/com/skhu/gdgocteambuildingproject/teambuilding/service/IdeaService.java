@@ -7,7 +7,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfo
 
 public interface IdeaService {
 
-    IdeaDetailInfoResponseDto postIdea(
+    IdeaDetailInfoResponseDto createIdea(
             long projectId,
             long userId,
             IdeaCreateRequestDto requestDto
