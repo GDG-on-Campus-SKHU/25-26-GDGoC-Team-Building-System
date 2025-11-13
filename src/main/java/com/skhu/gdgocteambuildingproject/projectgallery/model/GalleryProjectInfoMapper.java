@@ -1,9 +1,9 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectListResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectSummaryResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectSummaryResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

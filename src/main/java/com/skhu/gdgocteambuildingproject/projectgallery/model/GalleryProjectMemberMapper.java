@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectMemberResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectMemberResponseDto;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
