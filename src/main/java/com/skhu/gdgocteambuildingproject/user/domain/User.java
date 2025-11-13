@@ -57,7 +57,7 @@ public class User extends BaseEntity {
     @Builder
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
-                String part, String generation) {
+                Part part, String generation) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -66,7 +66,7 @@ public class User extends BaseEntity {
         this.school = school;
         this.role = role;
         this.position = position;
-        this.part = Part.valueOf(part);
+        this.part = part;
         this.generation = generation;
         this.approved = true;
     }
