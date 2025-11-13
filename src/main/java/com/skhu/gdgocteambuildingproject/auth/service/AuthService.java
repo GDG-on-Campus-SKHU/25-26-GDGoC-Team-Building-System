@@ -1,8 +1,10 @@
 package com.skhu.gdgocteambuildingproject.auth.service;
 
+import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.auth.dto.LoginRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.SignUpRequestDto;
+import com.skhu.gdgocteambuildingproject.auth.repository.RefreshTokenRepository;
 import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
@@ -34,21 +37,24 @@ public class AuthService {
         userRepository.save(user);
 
         String accessToken = tokenProvider.createAccessToken(user);
-        String refreshToken = tokenProvider.createRefreshToken(user);
+        String refreshTokenValue = tokenProvider.createRefreshToken(user);
 
-        user.updateRefreshToken(refreshToken);
-        userRepository.save(user);
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(refreshTokenValue)
+                .build();
+        refreshTokenRepository.save(refreshToken);
 
         return LoginResponseDto.builder()
                 .accessToken(accessToken)
-                .refreshToken(refreshToken)
+                .refreshToken(refreshTokenValue)
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())
                 .build();
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
@@ -62,12 +68,20 @@ public class AuthService {
         }
 
         String accessToken = tokenProvider.createAccessToken(user);
-        String refreshToken = tokenProvider.createRefreshToken(user);
+        String refreshTokenValue = tokenProvider.createRefreshToken(user);
 
-        user.updateRefreshToken(refreshToken);
-        userRepository.save(user);
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(refreshTokenValue)
+                .build();
+        refreshTokenRepository.save(refreshToken);
 
-        return new LoginResponseDto(accessToken, refreshToken, user.getEmail(), user.getName(), user.getRole().name());
+        return LoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshTokenValue)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
     }
-
 }
