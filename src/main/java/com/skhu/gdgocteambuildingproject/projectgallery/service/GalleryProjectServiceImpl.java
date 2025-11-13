@@ -10,7 +10,6 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMem
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.exception.GalleryProjectNotExistException;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.GalleryProjectMemberMapper;
@@ -85,7 +84,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private GalleryProject findGalleryProjectById(Long projectId) {
         return galleryProjectRepository.findById(projectId)
-                .orElseThrow(() -> new GalleryProjectNotExistException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
     }
 
     private GalleryProjectListResponseDto findAllGalleryProjects() {
@@ -114,7 +113,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private void throwIfGalleryProjectListEmpty(List<GalleryProject> galleryProjectList) {
         if (galleryProjectList.isEmpty()) {
-            throw new GalleryProjectNotExistException(PROJECT_LIST_NOT_EXIST_IN_GALLERY.getMessage());
+            throw new EntityNotFoundException(PROJECT_LIST_NOT_EXIST_IN_GALLERY.getMessage());
         }
     }
 
