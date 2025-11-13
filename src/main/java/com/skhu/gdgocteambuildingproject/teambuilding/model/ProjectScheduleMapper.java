@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.ProjectScheduleResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectScheduleResponseDto;
 import java.util.List;
 import org.springframework.stereotype.Component;
 

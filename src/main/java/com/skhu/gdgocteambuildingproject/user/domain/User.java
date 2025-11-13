@@ -1,7 +1,8 @@
 package com.skhu.gdgocteambuildingproject.user.domain;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.persistence.*;
@@ -16,7 +17,7 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "user")
+@Table(name = "users")
 public class User extends BaseEntity {
 
     private String email;
@@ -33,7 +34,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserPosition position;
 
-    private String part;
+    @Enumerated(EnumType.STRING)
+    private Part part;
     private String generation;
     private boolean deleted;
 
@@ -47,6 +49,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
 
+    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<Idea> ideas = new ArrayList<>();
+
     @Builder
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
@@ -59,7 +64,7 @@ public class User extends BaseEntity {
         this.school = school;
         this.role = role;
         this.position = position;
-        this.part = part;
+        this.part = Part.valueOf(part);
         this.generation = generation;
     }
 
@@ -73,5 +78,11 @@ public class User extends BaseEntity {
 
     public void reject() {
         this.approvalStatus = ApprovalStatus.REJECTED;
+    /**
+     * User - Idea 연관관계 편의 메서드
+     */
+    public void addIdea(Idea idea) {
+        ideas.add(idea);
+        idea.setCreator(this);
     }
 }
