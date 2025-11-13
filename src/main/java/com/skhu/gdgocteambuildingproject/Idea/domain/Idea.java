@@ -126,12 +126,9 @@ public class Idea extends BaseEntity {
         IdeaMemberComposition composition = IdeaMemberComposition.builder()
                 .part(part)
                 .count(count)
+                .idea(this)
                 .build();
-        addComposition(composition);
-    }
 
-    private void addComposition(IdeaMemberComposition composition) {
         memberCompositions.add(composition);
-        composition.setIdea(this);
     }
 }

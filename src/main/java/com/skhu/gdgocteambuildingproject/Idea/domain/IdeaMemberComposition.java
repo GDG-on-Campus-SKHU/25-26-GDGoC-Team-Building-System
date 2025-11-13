@@ -27,6 +27,5 @@ public class IdeaMemberComposition extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
-    @Setter
     private Idea idea;
 }
