@@ -68,7 +68,7 @@ class IdeaMemberCompositionMapperTest {
             Part part
     ) {
         return dtos.stream()
-                .filter(dto -> dto.partName().equals(part.getKoreanName()))
+                .filter(dto -> dto.part().equals(part))
                 .findFirst()
                 .orElseThrow();
     }

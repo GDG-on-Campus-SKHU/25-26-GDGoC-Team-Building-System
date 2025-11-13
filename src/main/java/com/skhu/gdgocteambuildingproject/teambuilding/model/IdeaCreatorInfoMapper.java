@@ -9,7 +9,7 @@ public class IdeaCreatorInfoMapper {
     public IdeaCreatorInfoResponseDto map(User creator) {
         return IdeaCreatorInfoResponseDto.builder()
                 .creatorName(creator.getName())
-                .partName(creator.getPart().getKoreanName())
+                .part(creator.getPart())
                 .school(creator.getSchool())
                 .build();
     }
