@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.auth.dto;
+package com.skhu.gdgocteambuildingproject.auth.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

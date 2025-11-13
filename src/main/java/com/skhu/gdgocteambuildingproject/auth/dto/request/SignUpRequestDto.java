@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.auth.dto;
+package com.skhu.gdgocteambuildingproject.auth.dto.request;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
