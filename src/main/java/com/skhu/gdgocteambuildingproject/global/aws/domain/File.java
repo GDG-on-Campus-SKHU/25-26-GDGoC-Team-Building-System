@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.global.aws;
+package com.skhu.gdgocteambuildingproject.global.aws.domain;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import jakarta.persistence.Entity;
