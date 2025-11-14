@@ -163,6 +163,6 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private File getFile(Long fileId) {
         return fileRepository.findById(fileId)
-                .orElseThrow(() -> new EntityNotFoundException(""));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FILE_NOT_EXIST.getMessage()));
     }
 }
