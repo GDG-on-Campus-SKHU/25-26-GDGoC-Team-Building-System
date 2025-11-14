@@ -22,7 +22,6 @@ public class GalleryProjectMember extends BaseEntity {
     @Column(nullable = false)
     private MemberRole role;
 
-    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private Part part;
 

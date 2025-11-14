@@ -73,7 +73,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
         GalleryProjectMember member = GalleryProjectMember.builder()
                 .role(MemberRole.MEMBER)
-                .part(Part.NULL)
+                .part(null)
                 .user(user)
                 .project(galleryProject)
                 .build();

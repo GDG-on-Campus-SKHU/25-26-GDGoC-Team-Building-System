@@ -9,8 +9,7 @@ public enum Part {
     WEB("프론트엔드(웹)"),
     MOBILE("프론트엔드(모바일)"),
     BACKEND("백엔드"),
-    AI("AI/ML"),
-    NULL("파트를 선택해주세요.");
+    AI("AI/ML");
 
     private final String koreanName;
 
