@@ -19,7 +19,7 @@ public class IdeaMemberCompositionMapper {
         List<IdeaMemberCompositionResponseDto> dtos = new ArrayList<>();
         for (Part part : Part.values()) {
             dtos.add(IdeaMemberCompositionResponseDto.builder()
-                    .partName(part.getKoreanName())
+                    .part(part)
                     .maxCount(maxCounts.get(part))
                     .currentCount(currentCounts.get(part))
                     .build()

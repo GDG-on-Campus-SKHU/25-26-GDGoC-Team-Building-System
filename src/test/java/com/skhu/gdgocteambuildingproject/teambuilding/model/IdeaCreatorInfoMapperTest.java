@@ -35,7 +35,7 @@ class IdeaCreatorInfoMapperTest {
 
         // then
         Assertions.assertThat(dto.creatorName()).isEqualTo(CREATOR_NAME);
-        Assertions.assertThat(dto.partName()).isEqualTo(PART.getKoreanName());
+        Assertions.assertThat(dto.part()).isEqualTo(PART);
         Assertions.assertThat(dto.school()).isEqualTo(SCHOOL);
     }
 }
