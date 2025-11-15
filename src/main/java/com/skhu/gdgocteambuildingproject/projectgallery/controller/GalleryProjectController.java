@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -44,6 +45,7 @@ public class GalleryProjectController {
                     leaderId에 해당하는 유저가 없거나, fileId에 해당하는 파일이 없으면 404 응답을 반환합니다.
                     """
     )
+    @PreAuthorize("hasAnyRole('SKHU_ADMIN', 'SKHU_MEMBER')")
     private ResponseEntity<Long> exhibitProject(@RequestBody GalleryProjectCreateRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(galleryProjectService.exhibitProject(requestDto));
     }
