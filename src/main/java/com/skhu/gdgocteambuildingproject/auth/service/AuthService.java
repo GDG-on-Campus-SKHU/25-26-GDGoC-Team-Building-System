@@ -107,4 +107,14 @@ public class AuthService {
     public void logout(RefreshTokenRequestDto dto) {
         refreshTokenRepository.deleteByToken(dto.getRefreshToken());
     }
+
+    @Transactional
+    public void delete(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        refreshTokenRepository.deleteAllByUser(user);
+
+        userRepository.delete(user);
+    }
 }

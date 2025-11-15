@@ -5,15 +5,14 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.service.AuthService;
+import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -41,6 +40,12 @@ public class AuthController {
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(@RequestBody RefreshTokenRequestDto dto) {
         authService.logout(dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> delete(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+        authService.delete(userPrincipal.getUser().getId());
         return ResponseEntity.noContent().build();
     }
 }
