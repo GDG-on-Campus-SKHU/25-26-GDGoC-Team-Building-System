@@ -1,8 +1,11 @@
 package com.skhu.gdgocteambuildingproject.auth.service;
 
-import com.skhu.gdgocteambuildingproject.auth.dto.LoginRequestDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.LoginResponseDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.SignUpRequestDto;
+import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
+import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
+import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto;
+import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
+import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
+import com.skhu.gdgocteambuildingproject.auth.repository.RefreshTokenRepository;
 import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
@@ -18,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenProvider tokenProvider;
 
@@ -34,17 +38,10 @@ public class AuthService {
         User user = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
 
-        String accessToken = tokenProvider.createAccessToken(user);
-
-        return new LoginResponseDto(
-                accessToken,
-                user.getEmail(),
-                user.getName(),
-                user.getRole().name()
-        );
+        return buildLoginResponse(user);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
         User user = userRepository.findByEmail(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
@@ -57,7 +54,57 @@ public class AuthService {
             throw new IllegalStateException("관리자 승인 대기 중입니다.");
         }
 
+        return buildLoginResponse(user);
+    }
+
+    private LoginResponseDto buildLoginResponse(User user) {
         String accessToken = tokenProvider.createAccessToken(user);
-        return new LoginResponseDto(accessToken, user.getEmail(), user.getName(), user.getRole().name());
+        String refreshTokenValue = tokenProvider.createRefreshToken(user);
+
+        RefreshToken refreshToken = RefreshToken.builder()
+                .user(user)
+                .token(refreshTokenValue)
+                .build();
+        refreshTokenRepository.save(refreshToken);
+
+        return LoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshTokenValue)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
+    }
+
+    @Transactional
+    public LoginResponseDto refresh(RefreshTokenRequestDto dto) {
+        RefreshToken stored = refreshTokenRepository.findByToken(dto.getRefreshToken())
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다."));
+
+        User user = stored.getUser();
+
+        String newAccess = tokenProvider.createAccessToken(user);
+        String newRefresh = tokenProvider.createRefreshToken(user);
+
+        refreshTokenRepository.deleteByToken(dto.getRefreshToken());
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .user(user)
+                        .token(newRefresh)
+                        .build()
+        );
+
+        return LoginResponseDto.builder()
+                .accessToken(newAccess)
+                .refreshToken(newRefresh)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
+    }
+
+    @Transactional
+    public void logout(RefreshTokenRequestDto dto) {
+        refreshTokenRepository.deleteByToken(dto.getRefreshToken());
     }
 }
