@@ -9,6 +9,7 @@ import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectFile;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
+import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectCreateRequestDto;
@@ -29,6 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -128,10 +130,12 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     }
 
     private void saveProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
+        Long leaderId = project.getUser().getId();
         for (GalleryProjectMemberInfoDto memberDto : members) {
             User user = getUser(memberDto.userId());
+            MemberRole role = resolveRole(leaderId, memberDto.userId());
             GalleryProjectMember member = GalleryProjectMember.builder()
-                    .role(memberDto.role())
+                    .role(role)
                     .part(memberDto.part())
                     .user(user)
                     .project(project)
@@ -164,5 +168,14 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     private File getFile(Long fileId) {
         return fileRepository.findById(fileId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FILE_NOT_EXIST.getMessage()));
+    }
+
+    private MemberRole resolveRole(Long leaderId, Long memberId) {
+        Map<Boolean, MemberRole> selector = Map.of(
+                true, MemberRole.LEADER,
+                false, MemberRole.MEMBER
+        );
+
+        return selector.get(memberId.equals(leaderId));
     }
 }
