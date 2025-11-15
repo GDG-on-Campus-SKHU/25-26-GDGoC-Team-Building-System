@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.user.domain;
 
+import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -38,7 +39,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Part part;
     private String generation;
+
     private boolean deleted;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<RefreshToken> refreshTokens = new ArrayList<>();
 
     // 승인 여부
     @Column(nullable = false)
@@ -56,7 +61,7 @@ public class User extends BaseEntity {
     @Builder
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
-                String part, String generation) {
+                Part part, String generation) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -65,7 +70,7 @@ public class User extends BaseEntity {
         this.school = school;
         this.role = role;
         this.position = position;
-        this.part = Part.valueOf(part);
+        this.part = part;
         this.generation = generation;
     }
 
