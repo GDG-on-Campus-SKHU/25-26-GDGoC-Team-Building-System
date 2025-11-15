@@ -27,7 +27,7 @@ public class AuthService {
 
     @Transactional
     public LoginResponseDto signUp(SignUpRequestDto dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
+        if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
 
@@ -43,11 +43,15 @@ public class AuthService {
 
     @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
+        User user = userRepository.findByEmailAndDeletedFalse(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+        }
+
+        if (user.isDeleted()) {
+            throw new IllegalStateException("탈퇴한 회원입니다.");
         }
 
         if (user.getApprovalStatus().equals(ApprovalStatus.WAITING)) {
@@ -83,6 +87,10 @@ public class AuthService {
 
         User user = stored.getUser();
 
+        if (user.isDeleted()) {
+            throw new IllegalStateException("탈퇴한 회원입니다.");
+        }
+
         String newAccess = tokenProvider.createAccessToken(user);
         String newRefresh = tokenProvider.createRefreshToken(user);
 
@@ -112,6 +120,8 @@ public class AuthService {
     public void delete(Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
-        userRepository.delete(user);
+
+        refreshTokenRepository.deleteAllByUser(user);
+        user.softDelete();
     }
 }

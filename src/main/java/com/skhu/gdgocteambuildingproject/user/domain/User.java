@@ -93,4 +93,10 @@ public class User extends BaseEntity {
         ideas.add(idea);
         idea.setCreator(this);
     }
+
+    public void softDelete() {
+        this.deleted = true;
+        this.email = null;
+        this.number = null;
+    }
 }

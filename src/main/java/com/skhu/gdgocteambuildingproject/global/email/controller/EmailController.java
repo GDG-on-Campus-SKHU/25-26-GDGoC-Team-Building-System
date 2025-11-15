@@ -23,7 +23,7 @@ public class EmailController {
     @PostMapping("/send")
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
         //회원가입한 이메일인 경우
-        if (!userRepository.existsByEmail(email)) {
+        if (!userRepository.existsByEmailAndDeletedFalse(email)) {
             return ResponseEntity.badRequest().body("등록되지 않은 이메일입니다.");
         }
 

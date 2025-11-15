@@ -26,7 +26,9 @@ public class ResetPasswordController {
             return ResponseEntity.badRequest().body("이메일 인증이 완료되지 않았습니다.");
         }
 
-        var user = userRepository.findByEmail(email).get();
+        var user = userRepository.findByEmailAndDeletedFalse(email)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다. 또는 탈퇴한 회원입니다."));
+
         user.updatePassword(passwordEncoder.encode(newPassword));
         userRepository.save(user);
 
