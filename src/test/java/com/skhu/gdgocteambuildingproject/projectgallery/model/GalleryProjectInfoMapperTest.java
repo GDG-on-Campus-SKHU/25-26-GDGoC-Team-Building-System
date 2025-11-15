@@ -2,9 +2,9 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectFileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectMemberResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectFileInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectMemberResponseDto;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -62,7 +62,7 @@ class GalleryProjectInfoMapperTest {
                         .build()
         );
 
-        when(memberMapper.map(project.getMembers())).thenReturn(mockMembers);
+        when(memberMapper.mapMembersInfo(project.getMembers())).thenReturn(mockMembers);
         when(fileMapper.map(project.getFiles())).thenReturn(mockFiles);
 
         // when
@@ -78,7 +78,7 @@ class GalleryProjectInfoMapperTest {
         assertThat(result.members()).isEqualTo(mockMembers);
         assertThat(result.files()).isEqualTo(mockFiles);
 
-        verify(memberMapper).map(project.getMembers());
+        verify(memberMapper).mapMembersInfo(project.getMembers());
         verify(fileMapper).map(project.getFiles());
     }
 }

@@ -21,7 +21,8 @@ public enum ExceptionMessage {
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
-    PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다.");
+    PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
+    MEMBER_ALREADY_ON_TEAM("이미 등록된 팀원입니다.");
 
     private final String message;
 
