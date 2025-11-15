@@ -17,6 +17,7 @@ public enum ExceptionMessage {
   
     IDEA_NOT_EXIST("아이디어가 존재하지 않습니다."),
     REGISTERED_IDEA_ALREADY_EXIST("등록한 아이디어가 이미 존재합니다."),
+    IDEA_CONTENTS_EMPTY("내용이 비어 있습니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),

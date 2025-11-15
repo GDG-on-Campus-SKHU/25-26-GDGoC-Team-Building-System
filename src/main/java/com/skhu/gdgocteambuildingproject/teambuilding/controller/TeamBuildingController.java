@@ -53,13 +53,17 @@ public class TeamBuildingController {
 
     @PostMapping("/projects/{projectId}/ideas")
     @Operation(
-            summary = "아이디어 생성(게시)",
+            summary = "아이디어 생성",
             description = """
-                    새로운 아이디어를 생성해 게시합니다.
-                    임시 저장된 아이디어는 자동으로 제거됩니다.
+                    새로운 아이디어를 생성합니다.
+                    registerStatus를 통해, 임시 저장할지 게시할지 지정할 수 있습니다.
+                    
                     이미 게시한 아이디어가 있으면 예외를 던져 400을 응답합니다.
                     
+                    임시 저장할 경우, 내부 값을 별도로 검증하지 않습니다.
+                    
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    registerStatus: TEMPORARY, REGISTERED
                     """
     )
     public ResponseEntity<IdeaDetailInfoResponseDto> createIdea(
@@ -69,7 +73,7 @@ public class TeamBuildingController {
     ) {
         long userId = getUserIdFrom(principal);
 
-        IdeaDetailInfoResponseDto response = ideaService.postIdea(projectId, userId, requestDto);
+        IdeaDetailInfoResponseDto response = ideaService.createIdea(projectId, userId, requestDto);
 
         return ResponseEntity.ok(response);
     }
