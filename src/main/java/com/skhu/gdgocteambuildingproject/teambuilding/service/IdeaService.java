@@ -18,7 +18,8 @@ public interface IdeaService {
             int page,
             int size,
             String sortBy,
-            SortOrder order
+            SortOrder order,
+            boolean recruitingOnly
     );
 
     IdeaDetailInfoResponseDto findIdeaDetail(

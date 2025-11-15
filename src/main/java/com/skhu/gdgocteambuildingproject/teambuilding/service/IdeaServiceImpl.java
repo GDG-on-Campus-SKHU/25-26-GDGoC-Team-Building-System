@@ -63,11 +63,12 @@ public class IdeaServiceImpl implements IdeaService {
             int page,
             int size,
             String sortBy,
-            SortOrder order
+            SortOrder order,
+            boolean recruitingOnly
     ) {
         Pageable pagination = setupPagination(page, size, sortBy, order);
 
-        Page<Idea> ideas = ideaRepository.findByProjectId(projectId, pagination);
+        Page<Idea> ideas = findPagedIdeasOf(projectId, pagination, recruitingOnly);
         List<IdeaTitleInfoResponseDto> ideaDtos = ideas
                 .stream()
                 .map(ideaTitleInfoMapper::map)
@@ -89,6 +90,14 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
 
         return ideaDetailInfoMapper.map(idea);
+    }
+
+    private Page<Idea> findPagedIdeasOf(long projectId, Pageable pagination, boolean recruitingOnly) {
+        if (recruitingOnly) {
+            return ideaRepository.findByProjectIdAndRecruitingIsTrue(projectId, pagination);
+        }
+
+        return ideaRepository.findByProjectId(projectId, pagination);
     }
 
     private Idea postNewIdea(
