@@ -1,7 +1,9 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.user.domain.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -11,12 +13,19 @@ import org.springframework.stereotype.Component;
 public class TeamBuildingInfoMapper {
     private final ProjectScheduleMapper scheduleMapper;
 
-    public TeamBuildingInfoResponseDto map(TeamBuildingProject project) {
+    public TeamBuildingInfoResponseDto map(TeamBuildingProject project, User user) {
         return TeamBuildingInfoResponseDto.builder()
                 .projectId(project.getId())
                 .projectName(project.getName())
                 .maxMemberCount(project.getMaxMemberCount())
+                .registrable(isRegistrable(project, user))
                 .schedules(scheduleMapper.map(project.getSchedules()))
                 .build();
+    }
+
+    private boolean isRegistrable(TeamBuildingProject project, User user) {
+        return user.getIdeas().stream()
+                .filter(idea -> idea.getProject() == project)
+                .noneMatch(Idea::isRegistered);
     }
 }

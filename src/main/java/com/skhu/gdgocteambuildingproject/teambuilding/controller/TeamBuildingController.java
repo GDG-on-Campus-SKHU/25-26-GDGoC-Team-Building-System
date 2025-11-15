@@ -40,13 +40,18 @@ public class TeamBuildingController {
             summary = "프로젝트 정보 및 일정 조회",
             description = """
                     예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다.
+                    또한, 본인이 해당 프로젝트에 아이디어를 등록할 수 있는지 여부를 같이 반환합니다.
                     
                     현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다.
                     
                     예정된 프로젝트가 없을 경우 404 응답을 반환합니다."""
     )
-    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo() {
-        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo();
+    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo(
+            Principal principal
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo(userId);
 
         return ResponseEntity.ok(response);
     }
