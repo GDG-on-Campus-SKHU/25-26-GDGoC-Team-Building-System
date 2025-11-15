@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.auth.dto;
+package com.skhu.gdgocteambuildingproject.auth.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

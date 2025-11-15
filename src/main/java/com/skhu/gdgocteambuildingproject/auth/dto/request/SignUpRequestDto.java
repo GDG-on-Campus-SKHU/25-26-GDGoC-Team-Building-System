@@ -1,5 +1,6 @@
-package com.skhu.gdgocteambuildingproject.auth.dto;
+package com.skhu.gdgocteambuildingproject.auth.dto.request;
 
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
@@ -33,7 +34,7 @@ public class SignUpRequestDto {
     private String school;
 
     private String generation;
-    private String part;
+    private Part part;
 
     private UserPosition position; // MEMBER / CORE / ORGANIZER
     private UserRole role;         // SKHU_MEMBER / OTHERS

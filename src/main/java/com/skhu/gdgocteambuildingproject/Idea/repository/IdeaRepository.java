@@ -11,6 +11,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
     Page<Idea> findByProjectId(long projectId, Pageable pageable);
 
+    Page<Idea> findByProjectIdAndRecruitingIsTrue(long projectId, Pageable pageable);
+
     Optional<Idea> findByIdAndProjectId(long ideaId, long projectId);
 
     Optional<Idea> findByCreatorAndProject(User creator, TeamBuildingProject project);

@@ -87,6 +87,8 @@ public class TeamBuildingController {
                     sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
                     
                     order: ASC 또는 DESC
+                    
+                    recruitingOnly: 모집 중인 아이디어만 보기(인원이 최대로 차지 않은 아이디어만 보기)
                     """
     )
     public ResponseEntity<IdeaTitleInfoPageResponseDto> findIdeas(
@@ -94,9 +96,10 @@ public class TeamBuildingController {
             @RequestParam int page,
             @RequestParam int size,
             @RequestParam String sortBy,
-            @RequestParam SortOrder order
+            @RequestParam SortOrder order,
+            @RequestParam boolean recruitingOnly
     ) {
-        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order);
+        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order, recruitingOnly);
 
         return ResponseEntity.ok(response);
     }
