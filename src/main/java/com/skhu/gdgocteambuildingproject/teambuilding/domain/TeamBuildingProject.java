@@ -1,9 +1,11 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_ALREADY_INITIALIZED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -53,5 +55,20 @@ public class TeamBuildingProject extends BaseEntity {
                 .map(ProjectSchedule::getStartDate)
                 .min(LocalDateTime::compareTo)
                 .orElseThrow(() -> new IllegalStateException(SCHEDULE_NOT_EXIST.getMessage()));
+    }
+
+    public void initSchedules() {
+        if (!schedules.isEmpty()) {
+            throw new IllegalStateException(SCHEDULE_ALREADY_INITIALIZED.getMessage());
+        }
+
+        for (ScheduleType type : ScheduleType.values()) {
+            ProjectSchedule schedule = ProjectSchedule.builder()
+                    .type(type)
+                    .project(this)
+                    .build();
+
+            schedules.add(schedule);
+        }
     }
 }
