@@ -2,8 +2,11 @@ package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -24,8 +27,9 @@ public class ProjectSchedule extends BaseEntity {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String name;
+    private ScheduleType type;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
