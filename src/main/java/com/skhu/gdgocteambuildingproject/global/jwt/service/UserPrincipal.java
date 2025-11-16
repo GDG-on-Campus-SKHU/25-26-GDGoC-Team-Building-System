@@ -9,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
-//Spring Security가 이해할 수 있는 사용자 정보 객체
 @Getter
 public class UserPrincipal implements UserDetails {
 
@@ -49,9 +48,8 @@ public class UserPrincipal implements UserDetails {
         return true;
     }
 
-    // 탈퇴/정지
     @Override
     public boolean isEnabled() {
-        return !user.isDeleted();
+        return true;
     }
 }

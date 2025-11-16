@@ -19,11 +19,9 @@ public class EmailController {
     private final EmailVerificationService emailVerificationService;
     private final UserRepository userRepository;
 
-    // 인증번호 발송 요청
     @PostMapping("/send")
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
-        //회원가입한 이메일인 경우
-        if (!userRepository.existsByEmail(email)) {
+        if (!userRepository.existsByEmailAndDeletedFalse(email)) {
             return ResponseEntity.badRequest().body("등록되지 않은 이메일입니다.");
         }
 
@@ -34,7 +32,6 @@ public class EmailController {
         return ResponseEntity.ok("인증번호가 전송되었습니다.");
     }
 
-    // 인증번호 확인 요청
     @PostMapping("/verify")
     public ResponseEntity<String> verifyCode(@RequestParam("email") String email,
                                              @RequestParam("code") String code) {
