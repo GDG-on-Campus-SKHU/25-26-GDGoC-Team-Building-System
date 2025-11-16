@@ -122,6 +122,26 @@ public class TeamBuildingController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/projects/{projectId}/ideas/temporary")
+    @Operation(
+            summary = "임시 저장된 아이디어 조회",
+            description = """
+                    본인이 임시 저장한 아이디어를 조회합니다.
+                    
+                    존재하지 않을 경우 404를 응답합니다.
+                    """
+    )
+    public ResponseEntity<IdeaDetailInfoResponseDto> findTemporaryIdea(
+            Principal principal,
+            @PathVariable long projectId
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        IdeaDetailInfoResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
+
+        return ResponseEntity.ok(response);
+    }
+
     private long getUserIdFrom(Principal principal) {
         return Long.parseLong(principal.getName());
     }
