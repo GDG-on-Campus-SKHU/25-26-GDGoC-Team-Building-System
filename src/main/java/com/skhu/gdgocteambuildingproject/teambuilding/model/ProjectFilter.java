@@ -13,13 +13,19 @@ public class ProjectFilter {
         LocalDateTime now = LocalDateTime.now();
 
         return projects.stream()
-                .filter(TeamBuildingProject::hasSchedules)
-                .filter(project -> project.getEndDate().isAfter(now))
+                .filter(project -> project.isUnscheduled() || project.getEndDate().isAfter(now))
                 .toList();
     }
 
-    public Optional<TeamBuildingProject> findEarliestProject(List<TeamBuildingProject> projects) {
+    public Optional<TeamBuildingProject> findUnscheduledProject(List<TeamBuildingProject> projects) {
         return projects.stream()
+                .filter(TeamBuildingProject::isUnscheduled)
+                .findFirst();
+    }
+
+    public Optional<TeamBuildingProject> findEarliestScheduledProject(List<TeamBuildingProject> projects) {
+        return projects.stream()
+                .filter(TeamBuildingProject::isScheduled)
                 .min(Comparator.comparing(TeamBuildingProject::getStartDate));
     }
 }

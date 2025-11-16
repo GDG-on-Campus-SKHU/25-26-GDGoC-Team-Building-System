@@ -28,11 +28,16 @@ public class ProjectServiceImpl implements ProjectService {
     public TeamBuildingInfoResponseDto findCurrentProjectInfo() {
         List<TeamBuildingProject> allProjects = projectRepository.findAll();
 
-        // 한 시점에 동시에 여러 프로젝트가 진행될 수 없다고 가정
         List<TeamBuildingProject> unfinishedProjects = projectFilter.filterUnfinishedProjects(allProjects);
-        TeamBuildingProject nearestProject = projectFilter.findEarliestProject(unfinishedProjects)
-                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
+
+        TeamBuildingProject nearestProject = projectFilter.findEarliestScheduledProject(unfinishedProjects)
+                .orElseGet(() -> findUnscheduledProject(unfinishedProjects));
 
         return teamBuildingInfoMapper.map(nearestProject);
+    }
+
+    private TeamBuildingProject findUnscheduledProject(List<TeamBuildingProject> projects) {
+        return projectFilter.findUnscheduledProject(projects)
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
     }
 }
