@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectFilter;
@@ -22,6 +23,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final ProjectFilter projectFilter;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
+
+    @Override
+    @Transactional
+    public void createNewProject(ProjectCreateRequestDto requestDto) {
+        TeamBuildingProject project = TeamBuildingProject.builder()
+                .name(requestDto.projectName())
+                .maxMemberCount(requestDto.maxMemberCount())
+                .build();
+
+        project.initSchedules();
+
+        projectRepository.save(project);
+    }
 
     @Override
     @Transactional(readOnly = true)

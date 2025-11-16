@@ -18,6 +18,7 @@ public enum ExceptionMessage {
     // Admin
     USER_ALREADY_APPROVED("이미 승인된 회원입니다."),
     USER_ALREADY_REJECTED("이미 거절된 회원입니다."),
+    SCHEDULE_ALREADY_INITIALIZED("일정이 이미 초기화 되어 있습니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
