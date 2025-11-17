@@ -27,10 +27,9 @@ public class AuthService {
 
     @Transactional
     public LoginResponseDto signUp(SignUpRequestDto dto) {
-        if (userRepository.existsByEmail(dto.getEmail())) {
+        if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
-
         if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
@@ -38,73 +37,77 @@ public class AuthService {
         User user = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
         userRepository.save(user);
 
-        return buildLoginResponse(user);
+        return createLoginResponse(user);
     }
 
     @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
-        User user = userRepository.findByEmail(dto.getEmail())
+        User user = userRepository.findByEmailAndDeletedFalse(dto.getEmail())
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
             throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
         }
+        validateUserStatus(user);
 
-        if (user.getApprovalStatus().equals(ApprovalStatus.WAITING)) {
-            throw new IllegalStateException("관리자 승인 대기 중입니다.");
-        }
-
-        return buildLoginResponse(user);
+        return createLoginResponse(user);
     }
 
-    private LoginResponseDto buildLoginResponse(User user) {
-        String accessToken = tokenProvider.createAccessToken(user);
-        String refreshTokenValue = tokenProvider.createRefreshToken(user);
-
-        RefreshToken refreshToken = RefreshToken.builder()
-                .user(user)
-                .token(refreshTokenValue)
-                .build();
-        refreshTokenRepository.save(refreshToken);
-
-        return LoginResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshTokenValue)
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .build();
-    }
 
     @Transactional
     public LoginResponseDto refresh(RefreshTokenRequestDto dto) {
-        RefreshToken stored = refreshTokenRepository.findByToken(dto.getRefreshToken())
+        RefreshToken existing = refreshTokenRepository.findByToken(dto.getRefreshToken())
                 .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다."));
 
-        User user = stored.getUser();
+        User user = existing.getUser();
+        validateUserStatus(user);
 
-        String newAccess = tokenProvider.createAccessToken(user);
-        String newRefresh = tokenProvider.createRefreshToken(user);
+        refreshTokenRepository.delete(existing);
 
-        refreshTokenRepository.deleteByToken(dto.getRefreshToken());
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .user(user)
-                        .token(newRefresh)
-                        .build()
-        );
-
-        return LoginResponseDto.builder()
-                .accessToken(newAccess)
-                .refreshToken(newRefresh)
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .build();
+        return createLoginResponse(user);
     }
+
 
     @Transactional
     public void logout(RefreshTokenRequestDto dto) {
         refreshTokenRepository.deleteByToken(dto.getRefreshToken());
+    }
+
+    @Transactional
+    public void delete(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+
+        refreshTokenRepository.deleteAllByUser(user);
+        user.softDelete();
+    }
+
+    private void validateUserStatus(User user) {
+        if (user.isDeleted()) {
+            throw new IllegalStateException("탈퇴한 회원입니다.");
+        }
+        if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
+            throw new IllegalStateException("관리자 승인 대기 중입니다.");
+        }
+    }
+
+    private LoginResponseDto createLoginResponse(User user) {
+        String accessToken = tokenProvider.createAccessToken(user);
+        String refreshToken = tokenProvider.createRefreshToken(user);
+
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .user(user)
+                        .token(refreshToken)
+                        .build()
+        );
+
+        return LoginResponseDto.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
     }
 }
