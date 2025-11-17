@@ -1,12 +1,15 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectFilter;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
+import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.AccessLevel;
@@ -19,13 +22,15 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProjectServiceImpl implements ProjectService {
 
     private final TeamBuildingProjectRepository projectRepository;
+    private final UserRepository userRepository;
 
     private final ProjectFilter projectFilter;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
 
     @Override
     @Transactional(readOnly = true)
-    public TeamBuildingInfoResponseDto findCurrentProjectInfo() {
+    public TeamBuildingInfoResponseDto findCurrentProjectInfo(long userId) {
+        User user = findUserBy(userId);
         List<TeamBuildingProject> allProjects = projectRepository.findAll();
 
         // 한 시점에 동시에 여러 프로젝트가 진행될 수 없다고 가정
@@ -33,6 +38,11 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject nearestProject = projectFilter.findEarliestProject(unfinishedProjects)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
 
-        return teamBuildingInfoMapper.map(nearestProject);
+        return teamBuildingInfoMapper.map(nearestProject, user);
+    }
+
+    private User findUserBy(long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_EXIST.getMessage()));
     }
 }

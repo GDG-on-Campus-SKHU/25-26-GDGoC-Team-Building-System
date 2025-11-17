@@ -115,6 +115,10 @@ public class Idea extends BaseEntity {
         return currentCounts;
     }
 
+    public boolean isRegistered() {
+        return registerStatus == IdeaStatus.REGISTERED;
+    }
+ 
     public boolean isTemporary() {
         return registerStatus == IdeaStatus.TEMPORARY;
     }
