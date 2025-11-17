@@ -6,5 +6,5 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingI
 public interface ProjectService {
     void createNewProject(ProjectCreateRequestDto requestDto);
 
-    TeamBuildingInfoResponseDto findCurrentProjectInfo();
+    TeamBuildingInfoResponseDto findCurrentProjectInfo(long userId);
 }

@@ -40,6 +40,7 @@ public class TeamBuildingController {
             summary = "프로젝트 정보 및 일정 조회",
             description = """
                     예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다.
+                    또한, 본인이 해당 프로젝트에 아이디어를 등록할 수 있는지 여부를 같이 반환합니다.
                     
                     현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다.
                     
@@ -48,8 +49,12 @@ public class TeamBuildingController {
                     scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, ECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
                     """
     )
-    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo() {
-        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo();
+    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo(
+            Principal principal
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo(userId);
 
         return ResponseEntity.ok(response);
     }
@@ -121,6 +126,26 @@ public class TeamBuildingController {
             @PathVariable long ideaId
     ) {
         IdeaDetailInfoResponseDto response = ideaService.findIdeaDetail(projectId, ideaId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/projects/{projectId}/ideas/temporary")
+    @Operation(
+            summary = "임시 저장된 아이디어 조회",
+            description = """
+                    본인이 임시 저장한 아이디어를 조회합니다.
+                    
+                    존재하지 않을 경우 404를 응답합니다.
+                    """
+    )
+    public ResponseEntity<IdeaDetailInfoResponseDto> findTemporaryIdea(
+            Principal principal,
+            @PathVariable long projectId
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        IdeaDetailInfoResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
 
         return ResponseEntity.ok(response);
     }
