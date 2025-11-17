@@ -27,6 +27,11 @@ public interface IdeaService {
             long ideaId
     );
 
+    IdeaDetailInfoResponseDto findTemporaryIdea(
+            long projectId,
+            long userId
+    );
+
     void deleteIdea(
             long projectId,
             long ideaId,

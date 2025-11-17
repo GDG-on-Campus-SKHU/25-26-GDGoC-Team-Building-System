@@ -15,6 +15,8 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
 
     Optional<Idea> findByIdAndProjectId(long ideaId, long projectId);
 
+    Optional<Idea> findByCreatorIdAndProjectId(long creatorId, long projectId);
+
     Optional<Idea> findByIdAndCreatorIdAndProjectId(long ideaId, long creatorId, long projectId);
 
     Optional<Idea> findByCreatorAndProject(User creator, TeamBuildingProject project);
