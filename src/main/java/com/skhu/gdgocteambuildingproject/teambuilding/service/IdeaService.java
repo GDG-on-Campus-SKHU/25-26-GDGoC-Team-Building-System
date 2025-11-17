@@ -26,4 +26,9 @@ public interface IdeaService {
             long projectId,
             long ideaId
     );
+
+    IdeaDetailInfoResponseDto findTemporaryIdea(
+            long projectId,
+            long userId
+    );
 }

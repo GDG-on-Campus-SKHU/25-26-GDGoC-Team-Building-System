@@ -118,6 +118,10 @@ public class Idea extends BaseEntity {
     public boolean isRegistered() {
         return registerStatus == IdeaStatus.REGISTERED;
     }
+ 
+    public boolean isTemporary() {
+        return registerStatus == IdeaStatus.TEMPORARY;
+    }
 
     private Map<Part, Integer> initCurrentCounts() {
         EnumMap<Part, Integer> partMap = new EnumMap<>(Part.class);

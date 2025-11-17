@@ -4,6 +4,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TEMPORARY_IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
@@ -98,6 +99,19 @@ public class IdeaServiceImpl implements IdeaService {
     ) {
         Idea idea = ideaRepository.findByIdAndProjectId(ideaId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
+
+        return ideaDetailInfoMapper.map(idea);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public IdeaDetailInfoResponseDto findTemporaryIdea(
+            long projectId,
+            long userId
+    ) {
+        Idea idea = ideaRepository.findByCreatorIdAndProjectId(userId, projectId)
+                .filter(Idea::isTemporary)
+                .orElseThrow(() -> new EntityNotFoundException(TEMPORARY_IDEA_NOT_EXIST.getMessage()));
 
         return ideaDetailInfoMapper.map(idea);
     }
