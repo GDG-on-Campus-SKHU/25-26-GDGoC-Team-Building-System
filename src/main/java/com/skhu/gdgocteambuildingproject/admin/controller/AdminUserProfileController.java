@@ -19,11 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdminUserProfileController implements AdminUserProfileApi {
 
-    private final String DEFAULT_PAGE = "0";
-    private final String DEFAULT_SIZE = "20";
-    private final String DEFAULT_SORT_BY = "id";
-    private final String DEFAULT_ORDER = "ASC";
-
     private final AdminUserProfileServiceImpl adminUserProfileService;
 
     @GetMapping("/users")

@@ -10,6 +10,11 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = "Admin User Management", description = "관리자 유저 승인 관리 API")
 public interface AdminUserProfileApi {
 
+    String DEFAULT_PAGE = "0";
+    String DEFAULT_SIZE = "20";
+    String DEFAULT_SORT_BY = "id";
+    String DEFAULT_ORDER = "ASC";
+
     @Operation(summary = "승인된 유저 목록 조회", description = "관리자가 승인된 유저들의 목록을 페이징하여 조회합니다.")
     ResponseEntity<ApproveUserInfoPageResponseDto> getApproveAllUsers(
             @Parameter(description = "페이지 번호 (0부터 시작)", example = "0") int page,
