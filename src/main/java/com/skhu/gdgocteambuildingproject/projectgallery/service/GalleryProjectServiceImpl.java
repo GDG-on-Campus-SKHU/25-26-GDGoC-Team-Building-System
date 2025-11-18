@@ -3,12 +3,26 @@ package com.skhu.gdgocteambuildingproject.projectgallery.service;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_LIST_NOT_EXIST_IN_GALLERY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST_IN_GALLERY;
 
+import com.skhu.gdgocteambuildingproject.global.aws.domain.File;
+import com.skhu.gdgocteambuildingproject.global.aws.repository.FileRepository;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.exception.GalleryProjectNotExistException;
+import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectFile;
+import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
+import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberInfoDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.GalleryProjectInfoMapper;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.model.GalleryProjectMemberMapper;
+import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectFileRepository;
+import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectRepository;
+import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
@@ -16,19 +30,35 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private final GalleryProjectRepository galleryProjectRepository;
+    private final GalleryProjectMemberRepository galleryProjectMemberRepository;
     private final GalleryProjectInfoMapper galleryProjectInfoMapper;
+    private final UserRepository userRepository;
+    private final GalleryProjectMemberMapper galleryProjectMemberMapper;
+    private final FileRepository fileRepository;
+    private final GalleryProjectFileRepository galleryProjectFileRepository;
+
+    @Override
+    @Transactional
+    public Long exhibitProject(GalleryProjectCreateRequestDto requestDto) {
+        User leader = getUser(requestDto.leaderId());
+        GalleryProject project = createGalleryProjectEntity(requestDto, leader);
+
+        saveProjectMembers(project, requestDto.members());
+        saveProjectFiles(project,requestDto.fileIds());
+        return project.getId();
+    }
 
     @Override
     @Transactional(readOnly = true)
     public GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Long projectId) {
-        GalleryProject galleryProject = galleryProjectRepository.findById(projectId)
-                .orElseThrow(() -> new GalleryProjectNotExistException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
+        GalleryProject galleryProject = findGalleryProjectById(projectId);
 
         return galleryProjectInfoMapper.mapToInfo(galleryProject);
     }
@@ -41,6 +71,19 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         }
 
         return findGalleryProjectsByGeneration(generation);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberSearchListResponseDto searchMemberByName(String name) {
+        List<User> users = userRepository.findByNameContaining(name);
+
+        return galleryProjectMemberMapper.mapSearchMembers(users);
+    }
+
+    private GalleryProject findGalleryProjectById(Long projectId) {
+        return galleryProjectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
     }
 
     private GalleryProjectListResponseDto findAllGalleryProjects() {
@@ -69,7 +112,70 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private void throwIfGalleryProjectListEmpty(List<GalleryProject> galleryProjectList) {
         if (galleryProjectList.isEmpty()) {
-            throw new GalleryProjectNotExistException(PROJECT_LIST_NOT_EXIST_IN_GALLERY.getMessage());
+            throw new EntityNotFoundException(PROJECT_LIST_NOT_EXIST_IN_GALLERY.getMessage());
         }
+    }
+
+    private GalleryProject createGalleryProjectEntity(GalleryProjectCreateRequestDto requestDto, User leader) {
+        return galleryProjectRepository.save(
+                GalleryProject.builder()
+                        .projectName(requestDto.projectName())
+                        .generation(requestDto.generation())
+                        .shortDescription(requestDto.shortDescription())
+                        .serviceStatus(requestDto.serviceStatus())
+                        .description(requestDto.description())
+                        .user(leader)
+                        .build()
+        );
+    }
+
+    private void saveProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
+        Long leaderId = project.getUser().getId();
+        for (GalleryProjectMemberInfoDto memberDto : members) {
+            User user = getUser(memberDto.userId());
+            MemberRole role = resolveRole(leaderId, memberDto.userId());
+            GalleryProjectMember member = GalleryProjectMember.builder()
+                    .role(role)
+                    .part(memberDto.part())
+                    .user(user)
+                    .project(project)
+                    .build();
+
+            galleryProjectMemberRepository.save(member);
+            project.getMembers().add(member);
+        }
+    }
+
+    private void saveProjectFiles(GalleryProject project, List<Long> fileIds) {
+        for (Long fileId : fileIds) {
+            File file = getFile(fileId);
+
+            GalleryProjectFile galleryProjectFile = GalleryProjectFile.builder()
+                    .file(file)
+                    .project(project)
+                    .build();
+
+            galleryProjectFileRepository.save(galleryProjectFile);
+            project.getFiles().add(galleryProjectFile);
+        }
+    }
+
+    private User getUser(Long leaderId) {
+        return userRepository.findById(leaderId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
+    }
+
+    private File getFile(Long fileId) {
+        return fileRepository.findById(fileId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FILE_NOT_EXIST.getMessage()));
+    }
+
+    private MemberRole resolveRole(Long leaderId, Long memberId) {
+        Map<Boolean, MemberRole> selector = Map.of(
+                true, MemberRole.LEADER,
+                false, MemberRole.MEMBER
+        );
+
+        return selector.get(memberId.equals(leaderId));
     }
 }

@@ -1,5 +1,6 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.dto;
+package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info;
 
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberResponseDto;
 import lombok.Builder;
 
 import java.util.List;
@@ -12,6 +13,7 @@ public record GalleryProjectInfoResponseDto(
         String shortDescription,
         String serviceStatus,
         String description,
+        Long leaderId,
         List<GalleryProjectMemberResponseDto> members,
         List<GalleryProjectFileInfoResponseDto> files
 ) {

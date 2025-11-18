@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.request;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import java.util.List;
 
@@ -9,6 +10,7 @@ public record IdeaCreateRequestDto(
         String description,
         String topic,
         Part creatorPart,
+        IdeaStatus registerStatus,
         List<IdeaMemberCompositionRequestDto> compositions
 ) {
 }

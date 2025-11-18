@@ -33,6 +33,9 @@ public class Idea extends BaseEntity {
     private String title;
     private String introduction;
     private String description;
+    // TODO: 모든 인원이 다 차면 false로 상태 전이
+    @Builder.Default
+    private Boolean recruiting = true;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -110,6 +113,14 @@ public class Idea extends BaseEntity {
         }
 
         return currentCounts;
+    }
+
+    public boolean isRegistered() {
+        return registerStatus == IdeaStatus.REGISTERED;
+    }
+ 
+    public boolean isTemporary() {
+        return registerStatus == IdeaStatus.TEMPORARY;
     }
 
     private Map<Part, Integer> initCurrentCounts() {

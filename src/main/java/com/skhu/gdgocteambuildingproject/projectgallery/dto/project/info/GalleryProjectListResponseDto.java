@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.dto;
+package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info;
 
 import lombok.Builder;
 

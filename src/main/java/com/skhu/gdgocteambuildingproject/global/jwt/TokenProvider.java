@@ -23,6 +23,7 @@ import java.util.Date;
 public class TokenProvider {
 
     private static final String ROLE_CLAIM = "Role";
+    private static final int REFRESH_TOKEN_MULTIPLIER = 7;
     private final Key key;
     private final long accessTokenValidityTime;
     private final CustomUserDetailsService customUserDetailsService;
@@ -38,7 +39,6 @@ public class TokenProvider {
         this.customUserDetailsService = customUserDetailsService;
     }
 
-    // AccessToken 생성
     public String createAccessToken(User user) {
         Date now = new Date();
         Date expiryDate = new Date(now.getTime() + accessTokenValidityTime);
@@ -52,7 +52,18 @@ public class TokenProvider {
                 .compact();
     }
 
-    // 토큰에서 사용자 인증 정보 추출
+    public String createRefreshToken(User user) {
+        Date now = new Date();
+        Date expiryDate = new Date(now.getTime() + accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER);
+
+        return Jwts.builder()
+                .setSubject(user.getId().toString())
+                .setIssuedAt(now)
+                .setExpiration(expiryDate)
+                .signWith(key, SignatureAlgorithm.HS256)
+                .compact();
+    }
+
     public Authentication getAuthentication(String token) {
         String userPk = getUserPk(token);
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(userPk);
@@ -68,7 +79,6 @@ public class TokenProvider {
                 .getSubject();
     }
 
-    // 요청 헤더에서 Bearer 토큰 추출
     public String resolveToken(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
         if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
@@ -77,7 +87,6 @@ public class TokenProvider {
         return null;
     }
 
-    // 토큰 유효성 검사
     public boolean validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);

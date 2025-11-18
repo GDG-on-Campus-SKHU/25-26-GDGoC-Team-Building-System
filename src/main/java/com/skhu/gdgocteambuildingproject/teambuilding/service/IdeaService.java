@@ -7,7 +7,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfo
 
 public interface IdeaService {
 
-    IdeaDetailInfoResponseDto postIdea(
+    IdeaDetailInfoResponseDto createIdea(
             long projectId,
             long userId,
             IdeaCreateRequestDto requestDto
@@ -18,11 +18,17 @@ public interface IdeaService {
             int page,
             int size,
             String sortBy,
-            SortOrder order
+            SortOrder order,
+            boolean recruitingOnly
     );
 
     IdeaDetailInfoResponseDto findIdeaDetail(
             long projectId,
             long ideaId
+    );
+
+    IdeaDetailInfoResponseDto findTemporaryIdea(
+            long projectId,
+            long userId
     );
 }

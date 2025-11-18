@@ -6,6 +6,7 @@ import lombok.Getter;
 public enum ExceptionMessage {
     // Common
     USER_NOT_EXIST("회원이 존재하지 않습니다."),
+    FILE_NOT_EXIST("파일이 존재하지 않습니다."),
 
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
@@ -17,6 +18,8 @@ public enum ExceptionMessage {
   
     IDEA_NOT_EXIST("아이디어가 존재하지 않습니다."),
     REGISTERED_IDEA_ALREADY_EXIST("등록한 아이디어가 이미 존재합니다."),
+    IDEA_CONTENTS_EMPTY("내용이 비어 있습니다."),
+    TEMPORARY_IDEA_NOT_EXIST("임시 저장된 아이디어가 없습니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
