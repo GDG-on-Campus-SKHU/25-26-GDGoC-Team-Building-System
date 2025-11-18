@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.model;
+package com.skhu.gdgocteambuildingproject.projectgallery.model.mapper;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;

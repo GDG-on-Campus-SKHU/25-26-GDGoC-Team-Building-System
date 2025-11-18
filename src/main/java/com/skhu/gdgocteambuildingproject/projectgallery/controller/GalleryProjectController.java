@@ -93,4 +93,6 @@ public class GalleryProjectController {
     private ResponseEntity<MemberSearchListResponseDto> searchMemberList(@RequestParam String name) {
         return ResponseEntity.ok(galleryProjectService.searchMemberByName(name));
     }
+
+    @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
 }
