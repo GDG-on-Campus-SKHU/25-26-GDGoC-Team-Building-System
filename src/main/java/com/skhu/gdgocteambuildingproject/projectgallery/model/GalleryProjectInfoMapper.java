@@ -1,9 +1,9 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectListResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectSummaryResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectSummaryResponseDto;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,6 +25,7 @@ public class GalleryProjectInfoMapper {
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())
                 .description(project.getDescription())
+                .leaderId(project.getUser().getId())
                 .members(memberMapper.mapMembersInfo(project.getMembers()))
                 .files(fileMapper.map(project.getFiles()))
                 .build();
