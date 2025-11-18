@@ -3,7 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.GalleryProjectMemberResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;
 
@@ -18,27 +18,27 @@ public class GalleryProjectMemberMapper {
                 .toList();
     }
 
-    public MemberSearchListResponseDto mapSearchMembers(List<User> users, List<Long> selectedUserIds) {
+    public MemberSearchListResponseDto mapSearchMembers(List<User> users) {
         return mapToListDto(
                 users.stream()
-                .map(user -> userFromEntity(user, selectedUserIds.contains(user.getId())))
+                .map(this::userFromEntity)
                 .toList());
     }
 
     private GalleryProjectMemberResponseDto memberFromEntity(GalleryProjectMember member) {
         return GalleryProjectMemberResponseDto.builder()
-                .memberRole(member.getRole().name())
+                .memberRole(member.getRole())
                 .name(member.getUser().getName())
-                .part(member.getPart().getKoreanName())
+                .part(member.getPart())
                 .build();
     }
 
-    private MemberSearchResponseDto userFromEntity(User user, boolean selected) {
+    private MemberSearchResponseDto userFromEntity(User user) {
         return MemberSearchResponseDto.builder()
                 .name(user.getName())
                 .school(user.getSchool())
                 .generationAndPosition(user.getGeneration() + " " + user.getPosition())
-                .isSelected(selected)
+                .isSelected(false)
                 .build();
     }
 
