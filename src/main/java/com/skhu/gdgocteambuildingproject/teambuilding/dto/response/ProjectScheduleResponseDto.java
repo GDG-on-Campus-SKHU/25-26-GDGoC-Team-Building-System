@@ -1,11 +1,12 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 
 @Builder
 public record ProjectScheduleResponseDto(
-        String scheduleName,
+        ScheduleType scheduleType,
         LocalDateTime startAt,
         LocalDateTime endAt
 ) {

@@ -31,4 +31,10 @@ public interface IdeaService {
             long projectId,
             long userId
     );
+
+    void deleteIdea(
+            long projectId,
+            long ideaId,
+            long userId
+    );
 }

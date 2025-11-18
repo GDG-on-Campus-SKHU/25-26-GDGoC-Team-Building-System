@@ -5,8 +5,17 @@ import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
@@ -15,16 +24,15 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.ArrayList;
-import java.util.List;
 import lombok.Setter;
+import org.hibernate.annotations.SQLRestriction;
 
 @Entity
 @Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@SQLRestriction("deleted = false")
 public class Idea extends BaseEntity {
 
     private static final BiFunction<Part, Integer, Integer> INCREASE_COUNT = (part, prevCount) -> prevCount + 1;
@@ -33,9 +41,11 @@ public class Idea extends BaseEntity {
     private String title;
     private String introduction;
     private String description;
-    // TODO: 모든 인원이 다 차면 false로 상태 전이
+    // TODO: 모든 인원이 다 차면 false로 상태 전이. 소프트 딜리트 후 복원시 true로 상태 전이
     @Builder.Default
-    private Boolean recruiting = true;
+    private boolean recruiting = true;
+    @Builder.Default
+    private boolean deleted = false;
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
@@ -86,6 +96,13 @@ public class Idea extends BaseEntity {
         this.registerStatus = IdeaStatus.REGISTERED;
     }
 
+    public void delete() {
+        deleted = true;
+
+        enrollments.clear();
+        members.clear();
+    }
+
     public int getMaxMemberCount() {
         return memberCompositions.stream()
                 .mapToInt(IdeaMemberComposition::getCount)
@@ -115,6 +132,10 @@ public class Idea extends BaseEntity {
         return currentCounts;
     }
 
+    public boolean isRegistered() {
+        return registerStatus == IdeaStatus.REGISTERED;
+    }
+ 
     public boolean isTemporary() {
         return registerStatus == IdeaStatus.TEMPORARY;
     }

@@ -14,6 +14,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,6 +33,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamBuildingController {
 
+    private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
+
     private final ProjectService projectService;
     private final IdeaService ideaService;
 
@@ -40,13 +43,21 @@ public class TeamBuildingController {
             summary = "프로젝트 정보 및 일정 조회",
             description = """
                     예정되었거나 현재 진행중인 프로젝트의 정보 및 일정을 조회합니다.
+                    또한, 본인이 해당 프로젝트에 아이디어를 등록할 수 있는지 여부를 같이 반환합니다.
                     
                     현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다.
                     
-                    예정된 프로젝트가 없을 경우 404 응답을 반환합니다."""
+                    예정된 프로젝트가 없을 경우 404 응답을 반환합니다.
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, ECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    """
     )
-    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo() {
-        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo();
+    public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo(
+            Principal principal
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo(userId);
 
         return ResponseEntity.ok(response);
     }
@@ -140,6 +151,29 @@ public class TeamBuildingController {
         IdeaDetailInfoResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/projects/{projectId}/ideas/{ideaId}")
+    @Operation(
+            summary = "아이디어 삭제",
+            description = """
+                    본인이 게시한 아이디어를 삭제합니다.
+                    소프트 딜리트로 처리됩니다.
+                    
+                    이렇게 삭제된 아이디어는 관리자만 조회할 수 있습니다.
+                    기존에 해당 아이디어에 지원한 내역은 모두 제거됩니다.
+                    """
+    )
+    public ResponseEntity<Void> deleteIdea(
+            Principal principal,
+            @PathVariable long projectId,
+            @PathVariable long ideaId
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        ideaService.deleteIdea(projectId, ideaId, userId);
+
+        return NO_CONTENT;
     }
 
     private long getUserIdFrom(Principal principal) {
