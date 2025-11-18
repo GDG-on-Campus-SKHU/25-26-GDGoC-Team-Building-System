@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.model;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.UserResponseDto;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
@@ -14,7 +15,7 @@ import com.skhu.gdgocteambuildingproject.user.domain.User;
 class UserInfoMapperTest {
 
     private static final String TEST_USER_NAME = "테스트유저";
-    private static final String TEST_USER_PART = "BACKEND";
+    private static final Part TEST_USER_PART = Part.BACKEND;
     private static final String TEST_USER_GENERATION = "25-26";
     private static final String TEST_USER_SCHOOL = "성공회대학교";
     private static final String TEST_USER_EMAIL = "test@example.com";
