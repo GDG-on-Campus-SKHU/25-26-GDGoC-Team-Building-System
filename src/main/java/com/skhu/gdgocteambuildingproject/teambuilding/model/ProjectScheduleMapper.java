@@ -15,7 +15,7 @@ public class ProjectScheduleMapper {
 
     public ProjectScheduleResponseDto map(ProjectSchedule schedule) {
         return ProjectScheduleResponseDto.builder()
-                .scheduleName(schedule.getName())
+                .scheduleType(schedule.getType())
                 .startAt(schedule.getStartDate())
                 .endAt(schedule.getEndDate())
                 .build();

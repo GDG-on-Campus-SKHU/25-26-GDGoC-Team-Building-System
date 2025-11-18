@@ -47,7 +47,10 @@ public class TeamBuildingController {
                     
                     현재 진행중인 프로젝트가 없을 경우, 가장 최근에 예정된 프로젝트 정보를 반환합니다.
                     
-                    예정된 프로젝트가 없을 경우 404 응답을 반환합니다."""
+                    예정된 프로젝트가 없을 경우 404 응답을 반환합니다.
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, ECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    """
     )
     public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo(
             Principal principal
