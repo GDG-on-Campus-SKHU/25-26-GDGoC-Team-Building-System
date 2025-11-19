@@ -2,20 +2,37 @@ package com.skhu.gdgocteambuildingproject.Idea.domain;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
-import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
-import jakarta.persistence.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name = "UK_USER_CHOICE_SCHEDULE",
+                        columnNames = {"user_id", "choice", "schedule_id"}
+                )
+        }
+)
 public class IdeaEnrollment extends BaseEntity {
     private String choice;
     private String part;
-    private String phase;
 
     @Enumerated(EnumType.STRING)
     private EnrollmentStatus status;
@@ -27,5 +44,5 @@ public class IdeaEnrollment extends BaseEntity {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private TeamBuildingProject project;
+    private ProjectSchedule schedule;
 }
