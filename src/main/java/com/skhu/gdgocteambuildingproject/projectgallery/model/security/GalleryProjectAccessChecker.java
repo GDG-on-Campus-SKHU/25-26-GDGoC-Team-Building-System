@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class GalleryProjectAccessChecker {
 
-    private final GalleryProjectMemberRepository _galleryProjectMemberRepository;
+    private final GalleryProjectMemberRepository galleryProjectMemberRepository;
 
     public boolean checkLeaderOrAdminPermission(Long projectId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
@@ -36,7 +36,7 @@ public class GalleryProjectAccessChecker {
     }
 
     private boolean isLeaderOfProject(Long projectId, Long userId) {
-        return _galleryProjectMemberRepository.existsByProjectIdAndUserIdAndRole(
+        return galleryProjectMemberRepository.existsByProjectIdAndUserIdAndRole(
                 projectId,
                 userId,
                 MemberRole.LEADER
