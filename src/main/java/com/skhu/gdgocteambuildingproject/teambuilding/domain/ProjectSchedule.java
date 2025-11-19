@@ -34,4 +34,12 @@ public class ProjectSchedule extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private TeamBuildingProject project;
+
+    public boolean scheduledStartDate() {
+        return startDate != null;
+    }
+
+    public boolean scheduledEndDate() {
+        return endDate != null;
+    }
 }

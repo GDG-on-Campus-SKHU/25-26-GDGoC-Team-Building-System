@@ -37,6 +37,81 @@ class ProjectFilterTest {
     }
 
     @Nested
+    class 일정이_정해지지_않은_프로젝트를_반환한다 {
+        @Test
+        void 시작일이_null인_프로젝트를_반환한다() {
+            // given
+            ProjectSchedule notPlanedSchedule = ProjectSchedule.builder()
+                    .startDate(null)
+                    .endDate(DEFAULT_FUTURE_END_DATE)
+                    .build();
+            TeamBuildingProject unscheduledProject = TeamBuildingProject.builder()
+                    .schedules(List.of(notPlanedSchedule))
+                    .build();
+
+            TeamBuildingProject upcomingProject = createUpcomingProject();
+            TeamBuildingProject finishedProject = createFinishedProject();
+
+            List<TeamBuildingProject> projects = List.of(unscheduledProject, upcomingProject, finishedProject);
+
+            // when
+            Optional<TeamBuildingProject> result = projectFilter.findUnscheduledProject(projects);
+
+            // then
+            assertThat(result).isPresent();
+            assertThat(result.get()).isEqualTo(unscheduledProject);
+        }
+
+        @Test
+        void 종료일이_null인_프로젝트를_반환한다() {
+            // given
+            ProjectSchedule notPlanedSchedule = ProjectSchedule.builder()
+                    .startDate(DEFAULT_FUTURE_START_DATE)
+                    .endDate(null)
+                    .build();
+            TeamBuildingProject unscheduledProject = TeamBuildingProject.builder()
+                    .schedules(List.of(notPlanedSchedule))
+                    .build();
+
+            TeamBuildingProject upcomingProject = createUpcomingProject();
+            TeamBuildingProject finishedProject = createFinishedProject();
+
+            List<TeamBuildingProject> projects = List.of(unscheduledProject, upcomingProject, finishedProject);
+
+            // when
+            Optional<TeamBuildingProject> result = projectFilter.findUnscheduledProject(projects);
+
+            // then
+            assertThat(result).isPresent();
+            assertThat(result.get()).isEqualTo(unscheduledProject);
+        }
+
+        @Test
+        void 시작일과_종료일이_null인_프로젝트를_반환한다() {
+            // given
+            ProjectSchedule notPlanedSchedule = ProjectSchedule.builder()
+                    .startDate(null)
+                    .endDate(null)
+                    .build();
+            TeamBuildingProject unscheduledProject = TeamBuildingProject.builder()
+                    .schedules(List.of(notPlanedSchedule))
+                    .build();
+
+            TeamBuildingProject upcomingProject = createUpcomingProject();
+            TeamBuildingProject finishedProject = createFinishedProject();
+
+            List<TeamBuildingProject> projects = List.of(unscheduledProject, upcomingProject, finishedProject);
+
+            // when
+            Optional<TeamBuildingProject> result = projectFilter.findUnscheduledProject(projects);
+
+            // then
+            assertThat(result).isPresent();
+            assertThat(result.get()).isEqualTo(unscheduledProject);
+        }
+    }
+
+    @Nested
     class 가장_일찍_시작할_프로젝트를_찾는다 {
         @Test
         void 시작일이_가장_이전인_프로젝트를_반환한다() {
@@ -48,6 +123,7 @@ class ProjectFilterTest {
             TeamBuildingProject earliestProject = TeamBuildingProject.builder()
                     .schedules(List.of(earliestSchedule))
                     .build();
+
             ProjectSchedule laterSchedule = ProjectSchedule.builder()
                     .startDate(NOW.plusDays(10))
                     .endDate(NOW.plusDays(15))
@@ -55,10 +131,11 @@ class ProjectFilterTest {
             TeamBuildingProject laterProject = TeamBuildingProject.builder()
                     .schedules(List.of(laterSchedule))
                     .build();
+
             List<TeamBuildingProject> projects = List.of(earliestProject, laterProject);
 
             // when
-            Optional<TeamBuildingProject> result = projectFilter.findEarliestProject(projects);
+            Optional<TeamBuildingProject> result = projectFilter.findEarliestScheduledProject(projects);
 
             // then
             assertThat(result).isPresent();
