@@ -11,11 +11,11 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectFil
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectSaveRequestDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberInfoDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberInfoDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectFileRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;

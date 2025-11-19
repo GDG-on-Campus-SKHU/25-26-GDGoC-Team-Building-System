@@ -3,7 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model.mapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;
 

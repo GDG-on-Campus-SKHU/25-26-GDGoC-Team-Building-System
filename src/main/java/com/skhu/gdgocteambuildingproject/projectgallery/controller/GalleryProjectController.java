@@ -1,9 +1,9 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.controller;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectListResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectSaveRequestDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.service.GalleryProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

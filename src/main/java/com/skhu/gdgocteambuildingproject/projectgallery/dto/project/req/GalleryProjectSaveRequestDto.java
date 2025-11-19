@@ -1,6 +1,7 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create;
+package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberInfoDto;
 
 import java.util.List;
 

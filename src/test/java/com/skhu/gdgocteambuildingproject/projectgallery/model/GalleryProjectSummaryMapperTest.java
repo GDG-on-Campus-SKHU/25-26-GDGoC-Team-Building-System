@@ -2,9 +2,9 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectFileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectListResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectSummaryResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectFileInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectSummaryResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectFileMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import org.junit.jupiter.api.Test;

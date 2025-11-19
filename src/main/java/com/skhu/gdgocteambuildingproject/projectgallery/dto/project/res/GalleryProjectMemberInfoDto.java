@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create;
+package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
