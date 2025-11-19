@@ -16,7 +16,7 @@ public interface AdminUserProfileApi {
     String DEFAULT_ORDER = "ASC";
 
     @Operation(summary = "승인된 유저 목록 조회", description = "관리자가 승인된 유저들의 목록을 페이징하여 조회합니다.")
-    ResponseEntity<ApproveUserInfoPageResponseDto> getApproveAllUsers(
+    ResponseEntity<ApproveUserInfoPageResponseDto> getApproveUsers(
             @Parameter(description = "페이지 번호 (0부터 시작)", example = "0") int page,
             @Parameter(description = "페이지 크기", example = "20") int size,
             @Parameter(description = "정렬 기준 필드", example = "id") String sortBy,

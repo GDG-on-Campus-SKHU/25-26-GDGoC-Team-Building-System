@@ -5,7 +5,7 @@ import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 
 public interface AdminUserProfileService {
 
-    ApproveUserInfoPageResponseDto getApproveAllUsers(
+    ApproveUserInfoPageResponseDto getApproveUsers(
             int page,
             int size,
             String sortBy,

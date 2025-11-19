@@ -24,7 +24,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     private final UserRepository userRepository;
     private final ApproveUserInfoMapper approveUserInfoMapper;
 
-    public ApproveUserInfoPageResponseDto getApproveAllUsers(int page, int size, String sortBy, SortOrder order) {
+    public ApproveUserInfoPageResponseDto getApproveUsers(int page, int size, String sortBy, SortOrder order) {
         Pageable pageable = PageRequest.of(page, size, order.sort(sortBy));
 
         Page<User> userPage = userRepository.findAllByApprovalStatus(ApprovalStatus.APPROVED, pageable);

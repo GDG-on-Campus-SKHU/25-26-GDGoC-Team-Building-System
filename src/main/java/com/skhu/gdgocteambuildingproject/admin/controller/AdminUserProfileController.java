@@ -22,14 +22,14 @@ public class AdminUserProfileController implements AdminUserProfileApi {
     private final AdminUserProfileServiceImpl adminUserProfileService;
 
     @GetMapping("/users")
-    public ResponseEntity<ApproveUserInfoPageResponseDto> getApproveAllUsers(
+    public ResponseEntity<ApproveUserInfoPageResponseDto> getApproveUsers(
             @RequestParam(defaultValue = DEFAULT_PAGE) int page,
             @RequestParam(defaultValue = DEFAULT_SIZE) int size,
             @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
             @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
     ) {
         ApproveUserInfoPageResponseDto approveAllUsers =
-                adminUserProfileService.getApproveAllUsers(page, size, sortBy, order);
+                adminUserProfileService.getApproveUsers(page, size, sortBy, order);
 
         return ResponseEntity.ok(approveAllUsers);
     }
