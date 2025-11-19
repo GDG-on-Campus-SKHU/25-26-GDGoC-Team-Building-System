@@ -93,8 +93,8 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
                 requestDto.description(),
                 getUser(requestDto.leaderId())
         );
-        saveProjectMembers(galleryProject, requestDto.members());
-        saveProjectFiles(galleryProject, requestDto.fileIds());
+        updateProjectMembers(galleryProject, requestDto.members());
+        updateProjectFiles(galleryProject, requestDto.fileIds());
         return projectId;
     }
 
@@ -168,6 +168,27 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     }
 
     private void saveProjectFiles(GalleryProject project, List<Long> fileIds) {
+        for (Long fileId : fileIds) {
+            File file = getFile(fileId);
+
+            GalleryProjectFile galleryProjectFile = GalleryProjectFile.builder()
+                    .file(file)
+                    .project(project)
+                    .build();
+
+            galleryProjectFileRepository.save(galleryProjectFile);
+            project.getFiles().add(galleryProjectFile);
+        }
+    }
+
+    private void updateProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
+        galleryProjectMemberRepository.deleteAllByProjectId(project.getId());
+        Long leaderId = project.getUser().getId();
+        divideMemberAndSave(project, members, leaderId);
+    }
+
+    private void updateProjectFiles(GalleryProject project, List<Long> fileIds) {
+        galleryProjectFileRepository.deleteAllByProjectId(project.getId());
         for (Long fileId : fileIds) {
             File file = getFile(fileId);
 

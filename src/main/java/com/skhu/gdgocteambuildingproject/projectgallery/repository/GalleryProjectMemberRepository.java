@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface GalleryProjectMemberRepository extends JpaRepository<GalleryProjectMember, Long> {
     boolean existsByProjectIdAndUserIdAndRole(Long projectId, Long userId, MemberRole role);
+
+    void deleteAllByProjectId(Long projectId);
 }
