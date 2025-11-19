@@ -118,7 +118,7 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
-    public void deleteIdea(
+    public void softDeleteIdea(
             long projectId,
             long ideaId,
             long userId
@@ -127,6 +127,12 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
 
         idea.delete();
+    }
+
+    @Override
+    @Transactional
+    public void hardDeleteIdea(long ideaId) {
+        ideaRepository.deleteById(ideaId);
     }
 
     private void validateContents(IdeaCreateRequestDto requestDto) {

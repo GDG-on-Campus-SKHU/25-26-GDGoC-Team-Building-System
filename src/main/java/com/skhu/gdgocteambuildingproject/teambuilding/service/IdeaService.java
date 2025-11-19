@@ -32,9 +32,13 @@ public interface IdeaService {
             long userId
     );
 
-    void deleteIdea(
+    void softDeleteIdea(
             long projectId,
             long ideaId,
             long userId
+    );
+
+    void hardDeleteIdea(
+            long ideaId
     );
 }
