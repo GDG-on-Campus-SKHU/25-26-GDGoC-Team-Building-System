@@ -3,11 +3,14 @@ package com.skhu.gdgocteambuildingproject.Idea.domain;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
@@ -31,18 +34,26 @@ import lombok.NoArgsConstructor;
         }
 )
 public class IdeaEnrollment extends BaseEntity {
-    private String choice;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Choice choice;
+
+    @Column(nullable = false)
     private String part;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private EnrollmentStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private Idea idea;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    private User user;
+    @JoinColumn(nullable = false)
+    private User applicant;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
     private ProjectSchedule schedule;
 }

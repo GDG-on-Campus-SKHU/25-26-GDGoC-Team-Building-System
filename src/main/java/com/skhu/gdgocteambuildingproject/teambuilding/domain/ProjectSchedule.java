@@ -35,6 +35,10 @@ public class ProjectSchedule extends BaseEntity {
     @JoinColumn(nullable = false)
     private TeamBuildingProject project;
 
+    public boolean isEnrollmentAvailable() {
+        return type.isEnrollmentAvailable();
+    }
+
     public boolean scheduledStartDate() {
         return startDate != null;
     }
