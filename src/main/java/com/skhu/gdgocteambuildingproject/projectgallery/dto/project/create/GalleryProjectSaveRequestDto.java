@@ -4,7 +4,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceS
 
 import java.util.List;
 
-public record GalleryProjectCreateRequestDto(
+public record GalleryProjectSaveRequestDto(
         String projectName,
         String generation,
         String shortDescription,

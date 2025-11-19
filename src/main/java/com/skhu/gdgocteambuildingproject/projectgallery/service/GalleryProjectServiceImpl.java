@@ -12,7 +12,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMem
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectSaveRequestDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberInfoDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info.GalleryProjectListResponseDto;
@@ -46,7 +46,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional
-    public Long exhibitProject(GalleryProjectCreateRequestDto requestDto) {
+    public Long exhibitProject(GalleryProjectSaveRequestDto requestDto) {
         User leader = getUser(requestDto.leaderId());
         GalleryProject project = createGalleryProjectEntity(requestDto, leader);
 
@@ -79,6 +79,22 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         List<User> users = userRepository.findByNameContaining(name);
 
         return galleryProjectMemberMapper.mapSearchMembers(users);
+    }
+
+    @Override
+    public Long updateGalleryProjectByProjectId(Long projectId, GalleryProjectSaveRequestDto requestDto) {
+        GalleryProject galleryProject = findGalleryProjectById(projectId);
+        galleryProject.update(
+                requestDto.projectName(),
+                requestDto.generation(),
+                requestDto.shortDescription(),
+                requestDto.serviceStatus(),
+                requestDto.description(),
+                getUser(requestDto.leaderId())
+        );
+        saveProjectMembers(galleryProject, requestDto.members());
+        saveProjectFiles(galleryProject, requestDto.fileIds());
+        return projectId;
     }
 
     private GalleryProject findGalleryProjectById(Long projectId) {
@@ -116,7 +132,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         }
     }
 
-    private GalleryProject createGalleryProjectEntity(GalleryProjectCreateRequestDto requestDto, User leader) {
+    private GalleryProject createGalleryProjectEntity(GalleryProjectSaveRequestDto requestDto, User leader) {
         return galleryProjectRepository.save(
                 GalleryProject.builder()
                         .projectName(requestDto.projectName())
@@ -131,6 +147,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private void saveProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
         Long leaderId = project.getUser().getId();
+        divideMemberAndSave(project, members, leaderId);
+    }
+
+    private void divideMemberAndSave(GalleryProject project, List<GalleryProjectMemberInfoDto> members, Long leaderId) {
         for (GalleryProjectMemberInfoDto memberDto : members) {
             User user = getUser(memberDto.userId());
             MemberRole role = resolveRole(leaderId, memberDto.userId());
