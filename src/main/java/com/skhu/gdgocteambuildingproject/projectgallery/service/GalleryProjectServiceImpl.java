@@ -82,6 +82,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     }
 
     @Override
+    @Transactional
     public Long updateGalleryProjectByProjectId(Long projectId, GalleryProjectSaveRequestDto requestDto) {
         GalleryProject galleryProject = findGalleryProjectById(projectId);
         galleryProject.update(
