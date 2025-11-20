@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
@@ -64,9 +65,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<PastProjectResponseDto> findPastProjects() {
         LocalDateTime now = LocalDateTime.now();
 
-        List<TeamBuildingProject> pastProjects = projectRepository.findAll().stream()
-                .filter(project -> now.isAfter(project.getEndDate()))
-                .toList();
+        List<TeamBuildingProject> pastProjects = findProjectsEndedBeforeThan(now);
 
         return pastProjects.stream()
                 .map(pastProjectMapper::map)
@@ -81,5 +80,12 @@ public class ProjectServiceImpl implements ProjectService {
     private TeamBuildingProject findUnscheduledProject(List<TeamBuildingProject> projects) {
         return projectFilter.findUnscheduledProject(projects)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
+    }
+
+    private List<TeamBuildingProject> findProjectsEndedBeforeThan(LocalDateTime criteriaTime) {
+        return projectRepository.findProjectsWithScheduleEndedBefore(
+                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
+                criteriaTime
+        );
     }
 }
