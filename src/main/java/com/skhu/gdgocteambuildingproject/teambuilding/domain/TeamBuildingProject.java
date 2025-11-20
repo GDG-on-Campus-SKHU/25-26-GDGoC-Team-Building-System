@@ -39,26 +39,28 @@ public class TeamBuildingProject extends BaseEntity {
     private final List<ProjectSchedule> schedules = new ArrayList<>();
 
     public boolean isScheduled() {
-        return getStartDate() != null && getEndDate() != null;
+        return schedules.stream()
+                .allMatch(ProjectSchedule::isScheduled);
     }
 
     public boolean isUnscheduled() {
-        return getStartDate() == null || getEndDate() == null;
+        return schedules.stream()
+                .anyMatch(ProjectSchedule::isUnscheduled);
     }
 
     public LocalDateTime getEndDate() {
         return schedules.stream()
-                .filter(ProjectSchedule::scheduledEndDate)
+                .filter(schedule -> schedule.getType() == ScheduleType.FINAL_RESULT_ANNOUNCEMENT)
                 .map(ProjectSchedule::getEndDate)
-                .max(LocalDateTime::compareTo)
+                .findAny()
                 .orElse(null);
     }
 
     public LocalDateTime getStartDate() {
         return schedules.stream()
-                .filter(ProjectSchedule::scheduledStartDate)
+                .filter(schedule -> schedule.getType() == ScheduleType.FIRST_TEAM_BUILDING)
                 .map(ProjectSchedule::getStartDate)
-                .min(LocalDateTime::compareTo)
+                .findAny()
                 .orElse(null);
     }
 
