@@ -4,5 +4,4 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectFil
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface GalleryProjectFileRepository extends JpaRepository<GalleryProjectFile, Long> {
-    void deleteAllByProjectId(Long projectId);
 }

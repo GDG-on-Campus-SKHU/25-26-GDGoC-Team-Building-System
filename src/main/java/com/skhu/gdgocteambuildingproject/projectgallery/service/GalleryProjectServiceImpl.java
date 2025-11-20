@@ -182,13 +182,13 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     }
 
     private void updateProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
-        galleryProjectMemberRepository.deleteAllByProjectId(project.getId());
+        project.clearMembers();
         Long leaderId = project.getUser().getId();
         divideMemberAndSave(project, members, leaderId);
     }
 
     private void updateProjectFiles(GalleryProject project, List<Long> fileIds) {
-        galleryProjectFileRepository.deleteAllByProjectId(project.getId());
+        project.clearFiles();
         for (Long fileId : fileIds) {
             File file = getFile(fileId);
 

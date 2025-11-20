@@ -62,4 +62,12 @@ public class GalleryProject extends BaseEntity {
         this.description = description;
         this.user = leader;
     }
+
+    public void clearMembers() {
+        this.members.clear();
+    }
+
+    public void clearFiles() {
+        this.files.clear();
+    }
 }
