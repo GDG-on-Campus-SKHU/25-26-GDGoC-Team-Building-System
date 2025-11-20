@@ -12,6 +12,7 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -75,5 +76,14 @@ public class TeamBuildingProject extends BaseEntity {
 
             schedules.add(schedule);
         }
+    }
+
+    public Optional<ProjectSchedule> getCurrentSchedule() {
+        LocalDateTime now = LocalDateTime.now();
+
+        return schedules.stream()
+                .filter(schedule -> now.isAfter(schedule.getStartDate()))
+                .filter(schedule -> now.isBefore(schedule.getEndDate()))
+                .findFirst();
     }
 }
