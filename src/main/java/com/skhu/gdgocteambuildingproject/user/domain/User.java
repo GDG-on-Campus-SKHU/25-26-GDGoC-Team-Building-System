@@ -1,21 +1,29 @@
 package com.skhu.gdgocteambuildingproject.user.domain;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -60,6 +68,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Idea> ideas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<IdeaEnrollment> enrollments = new ArrayList<>();
+
     @Builder
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
@@ -86,6 +97,12 @@ public class User extends BaseEntity {
 
     public void reject() {
         this.approvalStatus = ApprovalStatus.REJECTED;
+    }
+
+    public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {
+        return enrollments.stream()
+                .filter(enrollment -> enrollment.getSchedule().equals(schedule))
+                .noneMatch(enrollment -> enrollment.getChoice().equals(choice));
     }
 
     /**

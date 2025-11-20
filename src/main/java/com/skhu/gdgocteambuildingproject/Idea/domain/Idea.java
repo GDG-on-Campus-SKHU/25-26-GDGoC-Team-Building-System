@@ -140,6 +140,20 @@ public class Idea extends BaseEntity {
         return registerStatus == IdeaStatus.TEMPORARY;
     }
 
+    public boolean isEnrollmentAvailable(Part part) {
+        long currentCount = members.stream()
+                .filter(member -> member.getPart() == part)
+                .count();
+
+        Integer maxMemberCount = memberCompositions.stream()
+                .filter(composition -> composition.getPart() == part)
+                .map(IdeaMemberComposition::getCount)
+                .findAny()
+                .orElse(0);
+
+        return currentCount < maxMemberCount;
+    }
+
     private Map<Part, Integer> initCurrentCounts() {
         EnumMap<Part, Integer> partMap = new EnumMap<>(Part.class);
 

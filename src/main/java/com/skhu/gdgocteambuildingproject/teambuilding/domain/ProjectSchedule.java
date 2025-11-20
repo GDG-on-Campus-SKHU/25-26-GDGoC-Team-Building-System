@@ -37,9 +37,13 @@ public class ProjectSchedule extends BaseEntity {
 
     public boolean isScheduled() {
         return startDate != null && endDate != null;
-    }
 
+    }
     public boolean isUnscheduled() {
         return startDate == null || endDate == null;
+    }
+
+    public boolean isEnrollmentAvailable() {
+        return type.isEnrollmentAvailable();
     }
 }
