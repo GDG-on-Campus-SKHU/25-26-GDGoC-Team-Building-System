@@ -171,7 +171,7 @@ public class TeamBuildingController {
     ) {
         long userId = getUserIdFrom(principal);
 
-        ideaService.deleteIdea(projectId, ideaId, userId);
+        ideaService.softDeleteIdea(projectId, ideaId, userId);
 
         return NO_CONTENT;
     }
