@@ -1,6 +1,5 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.info;
+package com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res;
 
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.create.GalleryProjectMemberResponseDto;
 import lombok.Builder;
 
 import java.util.List;

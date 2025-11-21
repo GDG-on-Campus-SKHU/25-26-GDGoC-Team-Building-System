@@ -46,4 +46,28 @@ public class GalleryProject extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<GalleryProjectFile> files = new ArrayList<>();
+
+    public void update(
+            String projectName,
+            String generation,
+            String shortDescription,
+            ServiceStatus serviceStatus,
+            String description,
+            User leader
+    ) {
+        this.projectName = projectName;
+        this.generation = generation;
+        this.shortDescription = shortDescription;
+        this.serviceStatus = serviceStatus;
+        this.description = description;
+        this.user = leader;
+    }
+
+    public void clearMembers() {
+        this.members.clear();
+    }
+
+    public void clearFiles() {
+        this.files.clear();
+    }
 }
