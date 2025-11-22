@@ -129,3 +129,6 @@ jobs:
             docker ps --filter name=teamBuildingSystem-app
             docker logs --tail=20 teamBuildingSystem-app || true
 
+            # 6) --- Swagger ---
+            SWAGGER_SERVER_LOCAL=${{ secrets.SWAGGER_SERVER_LOCAL }}
+            SWAGGER_SERVER_PROD=${{ secrets.SWAGGER_SERVER_PROD }}
