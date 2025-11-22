@@ -35,15 +35,15 @@ public class ProjectSchedule extends BaseEntity {
     @JoinColumn(nullable = false)
     private TeamBuildingProject project;
 
+    public boolean isScheduled() {
+        return startDate != null && endDate != null;
+    }
+
+    public boolean isUnscheduled() {
+        return startDate == null || endDate == null;
+    }
+
     public boolean isEnrollmentAvailable() {
         return type.isEnrollmentAvailable();
-    }
-
-    public boolean scheduledStartDate() {
-        return startDate != null;
-    }
-
-    public boolean scheduledEndDate() {
-        return endDate != null;
     }
 }
