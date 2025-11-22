@@ -5,24 +5,20 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.List;
-
 @Configuration
+@EnableConfigurationProperties(SwaggerProperties.class)
 public class SwaggerConfig {
 
     private static final String BEARER_KEY = "bearerAuth";
 
     @Bean
-    public OpenAPI openAPI() {
-        return new OpenAPI()
-                .servers(List.of(
-                        new Server().url("https://gdg-tbd.duckdns.org").description("Production Server"),
-                        new Server().url("http://localhost:8080").description("Local Server")
-                ))
+    public OpenAPI openAPI(SwaggerProperties swaggerProperties) {
+        OpenAPI openAPI = new OpenAPI()
                 .components(new Components()
                         .addSecuritySchemes(BEARER_KEY,
                                 new SecurityScheme()
@@ -34,6 +30,12 @@ public class SwaggerConfig {
                 )
                 .addSecurityItem(new SecurityRequirement().addList(BEARER_KEY))
                 .info(apiInfo());
+
+        swaggerProperties.servers().forEach(url ->
+                openAPI.addServersItem(new Server().url(url))
+        );
+
+        return openAPI;
     }
 
     private Info apiInfo() {
