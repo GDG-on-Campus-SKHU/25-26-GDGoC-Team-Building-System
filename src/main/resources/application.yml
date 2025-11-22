@@ -56,3 +56,8 @@ jwt:
     expiration: ${JWT_ACCESS_EXPIRATION}
   refresh:
     expiration: ${JWT_REFRESH_EXPIRATION}
+
+swagger:
+  servers:
+    - ${SWAGGER_SERVER_LOCAL}
+    - ${SWAGGER_SERVER_PROD}
