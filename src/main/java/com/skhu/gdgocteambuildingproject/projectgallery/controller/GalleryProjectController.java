@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(
         name = "프로젝트 갤러리 API",
         description = "조회는 모든 사용자가 호출할 수 있지만, 생성은 'SKHU_ADMIN', 'SKHU_MEMBER' 중 하나의 권한이 필요하고, " +
-                "수정은 'SKHU_ADMIN`이나 해당 프로젝트의 'LEADER`만 호출할 수 있습니다."
+                "수정은 'SKHU_ADMIN'이나 해당 프로젝트의 'LEADER'만 호출할 수 있습니다."
 )
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class GalleryProjectController {
