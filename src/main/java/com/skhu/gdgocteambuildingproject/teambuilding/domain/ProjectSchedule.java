@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -45,5 +46,28 @@ public class ProjectSchedule extends BaseEntity {
 
     public boolean isEnrollmentAvailable() {
         return type.isEnrollmentAvailable();
+    }
+
+    public void updateDates(
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    ) {
+        validateDates(startDate, endDate);
+
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
+
+    private void validateDates(
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    ) {
+        if (startDate == null || endDate == null) {
+            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
+        }
+
+        if (startDate.isAfter(endDate)) {
+            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
+        }
     }
 }

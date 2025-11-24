@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,4 +22,17 @@ public interface AdminProjectManageApi {
             description = "과거에 진행된 프로젝트 목록을 조회합니다."
     )
     ResponseEntity<List<PastProjectResponseDto>> getPastProjects();
+
+    @Operation(
+            summary = "프로젝트 일정 등록 및 수정",
+            description = """
+                    프로젝트의 일정 기간을 등록 혹은 수정합니다.
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    """
+    )
+    ResponseEntity<Void> updateSchedule(
+            long projectId,
+            ScheduleUpdateRequestDto requestDto
+    );
 }
