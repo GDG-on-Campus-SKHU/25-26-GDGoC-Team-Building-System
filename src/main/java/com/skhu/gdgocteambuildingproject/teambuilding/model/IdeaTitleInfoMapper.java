@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
 import org.springframework.stereotype.Component;
 
@@ -13,6 +14,17 @@ public class IdeaTitleInfoMapper {
                 .introduction(idea.getIntroduction())
                 .currentMemberCount(idea.getCurrentMemberCount())
                 .maxMemberCount(idea.getMaxMemberCount())
+                .build();
+    }
+
+    public IdeaTitleInfoIncludeDeletedResponseDto mapIncludeDeleted(Idea idea) {
+        return IdeaTitleInfoIncludeDeletedResponseDto.builder()
+                .ideaId(idea.getId())
+                .title(idea.getTitle())
+                .introduction(idea.getIntroduction())
+                .currentMemberCount(idea.getCurrentMemberCount())
+                .maxMemberCount(idea.getMaxMemberCount())
+                .deleted(idea.isDeleted())
                 .build();
     }
 }
