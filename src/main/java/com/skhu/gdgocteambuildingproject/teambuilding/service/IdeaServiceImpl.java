@@ -10,6 +10,8 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -86,6 +88,29 @@ public class IdeaServiceImpl implements IdeaService {
                 .toList();
 
         return IdeaTitleInfoPageResponseDto.builder()
+                .ideas(ideaDtos)
+                .pageInfo(PageInfo.from(ideas))
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public IdeaTitleInfoIncludeDeletedPageResponseDto findIdeasIncludeDeleted(
+            long projectId,
+            int page,
+            int size,
+            String sortBy,
+            SortOrder order
+    ) {
+        Pageable pagination = setupPagination(page, size, sortBy, order);
+
+        Page<Idea> ideas = ideaRepository.findByProjectIdIncludeDeleted(projectId, pagination);
+
+        List<IdeaTitleInfoIncludeDeletedResponseDto> ideaDtos = ideas.stream()
+                .map(ideaTitleInfoMapper::mapIncludeDeleted)
+                .toList();
+
+        return IdeaTitleInfoIncludeDeletedPageResponseDto.builder()
                 .ideas(ideaDtos)
                 .pageInfo(PageInfo.from(ideas))
                 .build();

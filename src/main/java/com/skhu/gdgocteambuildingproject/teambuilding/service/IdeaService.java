@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
@@ -20,6 +21,14 @@ public interface IdeaService {
             String sortBy,
             SortOrder order,
             boolean recruitingOnly
+    );
+
+    IdeaTitleInfoIncludeDeletedPageResponseDto findIdeasIncludeDeleted(
+            long projectId,
+            int page,
+            int size,
+            String sortBy,
+            SortOrder order
     );
 
     IdeaDetailInfoResponseDto findIdeaDetail(
