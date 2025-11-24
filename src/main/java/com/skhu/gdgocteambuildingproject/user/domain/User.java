@@ -105,6 +105,12 @@ public class User extends BaseEntity {
                 .noneMatch(enrollment -> enrollment.getChoice().equals(choice));
     }
 
+    public List<IdeaEnrollment> getEnrollmentFrom(ProjectSchedule schedule) {
+        return enrollments.stream()
+                .filter(enrollment -> enrollment.getSchedule().equals(schedule))
+                .toList();
+    }
+
     /**
      * User - Idea 연관관계 편의 메서드
      */

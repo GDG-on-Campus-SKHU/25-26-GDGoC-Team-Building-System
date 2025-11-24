@@ -88,4 +88,11 @@ public class TeamBuildingProject extends BaseEntity {
                 .filter(schedule -> now.isBefore(schedule.getEndDate()))
                 .findFirst();
     }
+
+    public ProjectSchedule getScheduleFrom(ScheduleType scheduleType) {
+        return schedules.stream()
+                .filter(schedule -> schedule.getType() == scheduleType)
+                .findAny()
+                .orElseThrow();
+    }
 }

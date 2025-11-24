@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.Idea.domain;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -103,10 +104,24 @@ public class Idea extends BaseEntity {
         members.clear();
     }
 
+    public List<IdeaEnrollment> getEnrollmentsOf(ProjectSchedule schedule) {
+        return enrollments.stream()
+                .filter(enrollment -> enrollment.getSchedule().equals(schedule))
+                .toList();
+    }
+
     public int getMaxMemberCount() {
         return memberCompositions.stream()
                 .mapToInt(IdeaMemberComposition::getCount)
                 .sum();
+    }
+
+    public int getMaxMemberCountOf(Part part) {
+        return memberCompositions.stream()
+                .filter(composition -> composition.getPart() == part)
+                .map(IdeaMemberComposition::getCount)
+                .findAny()
+                .orElseThrow();
     }
 
     public int getCurrentMemberCount() {
