@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
@@ -72,9 +73,26 @@ public class ProjectServiceImpl implements ProjectService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto) {
+        TeamBuildingProject project = findProjectBy(projectId);
+
+        project.updateSchedule(
+                requestDto.scheduleType(),
+                requestDto.startAt(),
+                requestDto.endAt()
+        );
+    }
+
     private User findUserBy(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_EXIST.getMessage()));
+    }
+
+    private TeamBuildingProject findProjectBy(long projectId) {
+        return projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
     }
 
     private TeamBuildingProject findUnscheduledProject(List<TeamBuildingProject> projects) {
