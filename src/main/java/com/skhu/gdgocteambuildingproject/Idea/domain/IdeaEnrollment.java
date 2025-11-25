@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.Idea.domain;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -39,7 +40,7 @@ public class IdeaEnrollment extends BaseEntity {
     private Choice choice;
 
     @Column(nullable = false)
-    private String part;
+    private Part part;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)

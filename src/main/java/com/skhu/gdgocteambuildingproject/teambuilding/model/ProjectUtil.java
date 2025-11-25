@@ -8,8 +8,15 @@ import java.util.Optional;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ProjectFilter {
-    public List<TeamBuildingProject> filterUnfinishedProjects(List<TeamBuildingProject> projects) {
+public class ProjectUtil {
+    public Optional<TeamBuildingProject> findCurrentProject(List<TeamBuildingProject> projects) {
+        List<TeamBuildingProject> unfinishedProjects = filterUnfinishedProjects(projects);
+
+        return findEarliestScheduledProject(unfinishedProjects)
+                .or(() -> findUnscheduledProject(unfinishedProjects));
+    }
+
+    private List<TeamBuildingProject> filterUnfinishedProjects(List<TeamBuildingProject> projects) {
         LocalDateTime now = LocalDateTime.now();
 
         return projects.stream()
@@ -17,13 +24,13 @@ public class ProjectFilter {
                 .toList();
     }
 
-    public Optional<TeamBuildingProject> findUnscheduledProject(List<TeamBuildingProject> projects) {
+    private Optional<TeamBuildingProject> findUnscheduledProject(List<TeamBuildingProject> projects) {
         return projects.stream()
                 .filter(TeamBuildingProject::isUnscheduled)
                 .findFirst();
     }
 
-    public Optional<TeamBuildingProject> findEarliestScheduledProject(List<TeamBuildingProject> projects) {
+    private Optional<TeamBuildingProject> findEarliestScheduledProject(List<TeamBuildingProject> projects) {
         return projects.stream()
                 .filter(TeamBuildingProject::isScheduled)
                 .min(Comparator.comparing(TeamBuildingProject::getStartDate));
