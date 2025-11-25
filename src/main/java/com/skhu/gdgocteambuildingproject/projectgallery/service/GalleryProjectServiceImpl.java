@@ -102,7 +102,6 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     public void deleteGalleryProjectByProjectId(Long projectId) {
         GalleryProject galleryProject = findGalleryProjectById(projectId);
         galleryProjectRepository.delete(galleryProject);
-        galleryProjectRepository.deleteById(projectId);
     }
 
     private GalleryProject findGalleryProjectById(Long projectId) {
