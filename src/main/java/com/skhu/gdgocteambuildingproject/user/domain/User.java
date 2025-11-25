@@ -71,6 +71,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<IdeaEnrollment> enrollments = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<UserLink> userLinks = new ArrayList<>();
+
     @Builder
     public User(String email, String password, String name, String number,
                 String introduction, String school, UserRole role, UserPosition position,
