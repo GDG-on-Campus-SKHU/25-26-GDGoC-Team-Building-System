@@ -1,11 +1,19 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
 @Tag(name = "관리자 아이디어 관리 API", description = "관리자용 아이디어 관리 API입니다")
 public interface AdminIdeaManageApi {
+
+    String DEFAULT_PAGE = "0";
+    String DEFAULT_SIZE = "20";
+    String DEFAULT_SORT_BY = "id";
+    String DEFAULT_ORDER = "ASC";
 
     @Operation(
             summary = "아이디어 삭제",
@@ -16,5 +24,28 @@ public interface AdminIdeaManageApi {
                     사용자가 본인의 아이디어를 삭제할 때와 달리, 실제로 DB에서 제거되어 복구할 수 없습니다.
                     """
     )
-    ResponseEntity<Void> deleteIdea(long ideaId);
+    ResponseEntity<Void> deleteIdea(
+            @Parameter(description = "삭제할 아이디어의 ID") long ideaId
+    );
+
+    @Operation(
+            summary = "아이디어 조회",
+            description = """
+                    아이디어를 조회합니다.
+                    소프트 딜리트된 아이디어도 포함해 조회합니다.
+                    
+                    아이디어의 소프트 딜리트 여부도 같이 반환합니다.
+                    
+                    sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
+                    
+                    order: ASC 또는 DESC
+                    """
+    )
+    ResponseEntity<IdeaTitleInfoIncludeDeletedPageResponseDto> findIdeas(
+            @Parameter(description = "프로젝트 ID") long projectId,
+            @Parameter(description = "페이지 번호 (0부터 시작)", example = "0") int page,
+            @Parameter(description = "페이지 당 항목 수", example = "20") int size,
+            @Parameter(description = "정렬 기준 필드명 (id, topic, title, introduction, description)", example = "id") String sortBy,
+            @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
+    );
 }

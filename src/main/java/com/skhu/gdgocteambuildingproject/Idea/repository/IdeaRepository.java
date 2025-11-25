@@ -7,11 +7,23 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
     Page<Idea> findByProjectId(long projectId, Pageable pageable);
 
     Page<Idea> findByProjectIdAndRecruitingIsTrue(long projectId, Pageable pageable);
+
+    @Query(
+            value = "SELECT * FROM idea WHERE project_id = :project_id",
+            countQuery = "SELECT count(*) FROM idea WHERE project_id = :project_id",
+            nativeQuery = true
+    )
+    Page<Idea> findByProjectIdIncludeDeleted(
+            @Param("project_id") long projectId,
+            Pageable pageable
+    );
 
     Optional<Idea> findByIdAndProjectId(long ideaId, long projectId);
 

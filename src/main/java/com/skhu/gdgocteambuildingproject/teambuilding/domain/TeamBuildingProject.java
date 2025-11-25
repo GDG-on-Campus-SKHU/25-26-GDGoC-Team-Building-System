@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_ALREADY_INITIALIZED;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
@@ -94,5 +95,18 @@ public class TeamBuildingProject extends BaseEntity {
                 .filter(schedule -> schedule.getType() == scheduleType)
                 .findAny()
                 .orElseThrow();
+    }
+
+    public void updateSchedule(
+            ScheduleType scheduleType,
+            LocalDateTime startDate,
+            LocalDateTime endDate
+    ) {
+        ProjectSchedule projectSchedule = schedules.stream()
+                .filter(schedule -> schedule.getType() == scheduleType)
+                .findAny()
+                .orElseThrow(() -> new IllegalStateException(SCHEDULE_NOT_EXIST.getMessage()));
+
+        projectSchedule.updateDates(startDate, endDate);
     }
 }
