@@ -99,6 +99,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     }
 
     @Override
+    @Transactional
     public void deleteGalleryProjectByProjectId(Long projectId) {
         GalleryProject galleryProject = findGalleryProjectById(projectId);
         galleryProjectRepository.delete(galleryProject);
