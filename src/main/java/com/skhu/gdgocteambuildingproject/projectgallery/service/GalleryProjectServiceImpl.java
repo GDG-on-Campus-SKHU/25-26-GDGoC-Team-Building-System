@@ -98,6 +98,13 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         return projectId;
     }
 
+    @Override
+    public void deleteGalleryProjectByProjectId(Long projectId) {
+        GalleryProject galleryProject = findGalleryProjectById(projectId);
+        galleryProjectRepository.delete(galleryProject);
+        galleryProjectRepository.deleteById(projectId);
+    }
+
     private GalleryProject findGalleryProjectById(Long projectId) {
         return galleryProjectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));

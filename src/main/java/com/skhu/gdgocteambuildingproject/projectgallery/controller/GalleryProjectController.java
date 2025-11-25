@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Tag(
         name = "프로젝트 갤러리 API",
         description = "조회는 모든 사용자가 호출할 수 있지만, 생성은 'SKHU_ADMIN', 'SKHU_MEMBER' 중 하나의 권한이 필요하고, " +
-                "수정은 'SKHU_ADMIN'이나 해당 프로젝트의 'LEADER'만 호출할 수 있습니다."
+                "수정과 삭제는 'SKHU_ADMIN'이나 해당 프로젝트의 'LEADER'만 호출할 수 있습니다."
 )
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class GalleryProjectController {
@@ -115,6 +116,8 @@ public class GalleryProjectController {
                     
                     leaderId에 해당하는 유저가 없거나, fileId에 해당하는 파일이 없으면 404 응답을 반환합니다.
                     
+                    id에 해당하는 프로젝트가 없을 경우, 404 응답을 반환합니다.
+                    
                     ServiceStatus: IN_SERVICE(운영 중), NOT_IN_SERVICE(미운영 중)
                     
                     MemberRole: LEADER(팀장), MEMBER(팀원)
@@ -125,5 +128,21 @@ public class GalleryProjectController {
     @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
     private ResponseEntity<Long> updateProject(@PathVariable Long projectId, @RequestBody GalleryProjectSaveRequestDto requestDto) {
         return ResponseEntity.ok(galleryProjectService.updateGalleryProjectByProjectId(projectId, requestDto));
+    }
+
+    @DeleteMapping("/{projectId}")
+    @Operation(
+            summary = "프로젝트 갤러리에 존재하는 프로젝트 삭제",
+            description =
+                    """
+                    프로젝트 갤러리에 전시되어있는 프로젝트를 삭제합니다.
+                    
+                    id에 해당하는 프로젝트가 없을 경우, 404 응답을 반환합니다.
+                    """
+    )
+    @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
+    private ResponseEntity<Void> deleteProject(@PathVariable Long projectId) {
+        galleryProjectService.deleteGalleryProjectByProjectId(projectId);
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
