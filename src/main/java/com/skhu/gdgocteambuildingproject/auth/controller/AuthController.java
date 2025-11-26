@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+
     @Operation(
             summary = "회원가입",
             description = "새로운 사용자를 등록하고, Access Token과 Refresh Token을 발급한다."

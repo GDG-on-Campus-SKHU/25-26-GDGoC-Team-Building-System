@@ -6,10 +6,12 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.repository.RefreshTokenRepository;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -27,11 +29,13 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public LoginResponseDto signUp(SignUpRequestDto dto) {
+
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail())) {
-            throw new IllegalArgumentException("이미 가입된 이메일입니다.");
+            throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
         }
+
         if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
 
         User user = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
@@ -43,12 +47,16 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
+
         User user = userRepository.findByEmailAndDeletedFalse(dto.getEmail())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 이메일입니다."));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage())
+                );
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException("비밀번호가 일치하지 않습니다.");
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
+
         validateUserStatus(user);
 
         return createLoginResponse(user);
@@ -57,8 +65,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public LoginResponseDto refresh(RefreshTokenRequestDto dto) {
+
         RefreshToken existing = refreshTokenRepository.findByToken(dto.getRefreshToken())
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 리프레시 토큰입니다."));
+                .orElseThrow(() ->
+                        new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage())
+                );
 
         User user = existing.getUser();
         validateUserStatus(user);
@@ -77,8 +88,11 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void delete(Long userId) {
+
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없습니다."));
+                .orElseThrow(() ->
+                        new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage())
+                );
 
         refreshTokenRepository.deleteAllByUser(user);
         user.softDelete();
@@ -86,10 +100,11 @@ public class AuthServiceImpl implements AuthService {
 
     private void validateUserStatus(User user) {
         if (user.isDeleted()) {
-            throw new IllegalStateException("탈퇴한 회원입니다.");
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_FOUND.getMessage());
         }
+
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
-            throw new IllegalStateException("관리자 승인 대기 중입니다.");
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
         }
     }
 
