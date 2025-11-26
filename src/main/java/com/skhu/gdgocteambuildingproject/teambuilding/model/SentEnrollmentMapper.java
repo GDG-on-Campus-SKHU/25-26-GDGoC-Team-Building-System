@@ -8,7 +8,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmen
 import org.springframework.stereotype.Component;
 
 @Component
-public class ApplicantEnrollmentMapper {
+public class SentEnrollmentMapper {
 
     public SentEnrollmentResponseDto map(
             IdeaEnrollment enrollment,

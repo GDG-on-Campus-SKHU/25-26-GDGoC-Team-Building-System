@@ -13,7 +13,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ApplicantEnrollmentMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.SentEnrollmentMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.EnrollmentAvailabilityMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
@@ -35,7 +35,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final TeamBuildingProjectRepository projectRepository;
 
     private final EnrollmentAvailabilityMapper availabilityMapper;
-    private final ApplicantEnrollmentMapper applicantEnrollmentMapper;
+    private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ProjectUtil projectUtil;
 
     @Override
@@ -66,7 +66,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         List<IdeaEnrollment> enrollments = user.getEnrollmentFrom(schedule);
 
         return enrollments.stream()
-                .map(enrollment -> applicantEnrollmentMapper.map(enrollment, schedule))
+                .map(enrollment -> sentEnrollmentMapper.map(enrollment, schedule))
                 .toList();
     }
 
