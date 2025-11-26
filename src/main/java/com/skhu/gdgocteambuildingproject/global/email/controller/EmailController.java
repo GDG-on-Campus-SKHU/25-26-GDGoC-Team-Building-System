@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.global.email.controller;
 
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailService;
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailVerificationService;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -21,8 +22,15 @@ public class EmailController {
 
     @PostMapping("/send")
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
+
+        if (email == null || email.isBlank()) {
+            return ResponseEntity.badRequest().body("이메일을 입력해주세요.");
+        }
+
         if (!userRepository.existsByEmailAndDeletedFalse(email)) {
-            return ResponseEntity.badRequest().body("등록되지 않은 이메일입니다.");
+            return ResponseEntity.badRequest().body(
+                    ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
+            );
         }
 
         String code = emailService.generateVerificationCode();
@@ -35,11 +43,17 @@ public class EmailController {
     @PostMapping("/verify")
     public ResponseEntity<String> verifyCode(@RequestParam("email") String email,
                                              @RequestParam("code") String code) {
-        boolean isValid = emailVerificationService.verifyCode(email, code);
-        if (isValid) {
-            return ResponseEntity.ok("인증 성공");
-        } else {
-            return ResponseEntity.badRequest().body("인증 실패");
+
+        if (email == null || email.isBlank() || code == null || code.isBlank()) {
+            return ResponseEntity.badRequest().body("이메일 또는 인증코드를 입력해주세요.");
         }
+
+        boolean isValid = emailVerificationService.verifyCode(email, code);
+
+        if (!isValid) {
+            return ResponseEntity.badRequest().body("인증 실패 (코드가 틀렸거나 만료되었습니다.)");
+        }
+
+        return ResponseEntity.ok("인증 성공");
     }
 }

@@ -15,6 +15,10 @@ public enum ExceptionMessage {
     USER_NOT_APPROVED("관리자 승인 대기 중입니다."),
     REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
 
+    // Email
+    EMAIL_NOT_VERIFIED("이메일 인증이 완료되지 않았습니다."),
+    USER_EMAIL_NOT_EXIST("존재하지 않거나 탈퇴한 이메일입니다."),
+
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
     ILLEGAL_SCHEDULE_DATE("일정의 날짜가 부적절합니다."),
