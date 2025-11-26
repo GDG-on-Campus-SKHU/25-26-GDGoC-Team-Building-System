@@ -58,7 +58,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/applications/sent")
+    @GetMapping("/sent")
     @Operation(
             summary = "본인의 지원 내역(현황) 조회",
             description = """
