@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ApplicantEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
@@ -13,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +30,30 @@ import org.springframework.web.bind.annotation.RestController;
 )
 public class EnrollmentController {
 
+    private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
+
     private final EnrollmentService enrollmentService;
+
+    @PostMapping("/{enrollmentId}/determine")
+    @Operation(
+            summary = "지원 수락/거절",
+            description = """
+                    지원을 수락하거나 거절합니다.
+                    
+                    accept의 값이 true면 수락, false면 거절합니다.
+                    """
+    )
+    public ResponseEntity<Void> determine(
+            Principal principal,
+            @PathVariable long enrollmentId,
+            @RequestBody EnrollmentDetermineRequestDto requestDto
+    ) {
+        long userId = findUserIdBy(principal);
+
+        enrollmentService.determineEnrollment(userId, enrollmentId, requestDto);
+
+        return NO_CONTENT;
+    }
 
     @GetMapping("/availability/ideas/{ideaId}")
     @Operation(
