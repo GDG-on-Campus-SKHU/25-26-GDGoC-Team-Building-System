@@ -11,5 +11,5 @@ public interface EnrollmentService {
             long applicantId
     );
 
-    List<SentEnrollmentResponseDto> getApplyHistory(long userId, ScheduleType scheduleType);
+    List<SentEnrollmentResponseDto> getSentEnrollments(long userId, ScheduleType scheduleType);
 }

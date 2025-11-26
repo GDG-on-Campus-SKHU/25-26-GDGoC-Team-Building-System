@@ -72,13 +72,13 @@ public class EnrollmentController {
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    private ResponseEntity<List<SentEnrollmentResponseDto>> findApplyHistory(
+    private ResponseEntity<List<SentEnrollmentResponseDto>> findSentEnrollments(
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
         long userId = findUserIdBy(principal);
 
-        List<SentEnrollmentResponseDto> response = enrollmentService.getApplyHistory(userId, scheduleType);
+        List<SentEnrollmentResponseDto> response = enrollmentService.getSentEnrollments(userId, scheduleType);
 
         return ResponseEntity.ok(response);
     }

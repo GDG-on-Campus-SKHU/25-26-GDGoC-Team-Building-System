@@ -56,7 +56,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SentEnrollmentResponseDto> getApplyHistory(long userId, ScheduleType scheduleType) {
+    public List<SentEnrollmentResponseDto> getSentEnrollments(long userId, ScheduleType scheduleType) {
         validateEnrollmentAvailable(scheduleType);
 
         User user = findUserBy(userId);
