@@ -11,7 +11,7 @@ import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ApplicantEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ApplicantEnrollmentMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.EnrollmentAvailabilityMapper;
@@ -56,7 +56,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ApplicantEnrollmentResponseDto> getApplyHistory(long userId, ScheduleType scheduleType) {
+    public List<SentEnrollmentResponseDto> getApplyHistory(long userId, ScheduleType scheduleType) {
         validateEnrollmentAvailable(scheduleType);
 
         User user = findUserBy(userId);

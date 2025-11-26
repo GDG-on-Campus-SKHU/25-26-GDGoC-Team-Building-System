@@ -4,13 +4,13 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ApplicantEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component
 public class ApplicantEnrollmentMapper {
 
-    public ApplicantEnrollmentResponseDto map(
+    public SentEnrollmentResponseDto map(
             IdeaEnrollment enrollment,
             ProjectSchedule schedule
     ) {
@@ -18,7 +18,7 @@ public class ApplicantEnrollmentMapper {
         Part enrollmentPart = enrollment.getPart();
         int applicantCount = getApplicantCount(idea, schedule, enrollmentPart);
 
-        return ApplicantEnrollmentResponseDto.builder()
+        return SentEnrollmentResponseDto.builder()
                 .enrollmentId(enrollment.getId())
                 .choice(enrollment.getChoice())
                 .enrollmentStatus(enrollment.getStatus())

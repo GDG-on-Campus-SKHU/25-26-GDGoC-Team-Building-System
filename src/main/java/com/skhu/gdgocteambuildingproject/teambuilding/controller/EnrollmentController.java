@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ApplicantEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -72,13 +72,13 @@ public class EnrollmentController {
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    private ResponseEntity<List<ApplicantEnrollmentResponseDto>> findApplyHistory(
+    private ResponseEntity<List<SentEnrollmentResponseDto>> findApplyHistory(
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
         long userId = findUserIdBy(principal);
 
-        List<ApplicantEnrollmentResponseDto> response = enrollmentService.getApplyHistory(userId, scheduleType);
+        List<SentEnrollmentResponseDto> response = enrollmentService.getApplyHistory(userId, scheduleType);
 
         return ResponseEntity.ok(response);
     }
