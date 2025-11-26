@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
@@ -79,6 +80,31 @@ public class EnrollmentController {
         long userId = findUserIdBy(principal);
 
         List<SentEnrollmentResponseDto> response = enrollmentService.getSentEnrollments(userId, scheduleType);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/received")
+    @Operation(
+            summary = "받은 지원 내역(현황) 조회",
+            description = """
+                    본인이 게시한 아이디어에 다른 회원이 지원한 내역을 조회합니다.
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    지원 가능한 일정에 대해서만 동작하기 때문에, 실제로는 FIRST_TEAM_BUILDING, SECOND_TEAM_BUILDING만 요청할 수 있습니다.
+                    
+                    choice: FIRST, SECOND, THIRD
+                    
+                    enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    private ResponseEntity<List<ReceivedEnrollmentResponseDto>> findReceivedApplyHistory(
+            Principal principal,
+            @RequestParam ScheduleType scheduleType
+    ) {
+        long userId = findUserIdBy(principal);
+
+        List<ReceivedEnrollmentResponseDto> response = enrollmentService.getReceivedEnrollments(userId, scheduleType);
 
         return ResponseEntity.ok(response);
     }

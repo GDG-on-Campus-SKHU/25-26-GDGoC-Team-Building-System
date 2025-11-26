@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.Idea.repository;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.Optional;
@@ -32,4 +33,18 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
     Optional<Idea> findByIdAndCreatorIdAndProjectId(long ideaId, long creatorId, long projectId);
 
     Optional<Idea> findByCreatorAndProject(User creator, TeamBuildingProject project);
+
+    @Query(
+            value = "SELECT DISTINCT i FROM Idea i "
+                    + "LEFT JOIN FETCH i.enrollments e "
+                    + "LEFT JOIN FETCH e.applicant "
+                    + "WHERE i.creator.id = :creatorId "
+                    + "AND i.project.id = :projectId "
+                    + "AND i.registerStatus = :status"
+    )
+    Optional<Idea> findIdeaOf(
+            @Param("creatorId") long creatorId,
+            @Param("projectId") long projectId,
+            @Param("status") IdeaStatus status
+    );
 }
