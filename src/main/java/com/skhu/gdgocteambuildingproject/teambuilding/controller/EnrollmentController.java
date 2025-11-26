@@ -58,7 +58,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/history")
+    @GetMapping("/applications/sent")
     @Operation(
             summary = "본인의 지원 내역(현황) 조회",
             description = """
@@ -82,7 +82,6 @@ public class EnrollmentController {
 
         return ResponseEntity.ok(response);
     }
-
 
     private long findUserIdBy(Principal principal) {
         return Long.parseLong(principal.getName());
