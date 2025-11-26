@@ -6,7 +6,6 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.service.AuthService;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
-import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -25,8 +24,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final UserRepository userRepository;
-
     @Operation(
             summary = "회원가입",
             description = "새로운 사용자를 등록하고, Access Token과 Refresh Token을 발급한다."
@@ -67,7 +64,7 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "탈퇴 회원 또는 승인 대기 중인 사용자"),
     })
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponseDto> refresh(@RequestBody RefreshTokenRequestDto dto) {
+    public ResponseEntity<LoginResponseDto> refresh(@RequestBody @Valid RefreshTokenRequestDto dto) {
         return ResponseEntity.ok(authService.refresh(dto));
     }
 

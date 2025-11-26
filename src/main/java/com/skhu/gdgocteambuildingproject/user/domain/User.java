@@ -10,20 +10,15 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -55,8 +50,7 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    // 승인 여부
-    @Column(nullable = false)
+    @Enumerated(EnumType.STRING) @Column(nullable = false)
     private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
