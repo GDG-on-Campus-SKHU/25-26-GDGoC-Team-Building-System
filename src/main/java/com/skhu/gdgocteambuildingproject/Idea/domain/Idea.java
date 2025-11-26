@@ -71,6 +71,10 @@ public class Idea extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private TeamBuildingProject project;
 
+    public void addEnrollment(IdeaEnrollment enrollment) {
+        enrollments.add(enrollment);
+    }
+
     public void updateTexts(
             String topic,
             String title,

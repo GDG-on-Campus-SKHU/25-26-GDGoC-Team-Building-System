@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
@@ -99,6 +100,12 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.REJECTED;
     }
 
+    public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
+        return ideas.stream()
+                .filter(Idea::isRegistered)
+                .anyMatch(idea -> idea.getProject().equals(project));
+    }
+
     public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
@@ -117,6 +124,10 @@ public class User extends BaseEntity {
     public void addIdea(Idea idea) {
         ideas.add(idea);
         idea.setCreator(this);
+    }
+
+    public void addEnrollment(IdeaEnrollment enrollment) {
+        enrollments.add(enrollment);
     }
 
     public void softDelete() {

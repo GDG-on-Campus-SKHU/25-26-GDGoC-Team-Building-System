@@ -44,7 +44,8 @@ public class IdeaEnrollment extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private EnrollmentStatus status;
+    @Builder.Default
+    private EnrollmentStatus status = EnrollmentStatus.WAITING;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
