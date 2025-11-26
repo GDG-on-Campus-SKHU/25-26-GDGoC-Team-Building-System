@@ -15,7 +15,6 @@ public class EmailService {
 
     private final JavaMailSender mailSender;
 
-    // 6자리 인증번호 생성
     public String generateVerificationCode() {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
@@ -25,7 +24,6 @@ public class EmailService {
         return code.toString();
     }
 
-    // 이메일 전송
     public void sendVerificationEmail(String to, String code) {
         String subject = "[GDGoC Team Project] 비밀번호 재설정 인증번호";
         String content = """
