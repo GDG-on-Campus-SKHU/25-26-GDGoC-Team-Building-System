@@ -94,7 +94,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         List<IdeaEnrollment> enrollments = idea.getEnrollmentsOf(schedule);
 
         return enrollments.stream()
-                .map(receivedEnrollmentMapper::map)
+                .map(enrollment -> receivedEnrollmentMapper.map(enrollment, idea))
                 .toList();
     }
 

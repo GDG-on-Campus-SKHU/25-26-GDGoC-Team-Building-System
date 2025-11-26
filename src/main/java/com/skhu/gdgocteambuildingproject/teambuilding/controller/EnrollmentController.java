@@ -90,6 +90,8 @@ public class EnrollmentController {
             description = """
                     본인이 게시한 아이디어에 다른 회원이 지원한 내역을 조회합니다.
                     
+                    enrollmentAcceptable: 해당 지원을 수락할 수 있는지 여부입니다. 이미 해당 파트의 인원 수가 다 찼다면 false가 됩니다.
+                    
                     scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
                     지원 가능한 일정에 대해서만 동작하기 때문에, 실제로는 FIRST_TEAM_BUILDING, SECOND_TEAM_BUILDING만 요청할 수 있습니다.
                     

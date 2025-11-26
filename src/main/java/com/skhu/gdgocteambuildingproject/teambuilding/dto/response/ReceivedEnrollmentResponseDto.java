@@ -10,6 +10,7 @@ public record ReceivedEnrollmentResponseDto(
         long enrollmentId,
         Choice choice,
         EnrollmentStatus enrollmentStatus,
+        boolean enrollmentAcceptable,
 
         long applicantId,
         String applicantName,
