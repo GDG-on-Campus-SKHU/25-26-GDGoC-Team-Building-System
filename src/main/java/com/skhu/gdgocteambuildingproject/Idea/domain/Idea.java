@@ -85,10 +85,6 @@ public class Idea extends BaseEntity {
         IdeaMember member = createMember(enrollment);
 
         members.add(member);
-
-        if (getCurrentMemberCount() >= getMaxMemberCount()) {
-            recruiting = false;
-        }
     }
 
     public void rejectEnrollment(IdeaEnrollment enrollment) {
