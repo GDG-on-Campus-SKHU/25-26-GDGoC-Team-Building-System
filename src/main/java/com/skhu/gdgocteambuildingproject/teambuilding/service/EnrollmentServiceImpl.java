@@ -129,7 +129,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 creator.getId(),
                 project.getId(),
                 IdeaStatus.REGISTERED
-        ).orElseThrow(() -> new IllegalStateException(REGISTERED_IDEA_NOT_EXIST.getMessage()));
+        ).orElseThrow(() -> new EntityNotFoundException(REGISTERED_IDEA_NOT_EXIST.getMessage()));
     }
 
     private void validateEnrollmentAvailable(ScheduleType scheduleType) {
