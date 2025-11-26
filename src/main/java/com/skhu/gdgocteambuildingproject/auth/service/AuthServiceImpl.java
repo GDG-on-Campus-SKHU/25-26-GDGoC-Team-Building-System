@@ -11,7 +11,6 @@ import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,11 +30,11 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto signUp(SignUpRequestDto dto) {
 
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail())) {
-            throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
+            throw new RuntimeException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
         }
 
         if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
+            throw new RuntimeException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
 
         User user = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
@@ -49,12 +48,10 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto login(LoginRequestDto dto) {
 
         User user = userRepository.findByEmailAndDeletedFalse(dto.getEmail())
-                .orElseThrow(() ->
-                        new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new RuntimeException(ExceptionMessage.USER_NOT_FOUND.getMessage()));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
+            throw new RuntimeException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
 
         validateUserStatus(user);
@@ -67,9 +64,7 @@ public class AuthServiceImpl implements AuthService {
     public LoginResponseDto refresh(RefreshTokenRequestDto dto) {
 
         RefreshToken existing = refreshTokenRepository.findByToken(dto.getRefreshToken())
-                .orElseThrow(() ->
-                        new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage())
-                );
+                .orElseThrow(() -> new RuntimeException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()));
 
         User user = existing.getUser();
         validateUserStatus(user);
@@ -90,25 +85,25 @@ public class AuthServiceImpl implements AuthService {
     public void delete(Long userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage())
-                );
+                .orElseThrow(() -> new RuntimeException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
 
         refreshTokenRepository.deleteAllByUser(user);
         user.softDelete();
     }
 
     private void validateUserStatus(User user) {
+
         if (user.isDeleted()) {
-            throw new IllegalStateException(ExceptionMessage.USER_NOT_FOUND.getMessage());
+            throw new RuntimeException(ExceptionMessage.USER_NOT_EXIST.getMessage());
         }
 
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
-            throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
+            throw new RuntimeException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
         }
     }
 
     private LoginResponseDto createLoginResponse(User user) {
+
         String accessToken = tokenProvider.createAccessToken(user);
         String refreshToken = tokenProvider.createRefreshToken(user);
 
