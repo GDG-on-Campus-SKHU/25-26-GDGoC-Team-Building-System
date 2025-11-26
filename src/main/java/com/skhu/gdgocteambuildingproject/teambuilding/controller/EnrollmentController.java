@@ -97,6 +97,8 @@ public class EnrollmentController {
                     
                     choice: FIRST, SECOND, THIRD
                     
+                    enrollmentStatus: WAITING, EXPIRED, REJECTED, ACCEPTED
+                    
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
