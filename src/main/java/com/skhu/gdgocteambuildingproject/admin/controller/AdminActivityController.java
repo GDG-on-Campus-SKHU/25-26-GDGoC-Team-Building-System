@@ -1,15 +1,15 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminActivityControllerApi;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.ActivitySaveRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostSaveDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.activity.*;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminActivityService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin/activity")
@@ -33,5 +33,17 @@ public class AdminActivityController implements AdminActivityControllerApi {
         PostResponseDto postResponseDto =
                 adminActivityService.updateActivityPost(postId, postSaveDto);
         return ResponseEntity.ok(postResponseDto);
+    }
+
+    @GetMapping
+    public ResponseEntity<List<ActivityCategoryInfoResponseDto>> getCategoryInfo() {
+        List<ActivityCategoryInfoResponseDto> categoryInfo = adminActivityService.getCategoryInfo();
+        return ResponseEntity.ok().body(categoryInfo);
+    }
+
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(Long categoryId) {
+        List<ActivityResponseDto> activitiesByCategory = adminActivityService.getActivitiesByCategory(categoryId);
+        return ResponseEntity.ok().body(activitiesByCategory);
     }
 }
