@@ -57,4 +57,12 @@ public class IdeaEnrollment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private ProjectSchedule schedule;
+
+    public void accept() {
+        status = EnrollmentStatus.ACCEPTED;
+    }
+
+    public void reject() {
+        status = EnrollmentStatus.REJECTED;
+    }
 }
