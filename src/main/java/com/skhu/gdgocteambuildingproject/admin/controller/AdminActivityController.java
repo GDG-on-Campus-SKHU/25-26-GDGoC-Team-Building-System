@@ -35,12 +35,14 @@ public class AdminActivityController implements AdminActivityControllerApi {
         return ResponseEntity.ok(postResponseDto);
     }
 
+    @Override
     @GetMapping
-    public ResponseEntity<List<ActivityCategoryInfoResponseDto>> getCategoryInfo() {
-        List<ActivityCategoryInfoResponseDto> categoryInfo = adminActivityService.getCategoryInfo();
+    public ResponseEntity<List<ActivityCategoryInfoResponseDto>> getCategoryInfos() {
+        List<ActivityCategoryInfoResponseDto> categoryInfo = adminActivityService.getCategoryInfos();
         return ResponseEntity.ok().body(categoryInfo);
     }
 
+    @Override
     @GetMapping("/{categoryId}")
     public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(Long categoryId) {
         List<ActivityResponseDto> activitiesByCategory = adminActivityService.getActivitiesByCategory(categoryId);

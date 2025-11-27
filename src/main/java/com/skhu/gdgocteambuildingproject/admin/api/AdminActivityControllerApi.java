@@ -36,7 +36,7 @@ public interface AdminActivityControllerApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공")
     })
-    ResponseEntity<List<ActivityCategoryInfoResponseDto>> getCategoryInfo();
+    ResponseEntity<List<ActivityCategoryInfoResponseDto>> getCategoryInfos();
 
 
     @Operation(summary = "특정 카테고리의 게시글 목록 조회", description = "카테고리 ID를 통해 해당 카테고리에 속한 모든 게시글 리스트를 조회합니다.")

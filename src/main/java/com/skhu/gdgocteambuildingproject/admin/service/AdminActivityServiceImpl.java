@@ -58,7 +58,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ActivityCategoryInfoResponseDto> getCategoryInfo() {
+    public List<ActivityCategoryInfoResponseDto> getCategoryInfos() {
         List<ActivityCategory> categories = activityCategoryRepository.findAll();
 
         return categories.stream()

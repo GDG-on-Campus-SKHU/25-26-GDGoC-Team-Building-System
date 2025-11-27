@@ -9,7 +9,7 @@ public interface AdminActivityService {
 
     PostResponseDto updateActivityPost(Long postId, PostSaveDto requestDto);
 
-    List<ActivityCategoryInfoResponseDto> getCategoryInfo();
+    List<ActivityCategoryInfoResponseDto> getCategoryInfos();
 
     List<ActivityResponseDto> getActivitiesByCategory(Long categoryId);
 }
