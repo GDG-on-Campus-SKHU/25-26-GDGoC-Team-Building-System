@@ -6,16 +6,15 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import lombok.Builder;
 
 @Builder
-public record ApplicantEnrollmentResponseDto(
+public record ReceivedEnrollmentResponseDto(
         long enrollmentId,
         Choice choice,
         EnrollmentStatus enrollmentStatus,
+        boolean enrollmentAcceptable,
 
-        String ideaTitle,
-        String ideaIntroduction,
-
-        Part enrollmentPart,
-        int maxMemberCountOfPart,
-        int applicantCount
+        long applicantId,
+        String applicantName,
+        Part applicantPart,
+        String applicantSchool
 ) {
 }
