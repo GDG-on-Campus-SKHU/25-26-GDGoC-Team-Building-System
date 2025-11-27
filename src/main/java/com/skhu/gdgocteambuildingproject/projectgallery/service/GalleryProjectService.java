@@ -15,4 +15,6 @@ public interface GalleryProjectService {
     MemberSearchListResponseDto searchMemberByName(String name);
 
     Long updateGalleryProjectByProjectId(Long projectId, GalleryProjectSaveRequestDto requestDto);
+
+    void deleteGalleryProjectByProjectId(Long projectId);
 }

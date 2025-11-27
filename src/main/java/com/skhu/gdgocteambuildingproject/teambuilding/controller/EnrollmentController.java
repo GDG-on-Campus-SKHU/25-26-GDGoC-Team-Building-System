@@ -1,16 +1,20 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ApplicantEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -53,6 +57,32 @@ public class EnrollmentController {
 
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/history")
+    @Operation(
+            summary = "본인의 지원 내역(현황) 조회",
+            description = """
+                    본인이 다른 아이디어에 지원한 내역을 조회합니다.
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    지원 가능한 일정에 대해서만 동작하기 때문에, 실제로는 FIRST_TEAM_BUILDING, SECOND_TEAM_BUILDING만 요청할 수 있습니다.
+                    
+                    choice: FIRST, SECOND, THIRD
+                    
+                    enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    private ResponseEntity<List<ApplicantEnrollmentResponseDto>> findApplyHistory(
+            Principal principal,
+            @RequestParam ScheduleType scheduleType
+    ) {
+        long userId = findUserIdBy(principal);
+
+        List<ApplicantEnrollmentResponseDto> response = enrollmentService.getApplyHistory(userId, scheduleType);
+
+        return ResponseEntity.ok(response);
+    }
+
 
     private long findUserIdBy(Principal principal) {
         return Long.parseLong(principal.getName());

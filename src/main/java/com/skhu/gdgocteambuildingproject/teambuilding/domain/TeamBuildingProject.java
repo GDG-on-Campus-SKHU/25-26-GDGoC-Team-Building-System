@@ -90,6 +90,13 @@ public class TeamBuildingProject extends BaseEntity {
                 .findFirst();
     }
 
+    public ProjectSchedule getScheduleFrom(ScheduleType scheduleType) {
+        return schedules.stream()
+                .filter(schedule -> schedule.getType() == scheduleType)
+                .findAny()
+                .orElseThrow();
+    }
+
     public void updateSchedule(
             ScheduleType scheduleType,
             LocalDateTime startDate,

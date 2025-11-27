@@ -20,4 +20,16 @@ public interface TeamBuildingProjectRepository extends JpaRepository<TeamBuildin
             @Param("type") ScheduleType type,
             @Param("criteria") LocalDateTime criteria
     );
+
+    @Query("""
+    SELECT DISTINCT p
+    FROM TeamBuildingProject p
+    LEFT JOIN FETCH p.schedules s
+    WHERE s.type = :type
+      AND s.endDate > :criteria
+    """)
+    List<TeamBuildingProject> findProjectsWithScheduleNotEndedBefore(
+            @Param("type") ScheduleType type,
+            @Param("criteria") LocalDateTime criteria
+    );
 }

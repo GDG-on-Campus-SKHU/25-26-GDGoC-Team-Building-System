@@ -10,7 +10,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestD
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectFilter;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -30,7 +30,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
 
-    private final ProjectFilter projectFilter;
+    private final ProjectUtil projectUtil;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
 
@@ -53,12 +53,10 @@ public class ProjectServiceImpl implements ProjectService {
         User user = findUserBy(userId);
         List<TeamBuildingProject> allProjects = projectRepository.findAll();
 
-        List<TeamBuildingProject> unfinishedProjects = projectFilter.filterUnfinishedProjects(allProjects);
+        TeamBuildingProject currentProject = projectUtil.findCurrentProject(allProjects)
+                .orElseThrow(() -> new IllegalStateException(PROJECT_NOT_EXIST.getMessage()));
 
-        TeamBuildingProject nearestProject = projectFilter.findEarliestScheduledProject(unfinishedProjects)
-                .orElseGet(() -> findUnscheduledProject(unfinishedProjects));
-
-        return teamBuildingInfoMapper.map(nearestProject, user);
+        return teamBuildingInfoMapper.map(currentProject, user);
     }
 
     @Override
@@ -92,11 +90,6 @@ public class ProjectServiceImpl implements ProjectService {
 
     private TeamBuildingProject findProjectBy(long projectId) {
         return projectRepository.findById(projectId)
-                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
-    }
-
-    private TeamBuildingProject findUnscheduledProject(List<TeamBuildingProject> projects) {
-        return projectFilter.findUnscheduledProject(projects)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
     }
 
