@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
@@ -34,6 +35,29 @@ public class EnrollmentController {
     private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
 
     private final EnrollmentService enrollmentService;
+
+    @PostMapping("/ideas/{ideaId}")
+    @Operation(
+            summary = "지원",
+            description = """
+                    다른 사람이 게시한 아이디어에 지원합니다.
+                    
+                    본인이 게시한 아이디어가 없어야 합니다.
+                    
+                    이미 해당 아이디어에 지원했거나, 이미 사용한 지망을 중복 사용시 4XX로 응답합니다.
+                    """
+    )
+    public ResponseEntity<Void> enroll(
+            Principal principal,
+            @PathVariable long ideaId,
+            @RequestBody EnrollmentRequestDto requestDto
+    ) {
+        long userId = findUserIdBy(principal);
+
+        enrollmentService.enroll(userId, ideaId, requestDto);
+
+        return NO_CONTENT;
+    }
 
     @PostMapping("/{enrollmentId}/determine")
     @Operation(

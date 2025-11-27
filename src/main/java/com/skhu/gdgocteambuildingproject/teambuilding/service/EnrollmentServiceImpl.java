@@ -1,7 +1,10 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ALREADY_ENROLL;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CHOICE_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CREATOR_CANNOT_ENROLL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
@@ -15,8 +18,10 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
@@ -48,6 +53,29 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ReceivedEnrollmentMapper receivedEnrollmentMapper;
     private final ProjectUtil projectUtil;
+
+    @Override
+    @Transactional
+    public void enroll(
+            long applicantId,
+            long ideaId,
+            EnrollmentRequestDto requestDto
+    ) {
+        User applicant = findUserBy(applicantId);
+        Idea idea = findIdeaBy(ideaId);
+
+        TeamBuildingProject currentProject = findCurrentProject();
+        ProjectSchedule currentSchedule = findCurrentSchedule(currentProject);
+
+        validateEnrollmentAvailable(currentSchedule.getType());
+        validateChoice(requestDto.choice(), applicant, currentSchedule);
+        validateApplicantCanEnroll(applicant, currentProject);
+        validateEnrollmentUnique(applicant, idea);
+
+        IdeaEnrollment enrollment = saveEnrollment(applicant, idea, currentSchedule, requestDto);
+        idea.addEnrollment(enrollment);
+        applicant.addEnrollment(enrollment);
+    }
 
     @Override
     @Transactional
@@ -167,9 +195,57 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         ).orElseThrow(() -> new EntityNotFoundException(REGISTERED_IDEA_NOT_EXIST.getMessage()));
     }
 
+    private IdeaEnrollment saveEnrollment(
+            User applicant,
+            Idea idea,
+            ProjectSchedule schedule,
+            EnrollmentRequestDto requestDto
+    ) {
+        IdeaEnrollment enrollment = IdeaEnrollment.builder()
+                .applicant(applicant)
+                .idea(idea)
+                .choice(requestDto.choice())
+                .part(requestDto.part())
+                .schedule(schedule)
+                .build();
+
+        return enrollmentRepository.save(enrollment);
+    }
+
     private void validateEnrollmentAvailable(ScheduleType scheduleType) {
         if (!scheduleType.isEnrollmentAvailable()) {
             throw new IllegalStateException(ENROLLMENT_NOT_AVAILABLE.getMessage());
+        }
+    }
+
+    private void validateChoice(
+            Choice choice,
+            User user,
+            ProjectSchedule schedule
+    ) {
+        if (!user.isChoiceAvailable(schedule, choice)) {
+            throw new IllegalArgumentException(CHOICE_NOT_AVAILABLE.getMessage());
+        }
+    }
+
+    private void validateApplicantCanEnroll(
+            User applicant,
+            TeamBuildingProject project
+    ) {
+        if (applicant.hasRegisteredIdeaIn(project)) {
+            throw new IllegalStateException(IDEA_CREATOR_CANNOT_ENROLL.getMessage());
+        }
+    }
+
+    private void validateEnrollmentUnique(
+            User applicant,
+            Idea idea
+    ) {
+        boolean alreadyEnrolled = applicant.getEnrollments().stream()
+                .anyMatch(enrollment -> enrollment.getIdea().equals(idea));
+
+        if (alreadyEnrolled) {
+            throw new IllegalArgumentException(ALREADY_ENROLL.getMessage());
         }
     }
 
