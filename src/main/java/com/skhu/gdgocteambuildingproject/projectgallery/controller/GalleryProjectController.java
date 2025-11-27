@@ -6,8 +6,6 @@ import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryP
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.service.GalleryProjectService;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -58,7 +56,10 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
     @Override
     @PutMapping("/{projectId}")
     @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
-    public ResponseEntity<Long> updateProject(@PathVariable Long projectId, @RequestBody GalleryProjectSaveRequestDto requestDto) {
+    public ResponseEntity<Long> updateProject(
+            @PathVariable Long projectId,
+            @RequestBody GalleryProjectSaveRequestDto requestDto
+    ) {
         return ResponseEntity.ok(galleryProjectService.updateGalleryProjectByProjectId(projectId, requestDto));
     }
 
