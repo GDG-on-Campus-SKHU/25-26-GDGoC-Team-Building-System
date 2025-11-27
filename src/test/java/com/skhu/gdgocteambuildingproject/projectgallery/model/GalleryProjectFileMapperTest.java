@@ -1,33 +1,36 @@
-package com.skhu.gdgocteambuildingproject.projectgallery.model.mapper;
+package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.global.aws.domain.File;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectFile;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectFileInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectFileMapper;
 import org.junit.jupiter.api.Test;
-import org.springframework.test.util.ReflectionTestUtils;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.lang.reflect.Constructor;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class GalleryProjectFileMapperTest {
 
     private static final String FILE_URL = "https://example.com/test.png";
 
-    private final GalleryProjectFileMapper mapper = new GalleryProjectFileMapper();
+    @Mock
+    private GalleryProjectFileMapper mapper;
 
     @Test
     void File_엔티티를_GalleryProjectFileInfoResponseDto로_매핑한다() throws Exception {
         // given
-        Constructor<File> constructor = File.class.getDeclaredConstructor();
-        constructor.setAccessible(true);
-        File file = constructor.newInstance();
+        File mockFile = mock(File.class);
 
-        ReflectionTestUtils.setField(file, "url", FILE_URL);
+        when(mockFile.getUrl()).thenReturn(FILE_URL);
 
         GalleryProjectFile galleryProjectFile = GalleryProjectFile.builder()
-                .file(file)
+                .file(mockFile)
                 .build();
 
         // when
