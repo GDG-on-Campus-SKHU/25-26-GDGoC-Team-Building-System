@@ -2,8 +2,9 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ApplicantEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
 import java.util.List;
 
 public interface EnrollmentService {
@@ -19,5 +20,13 @@ public interface EnrollmentService {
             long applicantId
     );
 
-    List<ApplicantEnrollmentResponseDto> getApplyHistory(long userId, ScheduleType scheduleType);
+    List<SentEnrollmentResponseDto> getSentEnrollments(
+            long userId,
+            ScheduleType scheduleType
+    );
+
+    List<ReceivedEnrollmentResponseDto> getReceivedEnrollments(
+            long userId,
+            ScheduleType scheduleType
+    );
 }
