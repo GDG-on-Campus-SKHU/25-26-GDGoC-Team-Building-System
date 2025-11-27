@@ -10,12 +10,15 @@ import com.skhu.gdgocteambuildingproject.community.domain.ActivityCategory;
 import com.skhu.gdgocteambuildingproject.community.repository.ActivityCategoryRepository;
 import com.skhu.gdgocteambuildingproject.community.repository.ActivityRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CATEGORY_NOT_FOUND;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -71,7 +74,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
     @Transactional(readOnly = true)
     public List<ActivityResponseDto> getActivitiesByCategory(Long categoryId) {
         ActivityCategory category = activityCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 키테고리가 없습니다"));
+                .orElseThrow(() -> new EntityNotFoundException(CATEGORY_NOT_FOUND.getMessage()));
 
         List<Activity> activities = activityRepository.findByActivityCategory(category);
 
