@@ -15,15 +15,14 @@ public class TechStack extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private TechStackType type;
+    private TechStackType techStackType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
     private User user;
 
     @Builder
-    public TechStack(TechStackType type, User user) {
-        this.type = type;
+    public TechStack(TechStackType techStackType, User user) {
+        this.techStackType = techStackType;
         this.user = user;
     }
 }
