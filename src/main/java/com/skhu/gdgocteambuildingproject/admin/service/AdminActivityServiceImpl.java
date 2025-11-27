@@ -1,9 +1,9 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.ActivitySaveRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostSaveDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.activity.*;
 import com.skhu.gdgocteambuildingproject.admin.exception.ActivityPostNotFoundException;
+import com.skhu.gdgocteambuildingproject.admin.model.ActivityCategoryInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.ActivityMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.PostInfoMapper;
 import com.skhu.gdgocteambuildingproject.community.domain.Activity;
 import com.skhu.gdgocteambuildingproject.community.domain.ActivityCategory;
@@ -25,6 +25,8 @@ public class AdminActivityServiceImpl implements AdminActivityService {
     private final ActivityRepository activityRepository;
 
     private final PostInfoMapper postInfoMapper;
+    private final ActivityCategoryInfoMapper activityCategoryInfoMapper;
+    private final ActivityMapper activityMapper;
 
     @Override
     @Transactional
@@ -49,6 +51,33 @@ public class AdminActivityServiceImpl implements AdminActivityService {
         );
 
         return postInfoMapper.toPostResponseDto(activity);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ActivityCategoryInfoResponseDto> getCategoryInfo() {
+        List<ActivityCategory> categories = activityCategoryRepository.findAll();
+
+        return categories.stream()
+                .map(category -> {
+                    long count = activityRepository.countByActivityCategory(category);
+
+                    return activityCategoryInfoMapper.toActivityCategoryInfoResponseDto(category, count);
+                })
+                .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ActivityResponseDto> getActivitiesByCategory(Long categoryId) {
+        ActivityCategory category = activityCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 키테고리가 없습니다"));
+
+        List<Activity> activities = activityRepository.findByActivityCategory(category);
+
+        return activities.stream()
+                .map(activityMapper::toActivityResponseDto)
+                .toList();
     }
 
     private ActivityCategory getOrCreateCategory(ActivitySaveRequestDto requestDto) {
