@@ -4,6 +4,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_FOR_OTHER_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PART_NOT_AVAILABLE;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
@@ -134,6 +135,8 @@ public class Idea extends BaseEntity {
     }
 
     public void updateComposition(Part part, int count) {
+        validatePartAvailable(part);
+
         memberCompositions.stream()
                 .filter(composition -> composition.getPart() == part)
                 .findAny()
@@ -243,6 +246,8 @@ public class Idea extends BaseEntity {
     }
 
     private void createComposition(Part part, int count) {
+        validatePartAvailable(part);
+
         IdeaMemberComposition composition = IdeaMemberComposition.builder()
                 .part(part)
                 .count(count)
@@ -287,6 +292,15 @@ public class Idea extends BaseEntity {
 
         if (currentMemberCount >= maxMemberCount) {
             throw new IllegalStateException(ENROLLMENT_NOT_AVAILABLE.getMessage());
+        }
+    }
+
+    private void validatePartAvailable(Part part) {
+        boolean isAvailable = project.getAvailableParts().stream()
+                .anyMatch(availablePart -> availablePart.getPart() == part);
+
+        if (!isAvailable) {
+            throw new IllegalArgumentException(PART_NOT_AVAILABLE.getMessage());
         }
     }
 }
