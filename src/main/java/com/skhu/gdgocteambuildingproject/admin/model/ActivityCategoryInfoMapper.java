@@ -6,8 +6,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class ActivityCategoryInfoMapper {
-    public ActivityCategoryInfoResponseDto toActivityCategoryInfoResponseDto(ActivityCategory category,
-                                                                             Long count) {
+    public ActivityCategoryInfoResponseDto toDto(ActivityCategory category, Long count) {
         return ActivityCategoryInfoResponseDto.builder()
                 .categoryId(category.getId())
                 .categoryName(category.getName())

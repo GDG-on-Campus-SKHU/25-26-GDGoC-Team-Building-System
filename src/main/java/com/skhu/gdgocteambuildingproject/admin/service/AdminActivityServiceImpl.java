@@ -65,7 +65,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
                 .map(category -> {
                     long count = activityRepository.countByActivityCategory(category);
 
-                    return activityCategoryInfoMapper.toActivityCategoryInfoResponseDto(category, count);
+                    return activityCategoryInfoMapper.toDto(category, count);
                 })
                 .toList();
     }
