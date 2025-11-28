@@ -20,7 +20,7 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
     private final ProjectGalleryInfoMapper projectGalleryInfoMapper;
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<ProjectGalleryResponseDto> searchProjectGallery(String keyword) {
         List<GalleryProject> galleryProjects = galleryProjectRepository.findByProjectName(keyword.trim());
 
