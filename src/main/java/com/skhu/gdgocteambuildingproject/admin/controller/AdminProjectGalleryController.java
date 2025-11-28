@@ -22,7 +22,7 @@ public class AdminProjectGalleryController implements AdminProjectGalleryApi {
 
     private final AdminProjectGalleryService adminProjectGalleryService;
 
-    @GetMapping("/search")
+    @GetMapping
     public ResponseEntity<List<ProjectGalleryResponseDto>> searchProjectGallery(@RequestParam(required = false)
                                                                                 String keyword) {
         List<ProjectGalleryResponseDto> response =
