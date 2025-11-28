@@ -2,8 +2,6 @@ package com.skhu.gdgocteambuildingproject.global.email.controller;
 
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailService;
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailVerificationService;
-import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
-import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -23,7 +21,6 @@ public class EmailController {
 
     private final EmailService emailService;
     private final EmailVerificationService emailVerificationService;
-    private final UserRepository userRepository;
 
     @PostMapping("/send")
     @Operation(
@@ -40,11 +37,7 @@ public class EmailController {
             return ResponseEntity.badRequest().body("이메일을 입력해주세요.");
         }
 
-        if (!userRepository.existsByEmailAndDeletedFalse(email)) {
-            return ResponseEntity.badRequest().body(
-                    ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
-            );
-        }
+        emailService.validateEmailExists(email);
 
         String code = emailService.generateVerificationCode();
         emailVerificationService.saveCode(email, code);

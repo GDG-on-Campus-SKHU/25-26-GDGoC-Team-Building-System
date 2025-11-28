@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.global.email.service;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,15 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final UserRepository userRepository;
+
+    public void validateEmailExists(String email) {
+        if (!userRepository.existsByEmailAndDeletedFalse(email)) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
+            );
+        }
+    }
 
     public String generateVerificationCode() {
         Random random = new Random();
