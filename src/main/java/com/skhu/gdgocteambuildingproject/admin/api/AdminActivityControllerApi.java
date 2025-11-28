@@ -7,7 +7,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -45,6 +44,6 @@ public interface AdminActivityControllerApi {
             @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리 ID")
     })
     ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(
-            @Parameter(description = "조회할 카테고리의 ID", required = true) @PathVariable Long categoryId
+            @Parameter(description = "조회할 카테고리의 ID", required = true) Long categoryId
     );
 }

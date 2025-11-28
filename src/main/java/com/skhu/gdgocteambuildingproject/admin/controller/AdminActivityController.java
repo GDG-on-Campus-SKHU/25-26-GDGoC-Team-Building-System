@@ -44,7 +44,7 @@ public class AdminActivityController implements AdminActivityControllerApi {
 
     @Override
     @GetMapping("/{categoryId}")
-    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(Long categoryId) {
+    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable Long categoryId) {
         List<ActivityResponseDto> activitiesByCategory = adminActivityService.getActivitiesByCategory(categoryId);
         return ResponseEntity.ok().body(activitiesByCategory);
     }
