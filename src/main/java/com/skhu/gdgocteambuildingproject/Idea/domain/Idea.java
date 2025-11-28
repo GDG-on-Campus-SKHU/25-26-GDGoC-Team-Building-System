@@ -181,7 +181,7 @@ public class Idea extends BaseEntity {
                 .filter(composition -> composition.getPart() == part)
                 .map(IdeaMemberComposition::getCount)
                 .findAny()
-                .orElseThrow();
+                .orElse(0);
     }
 
     public int getCurrentMemberCount() {
