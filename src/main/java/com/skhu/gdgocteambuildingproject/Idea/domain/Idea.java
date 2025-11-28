@@ -154,6 +154,13 @@ public class Idea extends BaseEntity {
         members.clear();
     }
 
+    public Part getCreatorPart() {
+        IdeaMember creator = getCreatorInMembers()
+                .orElseThrow(() -> new IllegalStateException(CREATOR_NOT_INIT.getMessage()));
+
+        return creator.getPart();
+    }
+
     public List<IdeaEnrollment> getEnrollmentsOf(ProjectSchedule schedule) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
