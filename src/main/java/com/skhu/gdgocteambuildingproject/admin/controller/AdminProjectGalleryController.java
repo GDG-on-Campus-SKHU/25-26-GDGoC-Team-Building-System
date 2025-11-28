@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
+import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectGalleryApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminProjectGalleryService;
 import lombok.AccessLevel;
@@ -17,16 +18,16 @@ import java.util.List;
 @RequestMapping("/admin/gallery-project")
 @PreAuthorize("hasAnyRole('SKHU_ADMIN')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AdminProjectGalleryController {
+public class AdminProjectGalleryController implements AdminProjectGalleryApi {
 
     private final AdminProjectGalleryService adminProjectGalleryService;
 
     @GetMapping("/search")
     public ResponseEntity<List<ProjectGalleryResponseDto>> searchProjectGallery(@RequestParam(required = false)
                                                                                 String keyword) {
-        List<ProjectGalleryResponseDto> projectGalleryResponseDtos =
+        List<ProjectGalleryResponseDto> response =
                 adminProjectGalleryService.searchProjectGallery(keyword);
 
-        return ResponseEntity.ok(projectGalleryResponseDtos);
+        return ResponseEntity.ok(response);
     }
 }
