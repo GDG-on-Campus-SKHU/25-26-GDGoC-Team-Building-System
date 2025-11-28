@@ -46,4 +46,21 @@ public interface AdminActivityControllerApi {
     ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(
             @Parameter(description = "조회할 카테고리의 ID", required = true) Long categoryId
     );
+
+    @Operation(summary = "게시글 삭제", description = "게시글 ID를 통해 특정 액티비티의 게시글을 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 게시글 ID")
+    })
+    ResponseEntity<Void> deleteActivityPost(
+            @Parameter(description = "삭제할 게시글의 ID", required = true) Long postId);
+
+
+    @Operation(summary = "카테고리 삭제", description = "카테고리 ID를 통해 특정 카테고리를 삭제합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리 ID")
+    })
+    ResponseEntity<Void> deleteCategory(
+            @Parameter(description = "삭제할 카테고리의 ID", required = true) Long categoryId);
 }
