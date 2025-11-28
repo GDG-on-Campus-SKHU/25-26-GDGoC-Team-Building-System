@@ -11,6 +11,7 @@ public enum ExceptionMessage {
 
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
+    NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
     SCHEDULE_PASSED("일정이 지났습니다."),
     ILLEGAL_SCHEDULE_DATE("일정의 날짜가 부적절합니다."),
     ENROLLMENT_NOT_EXIST("지원이 존재하지 않습니다."),
