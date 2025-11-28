@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Getter
@@ -43,5 +45,14 @@ public class IdeaMember extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    @Setter
     private Part part;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private IdeaMemberRole role;
+
+    public boolean isCreator() {
+        return role == IdeaMemberRole.CREATOR;
+    }
 }

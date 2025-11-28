@@ -27,6 +27,7 @@ public enum ExceptionMessage {
     IDEA_CONTENTS_EMPTY("내용이 비어 있습니다."),
     TEMPORARY_IDEA_NOT_EXIST("임시 저장된 아이디어가 없습니다."),
     NOT_CREATOR_OF_IDEA("아이디어 게시자가 아닙니다."),
+    CREATOR_NOT_INIT("아이디어 게시자에 대한 정보가 초기화되지 않았습니다."),
     CHOICE_NOT_AVAILABLE("해당 지망을 사용할 수 없습니다."),
 
     // Admin

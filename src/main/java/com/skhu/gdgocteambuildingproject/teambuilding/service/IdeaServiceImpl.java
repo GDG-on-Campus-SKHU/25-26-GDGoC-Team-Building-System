@@ -229,7 +229,7 @@ public class IdeaServiceImpl implements IdeaService {
             TeamBuildingProject project,
             User creator
     ) {
-        return Idea.builder()
+        Idea idea = Idea.builder()
                 .topic(ideaDto.topic())
                 .title(ideaDto.title())
                 .introduction(ideaDto.introduction())
@@ -238,6 +238,9 @@ public class IdeaServiceImpl implements IdeaService {
                 .project(project)
                 .creator(creator)
                 .build();
+        idea.initCreatorToMember(ideaDto.creatorPart());
+
+        return idea;
     }
 
     private Idea updateExistIdea(
@@ -252,6 +255,7 @@ public class IdeaServiceImpl implements IdeaService {
                 requestDto.introduction(),
                 requestDto.description()
         );
+        idea.updateCreatorPart(requestDto.creatorPart());
         updateIdeaCompositions(idea, requestDto.compositions());
 
         if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
