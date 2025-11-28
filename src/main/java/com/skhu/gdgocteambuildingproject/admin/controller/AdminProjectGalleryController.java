@@ -24,9 +24,7 @@ public class AdminProjectGalleryController implements AdminProjectGalleryApi {
 
     @GetMapping
     public ResponseEntity<List<ProjectGalleryResponseDto>> searchProjectGallery(@RequestParam String keyword) {
-        List<ProjectGalleryResponseDto> response =
-                adminProjectGalleryService.searchProjectGallery(keyword);
-
+        List<ProjectGalleryResponseDto> response = adminProjectGalleryService.searchProjectGallery(keyword);
         return ResponseEntity.ok(response);
     }
 }
