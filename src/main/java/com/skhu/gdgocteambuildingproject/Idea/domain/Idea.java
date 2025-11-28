@@ -157,6 +157,10 @@ public class Idea extends BaseEntity {
         members.clear();
     }
 
+    public List<Part> getAvailableParts() {
+        return project.getAvailableParts();
+    }
+
     public Part getCreatorPart() {
         IdeaMember creator = getCreatorInMembers()
                 .orElseThrow(() -> new IllegalStateException(CREATOR_NOT_INIT.getMessage()));
@@ -297,7 +301,7 @@ public class Idea extends BaseEntity {
 
     private void validatePartAvailable(Part part) {
         boolean isAvailable = project.getAvailableParts().stream()
-                .anyMatch(availablePart -> availablePart.getPart() == part);
+                .anyMatch(availablePart -> availablePart == part);
 
         if (!isAvailable) {
             throw new IllegalArgumentException(PART_NOT_AVAILABLE.getMessage());
