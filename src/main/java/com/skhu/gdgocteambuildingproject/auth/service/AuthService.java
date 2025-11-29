@@ -6,9 +6,11 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.repository.RefreshTokenRepository;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -88,6 +90,9 @@ public class AuthService {
         }
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
             throw new IllegalStateException("관리자 승인 대기 중입니다.");
+        }
+        if (user.getUserStatus() == UserStatus.BANNED) {
+            throw new IllegalStateException(ExceptionMessage.BANNED_USER.getMessage());
         }
     }
 
