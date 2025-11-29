@@ -2,7 +2,9 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CONTENTS_EMPTY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TEMPORARY_IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
@@ -15,7 +17,9 @@ import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDele
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaMemberCompositionRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
@@ -23,11 +27,13 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfo
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaTitleInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -45,6 +51,7 @@ public class IdeaServiceImpl implements IdeaService {
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
 
+    private final ProjectUtil projectUtil;
     private final IdeaTitleInfoMapper ideaTitleInfoMapper;
     private final IdeaDetailInfoMapper ideaDetailInfoMapper;
 
@@ -55,6 +62,9 @@ public class IdeaServiceImpl implements IdeaService {
             long userId,
             IdeaCreateRequestDto requestDto
     ) {
+        ProjectSchedule currentSchedule = getCurrentSchedule();
+        validateRegistrationSchedule(currentSchedule);
+
         if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
             validateContents(requestDto);
         }
@@ -160,6 +170,24 @@ public class IdeaServiceImpl implements IdeaService {
         ideaRepository.deleteById(ideaId);
     }
 
+    private ProjectSchedule getCurrentSchedule() {
+        List<TeamBuildingProject> unfinishedProjects = projectRepository.findProjectsWithScheduleNotEndedBefore(
+                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
+                LocalDateTime.now()
+        );
+        TeamBuildingProject project = projectUtil.findCurrentProject(unfinishedProjects)
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
+
+        return project.getCurrentSchedule()
+                .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_EXIST.getMessage()));
+    }
+
+    private void validateRegistrationSchedule(ProjectSchedule schedule) {
+        if (schedule.getType() != ScheduleType.IDEA_REGISTRATION) {
+            throw new IllegalStateException(NOT_REGISTRATION_SCHEDULE.getMessage());
+        }
+    }
+
     private void validateContents(IdeaCreateRequestDto requestDto) {
         if (StringUtils.isBlank(requestDto.title())
                 || StringUtils.isBlank(requestDto.introduction())
@@ -201,7 +229,7 @@ public class IdeaServiceImpl implements IdeaService {
             TeamBuildingProject project,
             User creator
     ) {
-        return Idea.builder()
+        Idea idea = Idea.builder()
                 .topic(ideaDto.topic())
                 .title(ideaDto.title())
                 .introduction(ideaDto.introduction())
@@ -210,6 +238,9 @@ public class IdeaServiceImpl implements IdeaService {
                 .project(project)
                 .creator(creator)
                 .build();
+        idea.initCreatorToMember(ideaDto.creatorPart());
+
+        return idea;
     }
 
     private Idea updateExistIdea(
@@ -224,6 +255,7 @@ public class IdeaServiceImpl implements IdeaService {
                 requestDto.introduction(),
                 requestDto.description()
         );
+        idea.updateCreatorPart(requestDto.creatorPart());
         updateIdeaCompositions(idea, requestDto.compositions());
 
         if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {

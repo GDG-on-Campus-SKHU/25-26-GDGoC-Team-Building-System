@@ -16,7 +16,7 @@ public class IdeaDetailInfoMapper {
     private final IdeaMemberCompositionMapper compositionMapper;
 
     public IdeaDetailInfoResponseDto map(Idea idea) {
-        IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea.getCreator());
+        IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea);
         List<IdeaMemberCompositionResponseDto> compositions = compositionMapper.map(idea);
 
         return IdeaDetailInfoResponseDto.builder()
