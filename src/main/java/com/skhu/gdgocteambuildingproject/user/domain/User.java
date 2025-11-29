@@ -11,6 +11,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -18,9 +19,11 @@ import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,6 +62,10 @@ public class User extends BaseEntity {
     // 승인 여부
     @Column(nullable = false)
     private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus = UserStatus.ACTIVE;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
@@ -135,5 +142,13 @@ public class User extends BaseEntity {
         this.deletedAt = LocalDateTime.now();
         this.email = null;
         this.number = null;
+    }
+
+    public void ban() {
+        this.userStatus = UserStatus.BANNED;
+    }
+
+    public void unban() {
+        this.userStatus = UserStatus.ACTIVE;
     }
 }
