@@ -17,11 +17,11 @@ public class IdeaMemberCompositionMapper {
         Map<Part, Integer> currentCounts = idea.getCurrentMemberCountsByPart();
 
         List<IdeaMemberCompositionResponseDto> dtos = new ArrayList<>();
-        for (Part part : Part.values()) {
+        for (Part part : idea.getAvailableParts()) {
             dtos.add(IdeaMemberCompositionResponseDto.builder()
                     .part(part)
-                    .maxCount(maxCounts.get(part))
-                    .currentCount(currentCounts.get(part))
+                    .maxCount(maxCounts.getOrDefault(part, 0))
+                    .currentCount(currentCounts.getOrDefault(part, 0))
                     .build()
             );
         }

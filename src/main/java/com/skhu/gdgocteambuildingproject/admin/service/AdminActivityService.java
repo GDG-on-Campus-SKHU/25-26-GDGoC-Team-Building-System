@@ -1,11 +1,15 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.ActivitySaveRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostSaveDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.activity.*;
+
+import java.util.List;
 
 public interface AdminActivityService {
     void createActivity(ActivitySaveRequestDto requestDto);
 
     PostResponseDto updateActivityPost(Long postId, PostSaveDto requestDto);
+
+    List<ActivityCategoryInfoResponseDto> getCategoryInfos();
+
+    List<ActivityResponseDto> getActivitiesByCategory(Long categoryId);
 }
