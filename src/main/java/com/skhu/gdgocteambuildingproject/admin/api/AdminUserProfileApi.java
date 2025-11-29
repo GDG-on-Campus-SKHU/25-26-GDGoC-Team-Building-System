@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -25,7 +26,8 @@ public interface AdminUserProfileApi {
 
     @Operation(summary = "유저 정지 (Ban)", description = "관리자가 특정 유저를 정지 처리합니다.")
     ResponseEntity<Void> banUser(
-            @Parameter(description = "정지할 유저 ID", example = "1", required = true) Long userId
+            @Parameter(description = "정지할 유저 ID", example = "1", required = true) Long userId,
+            UserBanRequestDto userBanRequestDto
     );
 
     @Operation(summary = "유저 정지 해제 (Unban)", description = "관리자가 특정 유저의 정지를 해제합니다.")
