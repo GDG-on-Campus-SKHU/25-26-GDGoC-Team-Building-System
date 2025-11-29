@@ -114,14 +114,7 @@ public class User extends BaseEntity {
                 .toList();
     }
 
-    public void updateBasicProfile(String school,
-                                   UserRole role,
-                                   Part part,
-
-                                   String introduction) {
-        this.school = school;
-        this.role = role;
-        this.part = part;
+    public void updateUserIntroduction(String introduction) {
         this.introduction = introduction;
     }
 

@@ -18,7 +18,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 
 @Service
 @RequiredArgsConstructor
-public class MypageServiceImpl implements MypageService {
+public class MyPageServiceImpl implements MypageService {
 
     private final UserRepository userRepository;
     private final ProfileInfoMapper profileInfoMapper;
@@ -34,39 +34,15 @@ public class MypageServiceImpl implements MypageService {
     @Transactional
     public ProfileInfoResponseDto updateProfile(Long userId, ProfileInfoRequestDto requestDto) {
         User user = findUserBy(userId);
-        user.updateBasicProfile(
-                requestDto.school(),
-                requestDto.role(),
-                requestDto.part(),
-                requestDto.introduction()
-        );
+        user.updateUserIntroduction(requestDto.introduction());
 
-        List<TechStack> newTechStack = createTechStacks(user, requestDto);
+        List<TechStack> newTechStack = profileInfoMapper.toTechStacks(user, requestDto);
         user.updateTechStacks(newTechStack);
 
-        List<UserLink> newUserLink = createUserLinks(user, requestDto);
+        List<UserLink> newUserLink = profileInfoMapper.toUserLinks(user, requestDto);
         user.updateUserLinks(newUserLink);
 
         return profileInfoMapper.map(user);
-    }
-
-    private List<TechStack> createTechStacks(User user, ProfileInfoRequestDto requestDto) {
-        return requestDto.techStacks().stream()
-                .map(dto -> TechStack.builder()
-                        .techStackType(dto.techStackType())
-                        .user(user)
-                        .build())
-                .toList();
-    }
-
-    private List<UserLink> createUserLinks(User user, ProfileInfoRequestDto requestDto) {
-        return requestDto.userLinks().stream()
-                .map(dto -> UserLink.builder()
-                        .linkType(dto.linkType())
-                        .url(dto.url())
-                        .user(user)
-                        .build())
-                .toList();
     }
 
     private User findUserBy(Long userId) {

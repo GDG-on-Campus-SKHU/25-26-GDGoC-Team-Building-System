@@ -3,7 +3,7 @@ package com.skhu.gdgocteambuildingproject.mypage.controller;
 import com.skhu.gdgocteambuildingproject.mypage.api.MyPageControllerApi;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.service.MypageServiceImpl;
+import com.skhu.gdgocteambuildingproject.mypage.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -16,9 +16,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/mypage")
 @RequiredArgsConstructor
-public class MypageController implements MyPageControllerApi {
+public class MyPageController implements MyPageControllerApi {
 
-    private final MypageServiceImpl mypageService;
+    private final MypageService mypageService;
 
     @Override
     @GetMapping("/{userId}")
@@ -26,6 +26,7 @@ public class MypageController implements MyPageControllerApi {
         return ResponseEntity.ok(mypageService.getProfileByUserId(userId));
     }
 
+    @Override
     @PutMapping("/{userId}")
     public ResponseEntity<ProfileInfoResponseDto> updateProfile(@PathVariable Long userId,
                                                                 @RequestBody ProfileInfoRequestDto profileInfoRequestDto) {

@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.mypage.dto.request;
+package com.skhu.gdgocteambuildingproject.mypage.dto;
 
 import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.LinkType;
@@ -9,7 +9,7 @@ public record UserLinkDto(
         LinkType linkType,
         String url
 ) {
-    public static UserLinkDto toEntity(UserLink entity) {
+    public static UserLinkDto from(UserLink entity) {
         return UserLinkDto.builder()
                 .linkType(entity.getLinkType())
                 .url(entity.getUrl())
