@@ -30,6 +30,6 @@ public class MypageController implements MypageControllerApi {
     @PutMapping("/{userId}")
     public ResponseEntity<ProfileInfoResponseDto> updateModifiableProfile(@PathVariable Long userId,
                                                                           @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto) {
-        return ResponseEntity.ok(mypageService.updateModifiableProfile(userId, profileInfoRequestDto));
+        return ResponseEntity.ok(mypageService.updateUserModifiableProfile(userId, profileInfoRequestDto));
     }
 }

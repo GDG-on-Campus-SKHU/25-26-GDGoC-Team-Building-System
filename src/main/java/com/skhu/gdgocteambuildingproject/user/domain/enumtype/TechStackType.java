@@ -11,7 +11,6 @@ public enum TechStackType {
     ACTIX_WEB("Actix Web", "actix"),                    // override
     ADONISJS("AdonisJS", "adonisjs"),
     ADOBE_AFTER_EFFECTS("Adobe After Effects", "adobeaftereffects"),
-    AISCRIPT("AIScript", "aiscript"),                   // 이건 실제 존재하는지 한 번 테스트 필요
     ALPINE_JS("Alpine.js", "alpinedotjs"),              // override
     ANACONDA("Anaconda", "anaconda"),
     ANDROID_STUDIO("Android Studio", "androidstudio"),
@@ -28,7 +27,7 @@ public enum TechStackType {
     AZURE("Microsoft Azure", "microsoftazure"),
 
     BABEL("Babel", "babel"),
-    BASH("Bash", "bash"),                               // 필요하면 gnubash로 바꿔서 확인
+    BASH("Bash", "gnubash"),
     BITBUCKET("Bitbucket", "bitbucket"),
     BLENDER("Blender", "blender"),
     BOOTSTRAP("Bootstrap", "bootstrap"),
@@ -55,7 +54,7 @@ public enum TechStackType {
     DOTNET(".NET", "dotnet"),                           // override
     DYNAMODB("DynamoDB", "amazondynamodb"),             // override
 
-    ECLIPSE("Eclipse", "eclipseide"),                   // 원하는지 확인 필요 (Eclipse IDE 아이콘)
+    ECLIPSE("Eclipse", "eclipseide"),
     ELASTICSEARCH("Elasticsearch", "elasticsearch"),
     ELECTRON_JS("Electron.js", "electron"),             // override
     ELIXIR("Elixir", "elixir"),
@@ -78,7 +77,7 @@ public enum TechStackType {
     HEROKU("Heroku", "heroku"),
     HTML("HTML", "html5"),
 
-    JAVA("Java", "oracle"),                             // 또는 openjdk/“java” 아이콘 쪽 선택
+    JAVA("Java", "oracle"),                             // 미작동
     JAVASCRIPT("JavaScript", "javascript"),
     JENKINS("Jenkins", "jenkins"),
     JEST("Jest", "jest"),
@@ -137,7 +136,7 @@ public enum TechStackType {
     VERCEL("Vercel", "vercel"),
     VIM("Vim", "vim"),
     VITE("Vite", "vite"),
-    VS_CODE("VS Code", "visualstudiocode"),             // override
+    VS_CODE("VS Code", "visualstudiocode"),             // 미작동
     VUE_JS("Vue.js", "vuedotjs"),                       // override
 
     WEBPACK("Webpack", "webpack"),

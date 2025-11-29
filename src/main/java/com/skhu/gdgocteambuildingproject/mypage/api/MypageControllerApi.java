@@ -20,7 +20,7 @@ public interface MypageControllerApi {
             description = "마이페이지의 Profile 탭에서 사용자의 본인의 프로필을 조회합니다."
     )
     @ApiResponse(responseCode = "200")
-    ResponseEntity<ProfileInfoResponseDto> getProfileByUserid(@Parameter(description = "프로필을 조회하려는 유저의 유저 ID", required = true) Long userId);
+    ResponseEntity<ProfileInfoResponseDto> getProfileByUserid(@Parameter(description = "프로필을 조회하려는 유저의 유저 ID", example = "1", required = true) Long userId);
 
     @Operation(
             summary = "프로필 수정",
@@ -30,6 +30,6 @@ public interface MypageControllerApi {
                     """
     )
     @ApiResponse(responseCode = "200")
-    ResponseEntity<ProfileInfoResponseDto> updateModifiableProfile(@Parameter(description = "프로필을 수정하려는 유저의 유저 ID", required = true) Long userId,
+    ResponseEntity<ProfileInfoResponseDto> updateModifiableProfile(@Parameter(description = "프로필을 수정하려는 유저의 유저 ID", example = "1", required = true) Long userId,
                                                                    @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto);
 }

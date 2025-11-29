@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.mypage.service;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoMapper;
@@ -26,14 +27,14 @@ public class MypageServiceImpl implements MypageService {
     @Override
     @Transactional(readOnly = true)
     public ProfileInfoResponseDto getProfileByUserId(Long userId) {
-        User user = findUserBy(userId);
+        User user = findUserByIdOrThrow(userId);
         return profileInfoMapper.map(user);
     }
 
     @Override
     @Transactional
-    public ProfileInfoResponseDto updateModifiableProfile(Long userId, ProfileInfoUpdateRequestDto requestDto) {
-        User user = findUserBy(userId);
+    public ProfileInfoResponseDto updateUserModifiableProfile(Long userId, ProfileInfoUpdateRequestDto requestDto) {
+        User user = findUserByIdOrThrow(userId);
         user.updateUserIntroduction(requestDto.introduction());
 
         List<TechStack> newTechStack = profileInfoMapper.toTechStacks(user, requestDto);
@@ -45,8 +46,8 @@ public class MypageServiceImpl implements MypageService {
         return profileInfoMapper.map(user);
     }
 
-    private User findUserBy(Long userId) {
+    private User findUserByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException(USER_NOT_EXIST.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
     }
 }
