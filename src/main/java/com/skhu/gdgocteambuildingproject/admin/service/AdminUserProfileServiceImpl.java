@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.PageInfo;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -48,14 +49,14 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     @Override
     @Transactional
-    public void banUser(Long userId) {
+    public void banUser(Long userId, UserBanRequestDto dto) {
         User user = getUserOrThrow(userId);
 
         if (user.getUserStatus() == UserStatus.BANNED) {
             throw new IllegalStateException(ExceptionMessage.ALREADY_BANNED_USER.getMessage());
         }
 
-        user.ban();
+        user.ban(dto.reason());
     }
 
     @Override
