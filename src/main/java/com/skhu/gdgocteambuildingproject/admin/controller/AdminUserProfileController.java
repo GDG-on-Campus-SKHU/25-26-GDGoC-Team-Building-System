@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminUserProfileApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileServiceImpl;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -35,8 +36,9 @@ public class AdminUserProfileController implements AdminUserProfileApi {
 
     @Override
     @PostMapping("/ban/{userId}")
-    public ResponseEntity<Void> banUser(@PathVariable Long userId) {
-        adminUserProfileService.banUser(userId);
+    public ResponseEntity<Void> banUser(@PathVariable Long userId,
+                                        @RequestBody UserBanRequestDto dto) {
+        adminUserProfileService.banUser(userId, dto);
         return ResponseEntity.ok().build();
     }
 
