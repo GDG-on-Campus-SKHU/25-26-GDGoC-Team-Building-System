@@ -6,147 +6,153 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum TechStackType {
-    ABLETON_LIVE("Ableton Live"),
-    ACTIVITYPUB("ActivityPub"),
-    ACTIX_WEB("Actix Web"),
-    ADONISJS("AdonisJS"),
-    ADOBE_AFTER_EFFECTS("Adobe After Effects"),
-    AISCRIPT("AIScript"),
-    ALPINE_JS("Alpine.js"),
-    ANACONDA("Anaconda"),
-    ANDROID_STUDIO("Android Studio"),
-    ANGULAR("Angular"),
-    ANSIBLE("Ansible"),
-    APOLLO_GRAPHQL("Apollo GraphQL"),
-    APPWRITE("Appwrite"),
-    ARCH_LINUX("Arch Linux"),
-    ARDUINO("Arduino"),
-    ASTRO("Astro"),
-    ATOM("Atom"),
-    AUTOCAD("AutoCAD"),
-    AWS("AWS"),
-    AZURE("Microsoft Azure"),
+    ABLETON_LIVE("Ableton Live", "abletonlive"),
+    ACTIVITYPUB("ActivityPub", "activitypub"),
+    ACTIX_WEB("Actix Web", "actix"),                    // override
+    ADONISJS("AdonisJS", "adonisjs"),
+    ADOBE_AFTER_EFFECTS("Adobe After Effects", "adobeaftereffects"),
+    AISCRIPT("AIScript", "aiscript"),                   // 이건 실제 존재하는지 한 번 테스트 필요
+    ALPINE_JS("Alpine.js", "alpinedotjs"),              // override
+    ANACONDA("Anaconda", "anaconda"),
+    ANDROID_STUDIO("Android Studio", "androidstudio"),
+    ANGULAR("Angular", "angular"),
+    ANSIBLE("Ansible", "ansible"),
+    APOLLO_GRAPHQL("Apollo GraphQL", "apollographql"),
+    APPWRITE("Appwrite", "appwrite"),
+    ARCH_LINUX("Arch Linux", "archlinux"),
+    ARDUINO("Arduino", "arduino"),
+    ASTRO("Astro", "astro"),
+    ATOM("Atom", "atom"),
+    AUTOCAD("AutoCAD", "autocad"),
+    AWS("AWS", "amazonwebservices"),                    // override
+    AZURE("Microsoft Azure", "microsoftazure"),
 
-    BABEL("Babel"),
-    BASH("Bash"),
-    BITBUCKET("Bitbucket"),
-    BLENDER("Blender"),
-    BOOTSTRAP("Bootstrap"),
+    BABEL("Babel", "babel"),
+    BASH("Bash", "bash"),                               // 필요하면 gnubash로 바꿔서 확인
+    BITBUCKET("Bitbucket", "bitbucket"),
+    BLENDER("Blender", "blender"),
+    BOOTSTRAP("Bootstrap", "bootstrap"),
 
-    C("C"),
-    CPP("C++"),
-    CSHARP("C#"),
-    CLION("CLion"),
-    CLOJURE("Clojure"),
-    CLOUDFLARE("Cloudflare"),
-    CMAKE("CMake"),
-    CODEPEN("CodePen"),
-    COFFEESCRIPT("CoffeeScript"),
-    CSS("CSS"),
-    CYPRESS("Cypress"),
+    C("C", "c"),
+    CPP("C++", "cplusplus"),                            // override
+    CSHARP("C#", "csharp"),                             // override
+    CLION("CLion", "clion"),
+    CLOJURE("Clojure", "clojure"),
+    CLOUDFLARE("Cloudflare", "cloudflare"),
+    CMAKE("CMake", "cmake"),
+    CODEPEN("CodePen", "codepen"),
+    COFFEESCRIPT("CoffeeScript", "coffeescript"),
+    CSS("CSS", "css3"),                                 // override
+    CYPRESS("Cypress", "cypress"),
 
-    DART("Dart"),
-    DEBIAN("Debian"),
-    DENO("Deno"),
-    DEV_TO("Dev.to"),
-    DISCORD("Discord"),
-    DJANGO("Django"),
-    DOCKER("Docker"),
-    DOTNET(".NET"),
-    DYNAMODB("DynamoDB"),
+    DART("Dart", "dart"),
+    DEBIAN("Debian", "debian"),
+    DENO("Deno", "deno"),
+    DEV_TO("Dev.to", "devdotto"),                       // override
+    DISCORD("Discord", "discord"),
+    DJANGO("Django", "django"),
+    DOCKER("Docker", "docker"),
+    DOTNET(".NET", "dotnet"),                           // override
+    DYNAMODB("DynamoDB", "amazondynamodb"),             // override
 
-    ECLIPSE("Eclipse"),
-    ELASTICSEARCH("Elasticsearch"),
-    ELECTRON_JS("Electron.js"),
-    ELIXIR("Elixir"),
-    EXPRESS_JS("Express.js"),
+    ECLIPSE("Eclipse", "eclipseide"),                   // 원하는지 확인 필요 (Eclipse IDE 아이콘)
+    ELASTICSEARCH("Elasticsearch", "elasticsearch"),
+    ELECTRON_JS("Electron.js", "electron"),             // override
+    ELIXIR("Elixir", "elixir"),
+    EXPRESS_JS("Express.js", "express"),                // override
 
-    FASTAPI("FastAPI"),
-    FIGMA("Figma"),
-    FIREBASE("Firebase"),
-    FLASK("Flask"),
-    FLUTTER("Flutter"),
+    FASTAPI("FastAPI", "fastapi"),
+    FIGMA("Figma", "figma"),
+    FIREBASE("Firebase", "firebase"),
+    FLASK("Flask", "flask"),
+    FLUTTER("Flutter", "flutter"),
 
-    GATSBY("Gatsby"),
-    GCP("Google Cloud Platform"),
-    GIT("Git"),
-    GITHUB("GitHub"),
-    GITLAB("GitLab"),
-    GO("Go (Golang)"),
-    GRAPHQL("GraphQL"),
-    HASKELL("Haskell"),
-    HEROKU("Heroku"),
-    HTML("HTML"),
+    GATSBY("Gatsby", "gatsby"),
+    GCP("Google Cloud Platform", "googlecloud"),        // override
+    GIT("Git", "git"),
+    GITHUB("GitHub", "github"),
+    GITLAB("GitLab", "gitlab"),
+    GO("Go", "go"),
+    GRAPHQL("GraphQL", "graphql"),
+    HASKELL("Haskell", "haskell"),
+    HEROKU("Heroku", "heroku"),
+    HTML("HTML", "html5"),
 
-    JAVA("Java"),
-    JAVASCRIPT("JavaScript"),
-    JENKINS("Jenkins"),
-    JEST("Jest"),
-    JQUERY("jQuery"),
+    JAVA("Java", "oracle"),                             // 또는 openjdk/“java” 아이콘 쪽 선택
+    JAVASCRIPT("JavaScript", "javascript"),
+    JENKINS("Jenkins", "jenkins"),
+    JEST("Jest", "jest"),
+    JQUERY("jQuery", "jquery"),
 
-    KAFKA("Apache Kafka"),
-    KALI_LINUX("Kali Linux"),
-    KOTLIN("Kotlin"),
-    KUBERNETES("Kubernetes"),
+    KAFKA("Apache Kafka", "apachekafka"),
+    KALI_LINUX("Kali Linux", "kalilinux"),
+    KOTLIN("Kotlin", "kotlin"),
+    KUBERNETES("Kubernetes", "kubernetes"),
 
-    LARAVEL("Laravel"),
-    LINUX("Linux"),
-    LUA("Lua"),
+    LARAVEL("Laravel", "laravel"),
+    LINUX("Linux", "linux"),
+    LUA("Lua", "lua"),
 
-    MONGODB("MongoDB"),
-    MYSQL("MySQL"),
+    MONGODB("MongoDB", "mongodb"),
+    MYSQL("MySQL", "mysql"),
 
-    NESTJS("NestJS"),
-    NEXT_JS("Next.js"),
-    NGINX("NGINX"),
-    NODE_JS("Node.js"),
-    NPM("npm"),
-    NUXT_JS("Nuxt.js"),
+    NESTJS("NestJS", "nestjs"),
+    NEXT_JS("Next.js", "nextdotjs"),                    // override
+    NGINX("NGINX", "nginx"),
+    NODE_JS("Node.js", "nodedotjs"),                    // override
+    NPM("npm", "npm"),
+    NUXT_JS("Nuxt.js", "nuxtdotjs"),                    // override
 
-    PHP("PHP"),
-    POSTGRESQL("PostgreSQL"),
-    POSTMAN("Postman"),
-    POWERSHELL("PowerShell"),
-    PRISMA("Prisma"),
-    PYTHON("Python"),
-    PYTORCH("PyTorch"),
+    PHP("PHP", "php"),
+    POSTGRESQL("PostgreSQL", "postgresql"),
+    POSTMAN("Postman", "postman"),
+    PRISMA("Prisma", "prisma"),
+    PYTHON("Python", "python"),
+    PYTORCH("PyTorch", "pytorch"),
 
-    RAILS("Ruby on Rails"),
-    REACT("React.js"),
-    REDIS("Redis"),
-    REDUX("Redux"),
-    REMIX("Remix"),
-    RUST("Rust"),
+    RAILS("Ruby on Rails", "rubyonrails"),
+    REACT("React.js", "react"),                         // override
+    REDIS("Redis", "redis"),
+    REDUX("Redux", "redux"),
+    REMIX("Remix", "remix"),
+    RUST("Rust", "rust"),
 
-    SASS("SASS"),
-    SPRING_BOOT("Spring Boot"),
-    SQLITE("SQLite"),
-    STYLED_COMPONENTS("Styled Components"),
-    SUPABASE("Supabase"),
-    SVELTE("Svelte"),
-    SWIFT("Swift"),
+    SASS("SASS", "sass"),
+    SPRING_BOOT("Spring Boot", "springboot"),
+    SQLITE("SQLite", "sqlite"),
+    STYLED_COMPONENTS("Styled Components", "styledcomponents"),
+    SUPABASE("Supabase", "supabase"),
+    SVELTE("Svelte", "svelte"),
+    SWIFT("Swift", "swift"),
 
-    TAILWIND_CSS("Tailwind CSS"),
-    TERRAFORM("Terraform"),
-    THREE_JS("Three.js"),
-    TYPESCRIPT("TypeScript"),
+    TAILWIND_CSS("Tailwind CSS", "tailwindcss"),
+    TERRAFORM("Terraform", "terraform"),
+    THREE_JS("Three.js", "threedotjs"),                 // override
+    TYPESCRIPT("TypeScript", "typescript"),
 
-    UBUNTU("Ubuntu"),
-    UNITY("Unity"),
-    UNREAL_ENGINE("Unreal Engine"),
+    UBUNTU("Ubuntu", "ubuntu"),
+    UNITY("Unity", "unity"),
+    UNREAL_ENGINE("Unreal Engine", "unrealengine"),
 
-    VERCEL("Vercel"),
-    VIM("Vim"),
-    VITE("Vite"),
-    VS_CODE("VS Code"),
-    VUE_JS("Vue.js"),
+    VERCEL("Vercel", "vercel"),
+    VIM("Vim", "vim"),
+    VITE("Vite", "vite"),
+    VS_CODE("VS Code", "visualstudiocode"),             // override
+    VUE_JS("Vue.js", "vuedotjs"),                       // override
 
-    WEBPACK("Webpack"),
-    WORDPRESS("WordPress"),
+    WEBPACK("Webpack", "webpack"),
+    WORDPRESS("WordPress", "wordpress"),
 
-    YARN("Yarn"),
+    YARN("Yarn", "yarn"),
 
-    ZIG("Zig");
+    ZIG("Zig", "zig");
 
     private final String displayName;
+    private final String iconSlug;
+
+    private static final String SIMPLE_ICONS_BASE_URL = "https://cdn.simpleicons.org/";
+
+    public String getIconUrl() {
+        return SIMPLE_ICONS_BASE_URL + iconSlug;
+    }
 }

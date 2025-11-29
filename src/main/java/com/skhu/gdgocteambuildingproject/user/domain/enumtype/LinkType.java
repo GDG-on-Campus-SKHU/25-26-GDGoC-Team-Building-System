@@ -15,9 +15,28 @@ public enum LinkType {
     BAEKJOON("BaekJoon"),
     INSTAGRAM("Instagram"),
     TWITTER("Twitter"),
+    X("X"),
     FACEBOOK("Facebook"),
     YOUTUBE("YouTube"),
     OTHER("기타");
 
     private final String displayName;
+
+    private static final String SIMPLE_ICONS_BASE_URL = "https://cdn.simpleicons.org/";
+
+    public String getIconUrl() {
+        return switch (this) {
+            case BLOG -> "/icons/blog.png";
+            case LINKEDIN -> "/icons/linkedin.png";
+            case BAEKJOON -> "/icons/baekjoon.png";
+            case TWITTER -> "/icons/twitter.png";
+            case OTHER -> "/icons/guitar.png";
+            default -> SIMPLE_ICONS_BASE_URL + getIconSlug();
+        };
+    }
+
+    private String getIconSlug() {
+        return displayName.toLowerCase().replace(" ", "");
+    }
+
 }
