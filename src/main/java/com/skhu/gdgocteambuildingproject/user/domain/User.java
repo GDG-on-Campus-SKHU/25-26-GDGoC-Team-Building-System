@@ -56,6 +56,8 @@ public class User extends BaseEntity {
     private boolean deleted;
     private LocalDateTime deletedAt;
 
+    private String banReason;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
@@ -144,11 +146,13 @@ public class User extends BaseEntity {
         this.number = null;
     }
 
-    public void ban() {
+    public void ban(String reason) {
         this.userStatus = UserStatus.BANNED;
+        this.banReason = reason;
     }
 
     public void unban() {
         this.userStatus = UserStatus.ACTIVE;
+        this.banReason = null;
     }
 }
