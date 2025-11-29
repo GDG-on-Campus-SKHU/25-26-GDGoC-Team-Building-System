@@ -152,7 +152,7 @@ public enum TechStackType {
 
     private static final String SIMPLE_ICONS_BASE_URL = "https://cdn.simpleicons.org/";
 
-    public String getIconUrl() {
+    public String getTechStackIconUrl() {
         return SIMPLE_ICONS_BASE_URL + iconSlug;
     }
 }

@@ -7,7 +7,7 @@ import lombok.Builder;
 import java.util.List;
 
 @Builder
-public record ProfileInfoRequestDto(
+public record ProfileInfoUpdateRequestDto(
         List<TechStackDto> techStacks,
         List<UserLinkDto> userLinks,
         String introduction

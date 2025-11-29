@@ -24,13 +24,13 @@ public enum LinkType {
 
     private static final String SIMPLE_ICONS_BASE_URL = "https://cdn.simpleicons.org/";
 
-    public String getIconUrl() {
+    public String getLinkIconUrl() {
         return switch (this) {
             case BLOG -> "/icons/blog.png";
             case LINKEDIN -> "/icons/linkedin.png";
             case BAEKJOON -> "/icons/baekjoon.png";
             case TWITTER -> "/icons/twitter.png";
-            case OTHER -> "/icons/guitar.png";
+            case OTHER -> "/icons/other_guitar.png";
             default -> SIMPLE_ICONS_BASE_URL + getIconSlug();
         };
     }

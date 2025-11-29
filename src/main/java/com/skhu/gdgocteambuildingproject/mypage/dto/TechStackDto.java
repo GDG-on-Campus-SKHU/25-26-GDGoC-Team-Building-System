@@ -6,12 +6,13 @@ import lombok.Builder;
 
 @Builder
 public record TechStackDto(
-        TechStackType techStackType
+        TechStackType techStackType,
+        String iconUrl
 ) {
     public static TechStackDto from(TechStack entity) {
         return TechStackDto.builder()
                 .techStackType(entity.getTechStackType())
+                .iconUrl(entity.getTechStackType().getTechStackIconUrl())
                 .build();
     }
 }
-

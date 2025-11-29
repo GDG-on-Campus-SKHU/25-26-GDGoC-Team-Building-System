@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.mypage.service;
 
-import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
@@ -18,7 +18,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 
 @Service
 @RequiredArgsConstructor
-public class MyPageServiceImpl implements MypageService {
+public class MypageServiceImpl implements MypageService {
 
     private final UserRepository userRepository;
     private final ProfileInfoMapper profileInfoMapper;
@@ -32,7 +32,7 @@ public class MyPageServiceImpl implements MypageService {
 
     @Override
     @Transactional
-    public ProfileInfoResponseDto updateProfile(Long userId, ProfileInfoRequestDto requestDto) {
+    public ProfileInfoResponseDto updateModifiableProfile(Long userId, ProfileInfoUpdateRequestDto requestDto) {
         User user = findUserBy(userId);
         user.updateUserIntroduction(requestDto.introduction());
 

@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.mypage.api;
 
-import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
         name = "마이페이지 API",
         description = "모든 유저가 사용 가능한 마이페이지 API"
 )
-public interface MyPageControllerApi {
+public interface MypageControllerApi {
 
     @Operation(
             summary = "프로필 조회",
@@ -24,9 +24,12 @@ public interface MyPageControllerApi {
 
     @Operation(
             summary = "프로필 수정",
-            description = "마이페이지의 Profile 탭에서 사용자 본인의 프로필을 수정합니다"
+            description = """
+                    마이페이지의 Profile 탭에서 사용자 본인의 프로필을 수정합니다
+                    기술스택 혹은 링크를 입력하지 않으면 빈 리스트를 반환합니다
+                    """
     )
     @ApiResponse(responseCode = "200")
-    ResponseEntity<ProfileInfoResponseDto> updateProfile(@Parameter(description = "프로필을 수정하려는 유저의 유저 ID", required = true) Long userId,
-                                                         @RequestBody ProfileInfoRequestDto profileInfoRequestDto);
+    ResponseEntity<ProfileInfoResponseDto> updateModifiableProfile(@Parameter(description = "프로필을 수정하려는 유저의 유저 ID", required = true) Long userId,
+                                                                   @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto);
 }
