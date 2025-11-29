@@ -15,8 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
-
 @Service
 @RequiredArgsConstructor
 public class MypageServiceImpl implements MypageService {
@@ -37,11 +35,11 @@ public class MypageServiceImpl implements MypageService {
         User user = findUserByIdOrThrow(userId);
         user.updateUserIntroduction(requestDto.introduction());
 
-        List<TechStack> newTechStack = profileInfoMapper.toTechStacks(user, requestDto);
-        user.updateTechStacks(newTechStack);
+        List<TechStack> newTechStacks = profileInfoMapper.toTechStacks(user, requestDto);
+        user.updateTechStacks(newTechStacks);
 
-        List<UserLink> newUserLink = profileInfoMapper.toUserLinks(user, requestDto);
-        user.updateUserLinks(newUserLink);
+        List<UserLink> newUserLinks = profileInfoMapper.toUserLinks(user, requestDto);
+        user.updateUserLinks(newUserLinks);
 
         return profileInfoMapper.map(user);
     }
