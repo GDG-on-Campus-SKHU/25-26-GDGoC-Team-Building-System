@@ -28,7 +28,7 @@ public class EnrollmentAvailabilityMapper {
                 .ideaTitle(idea.getTitle())
                 .ideaIntroduction(idea.getIntroduction())
                 .creatorSchool(creator.getSchool())
-                .creatorPart(creator.getPart())
+                .creatorPart(idea.getCreatorPart())
                 .creatorName(creator.getName())
                 .choiceAvailabilities(choiceMapper.map(applicant, schedule))
                 .partAvailabilities(partMapper.map(idea))

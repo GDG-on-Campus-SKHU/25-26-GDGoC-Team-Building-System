@@ -11,6 +11,7 @@ public enum ExceptionMessage {
 
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
+    NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
     SCHEDULE_PASSED("일정이 지났습니다."),
     ILLEGAL_SCHEDULE_DATE("일정의 날짜가 부적절합니다."),
     ENROLLMENT_NOT_EXIST("지원이 존재하지 않습니다."),
@@ -26,7 +27,9 @@ public enum ExceptionMessage {
     IDEA_CONTENTS_EMPTY("내용이 비어 있습니다."),
     TEMPORARY_IDEA_NOT_EXIST("임시 저장된 아이디어가 없습니다."),
     NOT_CREATOR_OF_IDEA("아이디어 게시자가 아닙니다."),
+    CREATOR_NOT_INIT("아이디어 게시자에 대한 정보가 초기화되지 않았습니다."),
     CHOICE_NOT_AVAILABLE("해당 지망을 사용할 수 없습니다."),
+    PART_NOT_AVAILABLE("해당 프로젝트에서 모집하지 않는 파트입니다."),
 
     // Admin
     USER_ALREADY_APPROVED("이미 승인된 회원입니다."),
