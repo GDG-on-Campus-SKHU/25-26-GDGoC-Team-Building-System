@@ -24,7 +24,7 @@ public interface AdminUserProfileApi {
             @Parameter(description = "정렬 방향 (ASC/DESC)") SortOrder order
     );
 
-    @Operation(summary = "유저 정지 (Ban)", description = "관리자가 특정 유저를 정지 처리합니다.")
+    @Operation(summary = "유저 정지 (Ban)", description = "관리자가 특정 유저를 정지하고 사유를 전달합니다.")
     ResponseEntity<Void> banUser(
             @Parameter(description = "정지할 유저 ID", example = "1", required = true) Long userId,
             UserBanRequestDto userBanRequestDto
