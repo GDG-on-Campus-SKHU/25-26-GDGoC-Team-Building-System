@@ -7,7 +7,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "Admin User Management", description = "관리자 유저 승인 관리 API")
+@Tag(name = "관리자의 승인된 멤버 관리 API", description = "관리자의 승인된 멤버 관리 API입니다.")
 public interface AdminUserProfileApi {
 
     String DEFAULT_PAGE = "0";
@@ -21,5 +21,15 @@ public interface AdminUserProfileApi {
             @Parameter(description = "페이지 크기", example = "20") int size,
             @Parameter(description = "정렬 기준 필드", example = "id") String sortBy,
             @Parameter(description = "정렬 방향 (ASC/DESC)") SortOrder order
+    );
+
+    @Operation(summary = "유저 정지 (Ban)", description = "관리자가 특정 유저를 정지 처리합니다.")
+    ResponseEntity<Void> banUser(
+            @Parameter(description = "정지할 유저 ID", example = "1", required = true) Long userId
+    );
+
+    @Operation(summary = "유저 정지 해제 (Unban)", description = "관리자가 특정 유저의 정지를 해제합니다.")
+    ResponseEntity<Void> unbanUser(
+            @Parameter(description = "정지 해제할 유저 ID", example = "1", required = true) Long userId
     );
 }
