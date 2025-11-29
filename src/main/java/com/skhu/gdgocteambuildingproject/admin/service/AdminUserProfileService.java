@@ -11,4 +11,8 @@ public interface AdminUserProfileService {
             String sortBy,
             SortOrder order
     );
+
+    void banUser(Long userId);
+
+    void unbanUser(Long userId);
 }
