@@ -96,6 +96,7 @@ public class TeamBuildingProject extends BaseEntity {
         LocalDateTime now = LocalDateTime.now();
 
         return schedules.stream()
+                .filter(ProjectSchedule::isScheduled)
                 .filter(schedule -> now.isAfter(schedule.getStartDate()))
                 .filter(schedule -> now.isBefore(schedule.getEndDate()))
                 .findFirst();

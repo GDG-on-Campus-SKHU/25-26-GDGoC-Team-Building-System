@@ -2,7 +2,9 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectManageApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import jakarta.validation.Valid;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -37,6 +40,19 @@ public class AdminProjectManageController implements AdminProjectManageApi {
         projectService.createNewProject(requestDto);
 
         return NO_CONTENT;
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<ProjectInfoPageResponseDto> getProjects(
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        ProjectInfoPageResponseDto response = projectService.findProjects(page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
     }
 
     @Override
