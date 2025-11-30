@@ -8,6 +8,9 @@ public enum ExceptionMessage {
     USER_NOT_EXIST("회원이 존재하지 않습니다."),
     USER_NOT_FOUND("해당 ID의 회원을 찾을 수 없습니다."),
     FILE_NOT_EXIST("파일이 존재하지 않습니다."),
+    BANNED_USER("정지된 계정입니다."),
+    ALREADY_BANNED_USER("이미 정지된 계정입니다."),
+    ALREADY_ACTIVE_USER("이미 활성화된 계정입니다."),
 
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
