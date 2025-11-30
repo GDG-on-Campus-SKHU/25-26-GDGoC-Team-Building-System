@@ -42,8 +42,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
     @Override
     @Transactional
     public PostResponseDto updateActivityPost(Long postId, PostSaveDto requestDto) {
-        Activity activity = activityRepository.findById(postId)
-                .orElseThrow(() -> new ActivityPostNotFoundException(ExceptionMessage.ACTIVITY_POST_NOT_FOUND));
+        Activity activity = getActivityPostOrThrow(postId);
 
         activity.update(
                 requestDto.title(),
@@ -73,14 +72,30 @@ public class AdminActivityServiceImpl implements AdminActivityService {
     @Override
     @Transactional(readOnly = true)
     public List<ActivityResponseDto> getActivitiesByCategory(Long categoryId) {
-        ActivityCategory category = activityCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new EntityNotFoundException(CATEGORY_NOT_FOUND.getMessage()));
+        ActivityCategory category = getCategoryOrThrow(categoryId);
 
         List<Activity> activities = activityRepository.findByActivityCategory(category);
 
         return activities.stream()
                 .map(activityMapper::toActivityResponseDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional
+    public void deleteActivityPost(Long postId) {
+        Activity activity = getActivityPostOrThrow(postId);
+        activityRepository.delete(activity);
+    }
+
+    @Override
+    @Transactional
+    public void deleteCategory(Long categoryId) {
+        ActivityCategory category = getCategoryOrThrow(categoryId);
+
+        activityRepository.deleteAllByActivityCategory(category);
+
+        activityCategoryRepository.delete(category);
     }
 
     private ActivityCategory getOrCreateCategory(ActivitySaveRequestDto requestDto) {
@@ -112,5 +127,15 @@ public class AdminActivityServiceImpl implements AdminActivityService {
 
             activityRepository.save(activity);
         }
+    }
+
+    private Activity getActivityPostOrThrow(Long postId) {
+        return activityRepository.findById(postId)
+                .orElseThrow(() -> new ActivityPostNotFoundException(ExceptionMessage.ACTIVITY_POST_NOT_FOUND));
+    }
+
+    private ActivityCategory getCategoryOrThrow(Long categoryId) {
+        return activityCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new EntityNotFoundException(CATEGORY_NOT_FOUND.getMessage()));
     }
 }
