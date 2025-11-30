@@ -1,22 +1,20 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
-import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectFileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.*;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectFileMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 
+import java.lang.reflect.Constructor;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,17 +26,15 @@ class GalleryProjectInfoMapperTest {
     private static final Long PROJECT_ID = 999L;
     private static final Long LEADER_ID = 123L;
 
-    private static final String PROJECT_NAME = "테스트용 프로젝트";
+    private static final String PROJECT_NAME = "TestProject";
     private static final String GENERATION = "25-26";
-    private static final String SHORT_DESCRIPTION = "박박대대경경";
-    private static final String DESCRIPTION = "안녕하세요 반가워요";
+    private static final String SHORT_DESC = "shortDescription";
+    private static final String DESCRIPTION = "Description";
+    private static final String FILE_URL = "https://example.com/test.png";
 
-    private static final ServiceStatus SERVICE_STATUS = ServiceStatus.IN_SERVICE;
+    private static final String USER_NAME = "Test";
 
-    private static final String MEMBER_NAME = "Alice";
-    private static final Part MEMBER_PART = Part.BACKEND;
-
-    private static final String FILE_URL = "https://example.com/poster.png";
+    private static final ServiceStatus STATUS = ServiceStatus.IN_SERVICE;
 
     @Mock
     private GalleryProjectMemberMapper memberMapper;
@@ -50,16 +46,19 @@ class GalleryProjectInfoMapperTest {
     private GalleryProjectInfoMapper infoMapper;
 
     @Test
-    void 엔티티를_DTO로_정상_매핑한다() {
-        // GIVEN
-        User leader = mock(User.class);
-        when(leader.getId()).thenReturn(LEADER_ID);
+    void GalleryProject_엔티티를_GalleryProjectInfoResponseDto로_매핑한다() throws Exception {
+        // given
+        Constructor<User> constructor = User.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        User leader = constructor.newInstance();
+
+        ReflectionTestUtils.setField(leader, "id", LEADER_ID);
 
         GalleryProject project = GalleryProject.builder()
                 .projectName(PROJECT_NAME)
                 .generation(GENERATION)
-                .shortDescription(SHORT_DESCRIPTION)
-                .serviceStatus(SERVICE_STATUS)
+                .shortDescription(SHORT_DESC)
+                .serviceStatus(STATUS)
                 .description(DESCRIPTION)
                 .user(leader)
                 .build();
@@ -67,40 +66,52 @@ class GalleryProjectInfoMapperTest {
         ReflectionTestUtils.setField(project, "id", PROJECT_ID);
 
         List<GalleryProjectMemberResponseDto> mockMembers = List.of(
-                GalleryProjectMemberResponseDto.builder()
-                        .name(MEMBER_NAME)
-                        .part(MEMBER_PART)
-                        .memberRole(null)
-                        .build()
+                GalleryProjectMemberResponseDto.builder().name(USER_NAME).build()
         );
-
         List<GalleryProjectFileInfoResponseDto> mockFiles = List.of(
-                GalleryProjectFileInfoResponseDto.builder()
-                        .fileUrl(FILE_URL)
-                        .build()
+                GalleryProjectFileInfoResponseDto.builder().fileUrl(FILE_URL).build()
         );
 
-        when(memberMapper.mapMembersInfo(project.getMembers())).thenReturn(mockMembers);
-        when(fileMapper.map(project.getFiles())).thenReturn(mockFiles);
+        when(memberMapper.mapMembersInfo(any())).thenReturn(mockMembers);
+        when(fileMapper.map(any())).thenReturn(mockFiles);
 
-        // WHEN
-        GalleryProjectInfoResponseDto result = infoMapper.mapToInfo(project);
+        // when
+        GalleryProjectInfoResponseDto dto = infoMapper.mapToInfo(project);
 
-        // THEN — 값 검증
-        assertThat(result.galleryProjectId()).isEqualTo(PROJECT_ID);
-        assertThat(result.projectName()).isEqualTo(PROJECT_NAME);
-        assertThat(result.generation()).isEqualTo(GENERATION);
-        assertThat(result.shortDescription()).isEqualTo(SHORT_DESCRIPTION);
-        assertThat(result.serviceStatus()).isEqualTo(SERVICE_STATUS.name());
-        assertThat(result.description()).isEqualTo(DESCRIPTION);
+        // then
+        assertThat(dto.galleryProjectId()).isEqualTo(PROJECT_ID);
+        assertThat(dto.projectName()).isEqualTo(PROJECT_NAME);
+        assertThat(dto.generation()).isEqualTo(GENERATION);
+        assertThat(dto.shortDescription()).isEqualTo(SHORT_DESC);
+        assertThat(dto.description()).isEqualTo(DESCRIPTION);
+        assertThat(dto.serviceStatus()).isEqualTo(STATUS.name());
+        assertThat(dto.leaderId()).isEqualTo(LEADER_ID);
+        assertThat(dto.members()).isEqualTo(mockMembers);
+        assertThat(dto.files()).isEqualTo(mockFiles);
+    }
 
-        assertThat(result.leaderId()).isEqualTo(LEADER_ID);
+    @Test
+    void GalleryProject_엔티티를_GalleryProjectSummaryResponseDto로_매핑한다() {
+        // given
+        GalleryProject project = mock(GalleryProject.class);
 
-        assertThat(result.members()).isEqualTo(mockMembers);
-        assertThat(result.files()).isEqualTo(mockFiles);
+        when(project.getId()).thenReturn(PROJECT_ID);
+        when(project.getProjectName()).thenReturn(PROJECT_NAME);
+        when(project.getShortDescription()).thenReturn(SHORT_DESC);
+        when(project.getServiceStatus()).thenReturn(STATUS);
 
-        // verify
-        verify(memberMapper).mapMembersInfo(project.getMembers());
-        verify(fileMapper).map(project.getFiles());
+        when(fileMapper.map(any())).thenReturn(List.of(
+                GalleryProjectFileInfoResponseDto.builder().fileUrl(FILE_URL).build()
+        ));
+
+        // when
+        GalleryProjectSummaryResponseDto dto = infoMapper.mapToSummary(project);
+
+        // then
+        assertThat(dto.galleryProjectId()).isEqualTo(PROJECT_ID);
+        assertThat(dto.projectName()).isEqualTo(PROJECT_NAME);
+        assertThat(dto.shortDescription()).isEqualTo(SHORT_DESC);
+        assertThat(dto.serviceStatus()).isEqualTo(STATUS.name());
+        assertThat(dto.fileUrl().fileUrl()).isEqualTo(FILE_URL);
     }
 }

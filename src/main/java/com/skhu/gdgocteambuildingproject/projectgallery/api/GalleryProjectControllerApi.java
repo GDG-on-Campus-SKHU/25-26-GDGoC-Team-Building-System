@@ -103,7 +103,10 @@ public interface GalleryProjectControllerApi {
             @ApiResponse(responseCode = "400", description = "요청 데이터가 유효하지 않거나, 필요한 필드를 입력하지 않음"),
             @ApiResponse(responseCode = "404", description = "leaderId와 fileId에 해당하는 유저나 파일이 없거나, projectId에 해당하는 프로젝트가 없음"),
     })
-    ResponseEntity<Long> updateProject(@PathVariable Long projectId, @RequestBody GalleryProjectSaveRequestDto requestDto);
+    ResponseEntity<Long> updateProject(
+            @PathVariable Long projectId,
+            @RequestBody GalleryProjectSaveRequestDto requestDto
+    );
 
     @Operation(
             summary = "프로젝트 갤러리에 존재하는 프로젝트 삭제",

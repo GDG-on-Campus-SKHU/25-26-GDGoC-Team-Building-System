@@ -14,7 +14,10 @@ public class GalleryProjectAccessChecker {
 
     private final GalleryProjectMemberRepository galleryProjectMemberRepository;
 
-    public boolean checkLeaderOrAdminPermission(Long projectId, Authentication authentication) {
+    public boolean checkLeaderOrAdminPermission(
+            Long projectId,
+            Authentication authentication
+    ) {
         User user = (User) authentication.getPrincipal();
         UserRole userRole = user.getRole();
 
@@ -35,7 +38,10 @@ public class GalleryProjectAccessChecker {
         return userRole == UserRole.SKHU_MEMBER;
     }
 
-    private boolean isLeaderOfProject(Long projectId, Long userId) {
+    private boolean isLeaderOfProject(
+            Long projectId,
+            Long userId
+    ) {
         return galleryProjectMemberRepository.existsByProjectIdAndUserIdAndRole(
                 projectId,
                 userId,
