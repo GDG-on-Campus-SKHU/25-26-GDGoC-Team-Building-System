@@ -1,11 +1,13 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(name = "관리자 아이디어 관리 API", description = "관리자용 아이디어 관리 API입니다")
 public interface AdminIdeaManageApi {
@@ -47,5 +49,18 @@ public interface AdminIdeaManageApi {
             @Parameter(description = "페이지 당 항목 수", example = "20") int size,
             @Parameter(description = "정렬 기준 필드명 (id, topic, title, introduction, description)", example = "id") String sortBy,
             @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
+    );
+
+    @Operation(
+            summary = "아이디어 수정",
+            description = """
+                    아이디어를 수정합니다.
+                    
+                    creatorPart, part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    ResponseEntity<Void> updateIdea(
+            @Parameter(description = "아이디어 ID") long ideaId,
+            @RequestBody IdeaUpdateRequestDto requestDto
     );
 }

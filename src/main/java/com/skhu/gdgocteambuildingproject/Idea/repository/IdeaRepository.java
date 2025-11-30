@@ -26,6 +26,11 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
             Pageable pageable
     );
 
+    @Query(
+            value = "SELECT i FROM Idea i JOIN FETCH i.project JOIN FETCH i.project.availableParts WHERE i.id = :ideaId"
+    )
+    Optional<Idea> findByIdIncludeDeleted(@Param("ideaId") long ideaId);
+
     Optional<Idea> findByIdAndProjectId(long ideaId, long projectId);
 
     Optional<Idea> findByCreatorIdAndProjectId(long creatorId, long projectId);
