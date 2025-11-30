@@ -42,27 +42,6 @@ public class SecurityConfig {
                 .sessionManagement(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                        /*
-                        // 개발 편의성을 위해 아래의 엔드포인트별 요청 제어는 주석 처리 했습니다.
-                        // 아래의 내용이 주석 처리 되어 있다면 모든 요청이 가능한 상태입니다.
-                        .requestMatchers(
-                                "/v3/api-docs/**",
-                                "/swagger-ui/**",
-                                "/auth/**",
-                                "/email/**",
-                                "/password/**"
-                        ).permitAll()
-                        .requestMatchers(
-                                "/mypage/**",
-                                "/team-building/**",
-                                "/enrollments/**",
-                                "/project-gallery/**",
-                                "/icons/**"
-                        ).authenticated()
-                        .requestMatchers(
-                                "/admin/**"
-                        ).hasRole("SKHU_ADMIN")
-                        */
                         .requestMatchers("/**").permitAll()
                         .anyRequest().denyAll()
                 )
