@@ -9,6 +9,12 @@ public enum ExceptionMessage {
     USER_NOT_FOUND("해당 ID의 회원을 찾을 수 없습니다."),
     FILE_NOT_EXIST("파일이 존재하지 않습니다."),
 
+    //Auth
+    EMAIL_ALREADY_EXISTS("이미 가입된 이메일입니다."),
+    INVALID_PASSWORD("비밀번호가 일치하지 않습니다."),
+    USER_NOT_APPROVED("관리자 승인 대기 중입니다."),
+    REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
+
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
     NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
