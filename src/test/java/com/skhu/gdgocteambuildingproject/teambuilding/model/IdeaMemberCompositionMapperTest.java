@@ -54,8 +54,13 @@ class IdeaMemberCompositionMapperTest {
 
     @Test
     void 아이디어의_파트별_최대_인원수와_현재_인원수를_DTO로_매핑한다() {
+        // given
+        when(idea.getAvailableParts()).thenReturn(PARTS);
+
+        // when
         List<IdeaMemberCompositionResponseDto> dtos = ideaMemberCompositionMapper.map(idea);
 
+        // then
         for (Part part : PARTS) {
             IdeaMemberCompositionResponseDto result = findDtoByPart(dtos, part);
             assertThat(result.maxCount()).isEqualTo(EXPECTED_MAX_COUNTS.get(part));

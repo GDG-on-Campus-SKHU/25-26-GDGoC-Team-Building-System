@@ -7,7 +7,6 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaMemberCompositionResponseDto;
-import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -25,8 +24,6 @@ class IdeaDetailInfoMapperTest {
     private List<IdeaMemberCompositionResponseDto> COMPOSITIONS_DTOS;
     @Mock
     private IdeaCreatorInfoResponseDto CREATOR_DTO;
-    @Mock
-    private User CREATOR;
 
     @Mock
     private Idea idea;
@@ -45,8 +42,7 @@ class IdeaDetailInfoMapperTest {
         when(idea.getTitle()).thenReturn(TITLE);
         when(idea.getIntroduction()).thenReturn(INTRODUCTION);
         when(idea.getDescription()).thenReturn(DESCRIPTION);
-        when(idea.getCreator()).thenReturn(CREATOR);
-        when(creatorInfoMapper.map(CREATOR)).thenReturn(CREATOR_DTO);
+        when(creatorInfoMapper.map(idea)).thenReturn(CREATOR_DTO);
         when(compositionMapper.map(idea)).thenReturn(COMPOSITIONS_DTOS);
 
         // when
