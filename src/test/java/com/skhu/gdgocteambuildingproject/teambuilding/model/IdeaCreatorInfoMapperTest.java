@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import static org.mockito.Mockito.when;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -21,17 +22,20 @@ class IdeaCreatorInfoMapperTest {
     private final IdeaCreatorInfoMapper ideaCreatorInfoMapper = new IdeaCreatorInfoMapper();
 
     @Mock
+    private Idea idea;
+    @Mock
     private User creator;
 
     @Test
     void 엔티티의_정보를_DTO로_매핑한다() {
         // given
+        when(idea.getCreator()).thenReturn(creator);
+        when(idea.getCreatorPart()).thenReturn(PART);
         when(creator.getName()).thenReturn(CREATOR_NAME);
-        when(creator.getPart()).thenReturn(PART);
         when(creator.getSchool()).thenReturn(SCHOOL);
 
         // when
-        IdeaCreatorInfoResponseDto dto = ideaCreatorInfoMapper.map(creator);
+        IdeaCreatorInfoResponseDto dto = ideaCreatorInfoMapper.map(idea);
 
         // then
         Assertions.assertThat(dto.creatorName()).isEqualTo(CREATOR_NAME);
