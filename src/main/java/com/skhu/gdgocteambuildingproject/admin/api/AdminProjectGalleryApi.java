@@ -17,6 +17,7 @@ public interface AdminProjectGalleryApi {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공"),
     })
-    ResponseEntity<List<ProjectGalleryResponseDto>> searchProjectGallery(@Parameter(description = "프로젝트 명 검색어")
-                                                                         String keyword);
+    ResponseEntity<List<ProjectGalleryResponseDto>> searchProjectGallery(
+            @Parameter(description = "프로젝트 명 검색어") String keyword
+    );
 }
