@@ -4,9 +4,9 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TEMPORARY_IDEA_NOT_EXIST;
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
@@ -170,6 +170,17 @@ public class IdeaServiceImpl implements IdeaService {
         ideaRepository.deleteById(ideaId);
     }
 
+    @Override
+    @Transactional
+    public void restoreIdea(long ideaId) {
+        Idea deletedIdea = findDeletedIdea(ideaId);
+        User creator = deletedIdea.getCreator();
+        validateRestorable(deletedIdea);
+
+        deleteTemporaryIdeaIfExist(creator, deletedIdea.getProject());
+        deletedIdea.restore();
+    }
+
     private ProjectSchedule getCurrentSchedule() {
         List<TeamBuildingProject> unfinishedProjects = projectRepository.findProjectsWithScheduleNotEndedBefore(
                 ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
@@ -195,6 +206,19 @@ public class IdeaServiceImpl implements IdeaService {
                 || StringUtils.isBlank(requestDto.topic())
         ) {
             throw new IllegalArgumentException(IDEA_CONTENTS_EMPTY.getMessage());
+        }
+    }
+
+    private void validateRestorable(Idea deletedIdea) {
+        User creator = deletedIdea.getCreator();
+        TeamBuildingProject project = deletedIdea.getProject();
+
+        boolean registeredIdeaExist = creator.getIdeas().stream()
+                .filter(idea -> project.equals(idea.getProject()))
+                .anyMatch(Idea::isRegistered);
+
+        if (registeredIdeaExist) {
+            throw new IllegalStateException(REGISTERED_IDEA_ALREADY_EXIST.getMessage());
         }
     }
 
@@ -237,6 +261,7 @@ public class IdeaServiceImpl implements IdeaService {
                 .registerStatus(ideaDto.registerStatus())
                 .project(project)
                 .creator(creator)
+                .creatorPart(ideaDto.creatorPart())
                 .build();
         idea.initCreatorToMember(ideaDto.creatorPart());
 
@@ -287,6 +312,11 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_EXIST.getMessage()));
     }
 
+    private Idea findDeletedIdea(long ideaId) {
+        return ideaRepository.findDeletedIdeaById(ideaId)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
     private Pageable setupPagination(
             int page,
             int size,
@@ -298,5 +328,13 @@ public class IdeaServiceImpl implements IdeaService {
                 size,
                 order.sort(sortBy)
         );
+    }
+
+    private void deleteTemporaryIdeaIfExist(User user, TeamBuildingProject project) {
+        user.getIdeas().stream()
+                .filter(idea -> project.equals(idea.getProject()))
+                .filter(Idea::isTemporary)
+                .findAny()
+                .ifPresent(user::removeIdea);
     }
 }

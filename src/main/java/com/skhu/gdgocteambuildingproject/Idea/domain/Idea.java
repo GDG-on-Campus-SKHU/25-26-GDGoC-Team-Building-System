@@ -1,6 +1,5 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CREATOR_NOT_INIT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_FOR_OTHER_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
@@ -35,7 +34,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.SQLRestriction;
 
 @Entity
@@ -60,11 +58,14 @@ public class Idea extends BaseEntity {
 
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
+    private Part creatorPart;
+
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private IdeaStatus registerStatus;
 
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @Setter
     private User creator;
 
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -94,6 +95,8 @@ public class Idea extends BaseEntity {
     }
 
     public void updateCreatorPart(Part part) {
+        creatorPart = part;
+
         getCreatorInMembers().ifPresentOrElse(
                 creator -> creator.setPart(part),
                 () -> initCreatorToMember(part)
@@ -157,15 +160,15 @@ public class Idea extends BaseEntity {
         members.clear();
     }
 
-    public List<Part> getAvailableParts() {
-        return project.getAvailableParts();
+    public void restore() {
+        deleted = false;
+        recruiting = true;
+
+        initCreatorToMember(creatorPart);
     }
 
-    public Part getCreatorPart() {
-        IdeaMember creator = getCreatorInMembers()
-                .orElseThrow(() -> new IllegalStateException(CREATOR_NOT_INIT.getMessage()));
-
-        return creator.getPart();
+    public List<Part> getAvailableParts() {
+        return project.getAvailableParts();
     }
 
     public List<IdeaEnrollment> getEnrollmentsOf(ProjectSchedule schedule) {

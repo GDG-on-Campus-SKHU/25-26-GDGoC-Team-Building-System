@@ -118,12 +118,12 @@ public class User extends BaseEntity {
                 .toList();
     }
 
-    /**
-     * User - Idea 연관관계 편의 메서드
-     */
     public void addIdea(Idea idea) {
         ideas.add(idea);
-        idea.setCreator(this);
+    }
+
+    public void removeIdea(Idea idea) {
+        ideas.remove(idea);
     }
 
     public void addEnrollment(IdeaEnrollment enrollment) {
