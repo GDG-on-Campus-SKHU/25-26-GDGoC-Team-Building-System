@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.user.domain;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
 import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -21,6 +22,7 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -69,6 +71,9 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Idea> ideas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<IdeaMember> members = new ArrayList<>();
+
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<IdeaEnrollment> enrollments = new ArrayList<>();
 
@@ -110,6 +115,13 @@ public class User extends BaseEntity {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
                 .noneMatch(enrollment -> enrollment.getChoice().equals(choice));
+    }
+
+    public Optional<Idea> getIdeaFrom(TeamBuildingProject project) {
+        return members.stream()
+                .map(IdeaMember::getIdea)
+                .filter(idea -> project.equals(idea.getProject()))
+                .findAny();
     }
 
     public List<IdeaEnrollment> getEnrollmentFrom(ProjectSchedule schedule) {
