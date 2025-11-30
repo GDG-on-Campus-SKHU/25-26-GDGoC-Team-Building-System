@@ -26,6 +26,12 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
             Pageable pageable
     );
 
+    @Query(
+            value = "SELECT * FROM idea i WHERE i.id = :idea_id AND i.deleted = true",
+            nativeQuery = true
+    )
+    Optional<Idea> findDeletedIdeaById(@Param("idea_id") long ideaId);
+
     Optional<Idea> findByIdAndProjectId(long ideaId, long projectId);
 
     Optional<Idea> findByCreatorIdAndProjectId(long creatorId, long projectId);

@@ -48,4 +48,17 @@ public interface AdminIdeaManageApi {
             @Parameter(description = "정렬 기준 필드명 (id, topic, title, introduction, description)", example = "id") String sortBy,
             @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
     );
+
+    @Operation(
+            summary = "아이디어 복원",
+            description = """
+                    소프트 딜리트된 아이디어를 복원합니다.
+                    
+                    해당 사용자가 이미 다른 아이디어를 게시했다면 4XX를 응답합니다.
+                    삭제된 아이디어가 아니라면 4XX를 응답합니다.
+                    """
+    )
+    ResponseEntity<Void> restoreIdea(
+            @Parameter(description = "아이디어 ID") long ideaId
+    );
 }
