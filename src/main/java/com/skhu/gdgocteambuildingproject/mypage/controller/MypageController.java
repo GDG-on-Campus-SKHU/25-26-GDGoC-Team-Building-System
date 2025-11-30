@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.mypage.controller;
 
 import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
+import com.skhu.gdgocteambuildingproject.mypage.api.MypageControllerApi;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.service.MypageService;
@@ -16,17 +17,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/mypage")
 @RequiredArgsConstructor
-public class MypageController{
+public class MypageController implements MypageControllerApi {
 
     private final MypageService mypageService;
 
+    @Override
     @GetMapping
     public ResponseEntity<ProfileInfoResponseDto> getProfileByUserid(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         Long currentUserId = userPrincipal.getUser().getId();
         return ResponseEntity.ok(mypageService.getProfileByUserId(currentUserId));
     }
 
-
+    @Override
     @PutMapping
     public ResponseEntity<ProfileInfoResponseDto> updateUserModifiableProfile(@AuthenticationPrincipal UserPrincipal userPrincipal,
                                                                               @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto) {

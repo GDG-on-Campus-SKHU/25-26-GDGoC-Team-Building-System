@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.mypage.api;
 
+import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -7,6 +8,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Tag(
@@ -20,7 +22,9 @@ public interface MypageControllerApi {
             description = "마이페이지의 Profile 탭에서 사용자의 본인의 프로필을 조회합니다."
     )
     @ApiResponse(responseCode = "200")
-    ResponseEntity<ProfileInfoResponseDto> getProfileByUserid(@Parameter(description = "프로필을 조회하려는 유저의 유저 ID", example = "1", required = true) Long userId);
+    ResponseEntity<ProfileInfoResponseDto> getProfileByUserid(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserPrincipal userPrincipal
+    );
 
     @Operation(
             summary = "프로필 수정",
@@ -30,6 +34,8 @@ public interface MypageControllerApi {
                     """
     )
     @ApiResponse(responseCode = "200")
-    ResponseEntity<ProfileInfoResponseDto> updateModifiableProfile(@Parameter(description = "프로필을 수정하려는 유저의 유저 ID", example = "1", required = true) Long userId,
-                                                                   @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto);
+    ResponseEntity<ProfileInfoResponseDto> updateUserModifiableProfile(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto
+    );
 }
