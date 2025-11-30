@@ -1,9 +1,12 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
@@ -11,11 +14,33 @@ import org.springframework.http.ResponseEntity;
 @Tag(name = "관리자 프로젝트 관리 API", description = "관리자용 프로젝트 관리 API입니다")
 public interface AdminProjectManageApi {
 
+    String DEFAULT_PAGE = "0";
+    String DEFAULT_SIZE = "20";
+    String DEFAULT_SORT_BY = "id";
+    String DEFAULT_ORDER = "ASC";
+
     @Operation(
             summary = "새 프로젝트 등록",
             description = "새로운 프로젝트를 생성합니다."
     )
     ResponseEntity<Void> createNewProject(ProjectCreateRequestDto requestDto);
+
+    @Operation(
+            summary = "프로젝트 조회",
+            description = """
+                    모든 프로젝트를 조회합니다.
+                    
+                    sortBy(정렬 기준): id(순번), name(프로젝트명)
+                    
+                    order: ASC 또는 DESC
+                    """
+    )
+    ResponseEntity<ProjectInfoPageResponseDto> getProjects(
+            @Parameter(description = "페이지 번호 (0부터 시작)", example = "0") int page,
+            @Parameter(description = "페이지 당 항목 수", example = "20") int size,
+            @Parameter(description = "정렬 기준 필드명 (id, name)", example = "id") String sortBy,
+            @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
+    );
 
     @Operation(
             summary = "지난 프로젝트 조회",
