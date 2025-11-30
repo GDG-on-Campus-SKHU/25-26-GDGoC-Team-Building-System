@@ -49,6 +49,10 @@ springdoc:
     url: /v3/api-docs
     display-request-duration: true
     groups-order: ASC
+    # 태그를 '가나다 정렬 이후 알파벳 정렬' 순서로 정렬
+    tags-sorter: alpha
+    # 메서드를 'DELETE - GET - PATCH - POST - PUT' 순서로 정렬
+    operations-sorter: method
 
 jwt:
   secret: ${JWT_SECRET}
