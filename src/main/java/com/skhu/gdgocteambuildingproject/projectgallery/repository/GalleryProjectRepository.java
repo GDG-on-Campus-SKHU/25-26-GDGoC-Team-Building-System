@@ -8,5 +8,5 @@ import java.util.List;
 public interface GalleryProjectRepository extends JpaRepository<GalleryProject, Long> {
     List<GalleryProject> findByGenerationOrderByCreatedAtDesc(String generation);
 
-    List<GalleryProject> findByProjectName(String keyword);
+    List<GalleryProject> findByProjectNameContaining(String keyword);
 }
