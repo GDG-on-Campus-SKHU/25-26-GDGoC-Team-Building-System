@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileServiceImpl;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -47,5 +48,47 @@ public class AdminUserProfileController implements AdminUserProfileApi {
     public ResponseEntity<Void> unbanUser(@PathVariable Long userId) {
         adminUserProfileService.unbanUser(userId);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/search-name")
+    public ResponseEntity<ApproveUserInfoPageResponseDto> searchUsersByName(
+            @RequestParam String name,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        ApproveUserInfoPageResponseDto response =
+                adminUserProfileService.searchUsersByName(name, page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search-part")
+    public ResponseEntity<ApproveUserInfoPageResponseDto> searchUsersByPart(
+            @RequestParam Part part,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        ApproveUserInfoPageResponseDto response =
+                adminUserProfileService.searchUsersByPart(part, page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/search-school")
+    public ResponseEntity<ApproveUserInfoPageResponseDto> searchUsersBySchool(
+            @RequestParam String school,
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        ApproveUserInfoPageResponseDto response =
+                adminUserProfileService.searchUsersBySchool(school, page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
     }
 }
