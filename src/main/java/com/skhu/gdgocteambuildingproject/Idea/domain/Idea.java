@@ -1,5 +1,13 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CREATOR_NOT_INIT;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_FOR_OTHER_IDEA;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PART_NOT_AVAILABLE;
+
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -12,12 +20,14 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 import lombok.AccessLevel;
@@ -42,7 +52,7 @@ public class Idea extends BaseEntity {
     private String title;
     private String introduction;
     private String description;
-    // TODO: 모든 인원이 다 차면 false로 상태 전이. 소프트 딜리트 후 복원시 true로 상태 전이
+    // TODO: 멤버를 제거할 때 마다 true로 상태 전이
     @Builder.Default
     private boolean recruiting = true;
     @Builder.Default
@@ -52,6 +62,7 @@ public class Idea extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private IdeaStatus registerStatus;
 
+    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     @Setter
     private User creator;
@@ -71,6 +82,46 @@ public class Idea extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private TeamBuildingProject project;
 
+    public void initCreatorToMember(Part creatorPart) {
+        IdeaMember member = IdeaMember.builder()
+                .idea(this)
+                .user(creator)
+                .part(creatorPart)
+                .role(IdeaMemberRole.CREATOR)
+                .build();
+
+        members.add(member);
+    }
+
+    public void updateCreatorPart(Part part) {
+        getCreatorInMembers().ifPresentOrElse(
+                creator -> creator.setPart(part),
+                () -> initCreatorToMember(part)
+        );
+    }
+
+    public void addEnrollment(IdeaEnrollment enrollment) {
+        enrollments.add(enrollment);
+    }
+
+    public void acceptEnrollment(IdeaEnrollment enrollment) {
+        validateContains(enrollment);
+        validateEnrollmentStatus(enrollment);
+        validateMemberCount(enrollment.getPart());
+
+        enrollment.accept();
+        IdeaMember member = createMember(enrollment);
+
+        members.add(member);
+    }
+
+    public void rejectEnrollment(IdeaEnrollment enrollment) {
+        validateContains(enrollment);
+        validateEnrollmentStatus(enrollment);
+
+        enrollment.reject();
+    }
+
     public void updateTexts(
             String topic,
             String title,
@@ -84,6 +135,8 @@ public class Idea extends BaseEntity {
     }
 
     public void updateComposition(Part part, int count) {
+        validatePartAvailable(part);
+
         memberCompositions.stream()
                 .filter(composition -> composition.getPart() == part)
                 .findAny()
@@ -104,9 +157,26 @@ public class Idea extends BaseEntity {
         members.clear();
     }
 
+    public List<Part> getAvailableParts() {
+        return project.getAvailableParts();
+    }
+
+    public Part getCreatorPart() {
+        IdeaMember creator = getCreatorInMembers()
+                .orElseThrow(() -> new IllegalStateException(CREATOR_NOT_INIT.getMessage()));
+
+        return creator.getPart();
+    }
+
     public List<IdeaEnrollment> getEnrollmentsOf(ProjectSchedule schedule) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
+                .toList();
+    }
+
+    public List<IdeaMember> getMembersOf(Part part) {
+        return members.stream()
+                .filter(member -> part.equals(member.getPart()))
                 .toList();
     }
 
@@ -121,11 +191,17 @@ public class Idea extends BaseEntity {
                 .filter(composition -> composition.getPart() == part)
                 .map(IdeaMemberComposition::getCount)
                 .findAny()
-                .orElseThrow();
+                .orElse(0);
     }
 
     public int getCurrentMemberCount() {
         return members.size();
+    }
+
+    public int getCurrentMemberCountOf(Part part) {
+        return (int) members.stream()
+                .filter(member -> member.getPart() == part)
+                .count();
     }
 
     public Map<Part, Integer> getMaxMemberCountsByPart() {
@@ -150,7 +226,7 @@ public class Idea extends BaseEntity {
     public boolean isRegistered() {
         return registerStatus == IdeaStatus.REGISTERED;
     }
- 
+
     public boolean isTemporary() {
         return registerStatus == IdeaStatus.TEMPORARY;
     }
@@ -180,6 +256,8 @@ public class Idea extends BaseEntity {
     }
 
     private void createComposition(Part part, int count) {
+        validatePartAvailable(part);
+
         IdeaMemberComposition composition = IdeaMemberComposition.builder()
                 .part(part)
                 .count(count)
@@ -187,5 +265,52 @@ public class Idea extends BaseEntity {
                 .build();
 
         memberCompositions.add(composition);
+    }
+
+    private IdeaMember createMember(IdeaEnrollment enrollment) {
+        return IdeaMember.builder()
+                .idea(this)
+                .user(enrollment.getApplicant())
+                .part(enrollment.getPart())
+                .role(IdeaMemberRole.MEMBER)
+                .build();
+    }
+
+    private Optional<IdeaMember> getCreatorInMembers() {
+        return members.stream()
+                .filter(IdeaMember::isCreator)
+                .findAny();
+    }
+
+    private void validateContains(IdeaEnrollment enrollment) {
+        if (enrollment.getIdea().equals(this)) {
+            return;
+        }
+
+        throw new IllegalStateException(ENROLLMENT_FOR_OTHER_IDEA.getMessage());
+    }
+
+    private void validateEnrollmentStatus(IdeaEnrollment enrollment) {
+        if (enrollment.getStatus() != EnrollmentStatus.WAITING) {
+            throw new IllegalStateException(ILLEGAL_ENROLLMENT_STATUS.getMessage());
+        }
+    }
+
+    private void validateMemberCount(Part part) {
+        int maxMemberCount = getMaxMemberCountOf(part);
+        int currentMemberCount = getCurrentMemberCountOf(part);
+
+        if (currentMemberCount >= maxMemberCount) {
+            throw new IllegalStateException(ENROLLMENT_NOT_AVAILABLE.getMessage());
+        }
+    }
+
+    private void validatePartAvailable(Part part) {
+        boolean isAvailable = project.getAvailableParts().stream()
+                .anyMatch(availablePart -> availablePart == part);
+
+        if (!isAvailable) {
+            throw new IllegalArgumentException(PART_NOT_AVAILABLE.getMessage());
+        }
     }
 }

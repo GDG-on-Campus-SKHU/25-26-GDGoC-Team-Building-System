@@ -1,9 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminActivityControllerApi;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.ActivitySaveRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.activity.PostSaveDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.activity.*;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminActivityService;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -11,11 +9,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/admin/activity")
 @PreAuthorize("hasAnyRole('SKHU_ADMIN')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdminActivityController implements AdminActivityControllerApi {
+
+    private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
 
     private final AdminActivityService adminActivityService;
 
@@ -33,5 +35,31 @@ public class AdminActivityController implements AdminActivityControllerApi {
         PostResponseDto postResponseDto =
                 adminActivityService.updateActivityPost(postId, postSaveDto);
         return ResponseEntity.ok(postResponseDto);
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<List<ActivityCategoryInfoResponseDto>> getCategoryInfos() {
+        List<ActivityCategoryInfoResponseDto> categoryInfo = adminActivityService.getCategoryInfos();
+        return ResponseEntity.ok().body(categoryInfo);
+    }
+
+    @Override
+    @GetMapping("/{categoryId}")
+    public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable Long categoryId) {
+        List<ActivityResponseDto> activitiesByCategory = adminActivityService.getActivitiesByCategory(categoryId);
+        return ResponseEntity.ok().body(activitiesByCategory);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteActivityPost(@PathVariable Long postId) {
+        adminActivityService.deleteActivityPost(postId);
+        return NO_CONTENT;
+    }
+
+    @DeleteMapping("/categories/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        adminActivityService.deleteCategory(categoryId);
+        return NO_CONTENT;
     }
 }

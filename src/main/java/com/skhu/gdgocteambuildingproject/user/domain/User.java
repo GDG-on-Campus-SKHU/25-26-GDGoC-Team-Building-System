@@ -2,14 +2,17 @@ package com.skhu.gdgocteambuildingproject.user.domain;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
 import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,6 +22,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Entity
 @Getter
@@ -47,14 +51,21 @@ public class User extends BaseEntity {
     private boolean deleted;
     private LocalDateTime deletedAt;
 
+    private String banReason;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    @Enumerated(EnumType.STRING) @Column(nullable = false)
+    // 승인 여부
+    @Column(nullable = false)
     private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
+    @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private UserStatus userStatus = UserStatus.ACTIVE;
+
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TechStack> techStacks = new ArrayList<>();
+    private final List<TechStack> techStacks = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
@@ -62,8 +73,14 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Idea> ideas = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<IdeaMember> members = new ArrayList<>();
+
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<IdeaEnrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<UserLink> userLinks = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String name, String number,
@@ -93,16 +110,43 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.REJECTED;
     }
 
+    public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
+        return ideas.stream()
+                .filter(Idea::isRegistered)
+                .anyMatch(idea -> idea.getProject().equals(project));
+    }
+
     public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
                 .noneMatch(enrollment -> enrollment.getChoice().equals(choice));
     }
 
+    public Optional<Idea> getIdeaFrom(TeamBuildingProject project) {
+        return members.stream()
+                .map(IdeaMember::getIdea)
+                .filter(idea -> project.equals(idea.getProject()))
+                .findAny();
+    }
+
     public List<IdeaEnrollment> getEnrollmentFrom(ProjectSchedule schedule) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
                 .toList();
+    }
+
+    public void updateUserIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void updateTechStacks(List<TechStack> newTechStacks) {
+        this.techStacks.clear();
+        this.techStacks.addAll(newTechStacks);
+    }
+
+    public void updateUserLinks(List<UserLink> newUserLinks) {
+        this.userLinks.clear();
+        this.userLinks.addAll(newUserLinks);
     }
 
     /**
@@ -113,10 +157,24 @@ public class User extends BaseEntity {
         idea.setCreator(this);
     }
 
+    public void addEnrollment(IdeaEnrollment enrollment) {
+        enrollments.add(enrollment);
+    }
+
     public void softDelete() {
         this.deleted = true;
         this.deletedAt = LocalDateTime.now();
         this.email = null;
         this.number = null;
+    }
+
+    public void ban(String reason) {
+        this.userStatus = UserStatus.BANNED;
+        this.banReason = reason;
+    }
+
+    public void unban() {
+        this.userStatus = UserStatus.ACTIVE;
+        this.banReason = null;
     }
 }

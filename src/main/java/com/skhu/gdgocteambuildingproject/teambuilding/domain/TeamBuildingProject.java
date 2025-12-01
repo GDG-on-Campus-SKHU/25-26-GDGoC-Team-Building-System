@@ -5,6 +5,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -34,11 +35,21 @@ public class TeamBuildingProject extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    private final List<ProjectAvailablePart> availableParts = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private final List<Idea> ideas = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private final List<ProjectSchedule> schedules = new ArrayList<>();
+
+    public List<Part> getAvailableParts() {
+        return availableParts.stream()
+                .map(ProjectAvailablePart::getPart)
+                .toList();
+    }
 
     public boolean isScheduled() {
         return schedules.stream()

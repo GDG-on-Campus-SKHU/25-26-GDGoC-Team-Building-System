@@ -83,7 +83,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional
-    public Long updateGalleryProjectByProjectId(Long projectId, GalleryProjectSaveRequestDto requestDto) {
+    public Long updateGalleryProjectByProjectId(
+            Long projectId,
+            GalleryProjectSaveRequestDto requestDto
+    ) {
         GalleryProject galleryProject = findGalleryProjectById(projectId);
         galleryProject.update(
                 requestDto.projectName(),
@@ -96,6 +99,13 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         updateProjectMembers(galleryProject, requestDto.members());
         updateProjectFiles(galleryProject, requestDto.fileIds());
         return projectId;
+    }
+
+    @Override
+    @Transactional
+    public void deleteGalleryProjectByProjectId(Long projectId) {
+        GalleryProject galleryProject = findGalleryProjectById(projectId);
+        galleryProjectRepository.delete(galleryProject);
     }
 
     private GalleryProject findGalleryProjectById(Long projectId) {
@@ -133,7 +143,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         }
     }
 
-    private GalleryProject createGalleryProjectEntity(GalleryProjectSaveRequestDto requestDto, User leader) {
+    private GalleryProject createGalleryProjectEntity(
+            GalleryProjectSaveRequestDto requestDto,
+            User leader
+    ) {
         return galleryProjectRepository.save(
                 GalleryProject.builder()
                         .projectName(requestDto.projectName())
@@ -146,12 +159,19 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         );
     }
 
-    private void saveProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
+    private void saveProjectMembers(
+            GalleryProject project,
+            List<GalleryProjectMemberInfoDto> members
+    ) {
         Long leaderId = project.getUser().getId();
         divideMemberAndSave(project, members, leaderId);
     }
 
-    private void divideMemberAndSave(GalleryProject project, List<GalleryProjectMemberInfoDto> members, Long leaderId) {
+    private void divideMemberAndSave(
+            GalleryProject project,
+            List<GalleryProjectMemberInfoDto> members,
+            Long leaderId
+    ) {
         for (GalleryProjectMemberInfoDto memberDto : members) {
             User user = getUser(memberDto.userId());
             MemberRole role = resolveRole(leaderId, memberDto.userId());
@@ -167,7 +187,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         }
     }
 
-    private void saveProjectFiles(GalleryProject project, List<Long> fileIds) {
+    private void saveProjectFiles(
+            GalleryProject project,
+            List<Long> fileIds
+    ) {
         for (Long fileId : fileIds) {
             File file = getFile(fileId);
 
@@ -181,13 +204,19 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         }
     }
 
-    private void updateProjectMembers(GalleryProject project, List<GalleryProjectMemberInfoDto> members) {
+    private void updateProjectMembers(
+            GalleryProject project,
+            List<GalleryProjectMemberInfoDto> members
+    ) {
         project.clearMembers();
         Long leaderId = project.getUser().getId();
         divideMemberAndSave(project, members, leaderId);
     }
 
-    private void updateProjectFiles(GalleryProject project, List<Long> fileIds) {
+    private void updateProjectFiles(
+            GalleryProject project,
+            List<Long> fileIds
+    ) {
         project.clearFiles();
         for (Long fileId : fileIds) {
             File file = getFile(fileId);
@@ -212,7 +241,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FILE_NOT_EXIST.getMessage()));
     }
 
-    private MemberRole resolveRole(Long leaderId, Long memberId) {
+    private MemberRole resolveRole(
+            Long leaderId,
+            Long memberId
+    ) {
         Map<Boolean, MemberRole> selector = Map.of(
                 true, MemberRole.LEADER,
                 false, MemberRole.MEMBER
