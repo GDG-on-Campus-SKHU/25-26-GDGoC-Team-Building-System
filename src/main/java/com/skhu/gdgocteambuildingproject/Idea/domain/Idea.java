@@ -174,6 +174,12 @@ public class Idea extends BaseEntity {
                 .toList();
     }
 
+    public List<IdeaMember> getMembersOf(Part part) {
+        return members.stream()
+                .filter(member -> part.equals(member.getPart()))
+                .toList();
+    }
+
     public int getMaxMemberCount() {
         return memberCompositions.stream()
                 .mapToInt(IdeaMemberComposition::getCount)
