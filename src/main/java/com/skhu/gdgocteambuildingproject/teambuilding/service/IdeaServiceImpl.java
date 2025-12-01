@@ -5,6 +5,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_PASSED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TEMPORARY_IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
@@ -161,6 +162,8 @@ public class IdeaServiceImpl implements IdeaService {
         Idea idea = ideaRepository.findByIdAndCreatorIdAndProjectId(ideaId, userId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
 
+        validateIdeaDeletable(idea);
+
         idea.delete();
     }
 
@@ -180,6 +183,19 @@ public class IdeaServiceImpl implements IdeaService {
 
         return project.getCurrentSchedule()
                 .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_EXIST.getMessage()));
+    }
+
+    private void validateIdeaDeletable(Idea idea) {
+        ProjectSchedule currentSchedule = getCurrentSchedule();
+        TeamBuildingProject project = currentSchedule.getProject();
+
+        if (!project.equals(idea.getProject())) {
+            throw new IllegalStateException(SCHEDULE_PASSED.getMessage());
+        }
+
+        if (!currentSchedule.getType().isIdeaDeletable()) {
+            throw new IllegalStateException(SCHEDULE_PASSED.getMessage());
+        }
     }
 
     private void validateRegistrationSchedule(ProjectSchedule schedule) {
