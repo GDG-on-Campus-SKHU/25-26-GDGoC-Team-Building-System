@@ -17,6 +17,8 @@ import java.util.List;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdminActivityController implements AdminActivityControllerApi {
 
+    private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
+
     private final AdminActivityService adminActivityService;
 
     @Override
@@ -47,5 +49,17 @@ public class AdminActivityController implements AdminActivityControllerApi {
     public ResponseEntity<List<ActivityResponseDto>> getActivitiesByCategory(@PathVariable Long categoryId) {
         List<ActivityResponseDto> activitiesByCategory = adminActivityService.getActivitiesByCategory(categoryId);
         return ResponseEntity.ok().body(activitiesByCategory);
+    }
+
+    @DeleteMapping("/{postId}")
+    public ResponseEntity<Void> deleteActivityPost(@PathVariable Long postId) {
+        adminActivityService.deleteActivityPost(postId);
+        return NO_CONTENT;
+    }
+
+    @DeleteMapping("/categories/{categoryId}")
+    public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
+        adminActivityService.deleteCategory(categoryId);
+        return NO_CONTENT;
     }
 }
