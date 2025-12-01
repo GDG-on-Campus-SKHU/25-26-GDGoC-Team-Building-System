@@ -70,7 +70,7 @@ public class User extends BaseEntity {
     private UserStatus userStatus = UserStatus.ACTIVE;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<TechStack> techStacks = new ArrayList<>();
+    private final List<TechStack> techStacks = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Grade> grades = new ArrayList<>();
@@ -80,6 +80,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<IdeaEnrollment> enrollments = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<UserLink> userLinks = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String name, String number,
@@ -125,6 +128,20 @@ public class User extends BaseEntity {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
                 .toList();
+    }
+
+    public void updateUserIntroduction(String introduction) {
+        this.introduction = introduction;
+    }
+
+    public void updateTechStacks(List<TechStack> newTechStacks) {
+        this.techStacks.clear();
+        this.techStacks.addAll(newTechStacks);
+    }
+
+    public void updateUserLinks(List<UserLink> newUserLinks) {
+        this.userLinks.clear();
+        this.userLinks.addAll(newUserLinks);
     }
 
     /**
