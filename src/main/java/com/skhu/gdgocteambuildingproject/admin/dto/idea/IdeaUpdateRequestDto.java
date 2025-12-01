@@ -1,16 +1,15 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.dto.request;
+package com.skhu.gdgocteambuildingproject.admin.dto.idea;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaMemberCompositionRequestDto;
 import java.util.List;
 
-public record IdeaCreateRequestDto(
+public record IdeaUpdateRequestDto(
         String title,
         String introduction,
         String description,
         String topic,
         Part creatorPart,
-        IdeaStatus registerStatus,
         List<IdeaMemberCompositionRequestDto> compositions
 ) {
     public List<String> getTexts() {
