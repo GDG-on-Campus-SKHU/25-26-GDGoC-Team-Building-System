@@ -63,8 +63,8 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    // 승인 여부
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
     @Column(nullable = false)
@@ -115,6 +115,10 @@ public class User extends BaseEntity {
 
     public void reject() {
         this.approvalStatus = ApprovalStatus.REJECTED;
+    }
+
+    public void resetToWaiting() {
+        this.approvalStatus = ApprovalStatus.WAITING;
     }
 
     public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
