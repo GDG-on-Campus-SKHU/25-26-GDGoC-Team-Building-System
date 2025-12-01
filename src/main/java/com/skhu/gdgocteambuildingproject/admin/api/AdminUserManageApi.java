@@ -39,6 +39,7 @@ public interface AdminUserManageApi {
     );
 
     @Operation(summary = "거부된 회원 상태 초기화", description = "REJECTED 상태인 회원을 대기중 상태로 되돌립니다.")
+    @ApiResponse(responseCode = "200", description = "초기화 성공")
     ResponseEntity<Void> resetRejectedUser(
             @Parameter(description = "사용자 ID", example = "1") Long userId
     );
