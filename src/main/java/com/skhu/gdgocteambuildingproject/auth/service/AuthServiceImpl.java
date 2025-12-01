@@ -95,6 +95,10 @@ public class AuthServiceImpl implements AuthService {
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
             throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
         }
+
+        if (user.getApprovalStatus() == ApprovalStatus.REJECTED) {
+            throw new IllegalStateException(ExceptionMessage.USER_REJECTED.getMessage());
+        }
     }
 
     private LoginResponseDto createLoginResponse(User user) {

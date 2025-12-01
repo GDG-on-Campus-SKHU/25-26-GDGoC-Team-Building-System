@@ -16,6 +16,7 @@ public enum ExceptionMessage {
     EMAIL_ALREADY_EXISTS("이미 가입된 이메일입니다."),
     INVALID_PASSWORD("비밀번호가 일치하지 않습니다."),
     USER_NOT_APPROVED("관리자 승인 대기 중입니다."),
+    USER_REJECTED("승인이 거절된 사용자입니다."),
     REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
 
     // Email
