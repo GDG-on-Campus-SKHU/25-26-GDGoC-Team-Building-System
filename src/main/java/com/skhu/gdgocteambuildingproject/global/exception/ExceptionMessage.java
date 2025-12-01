@@ -41,6 +41,7 @@ public enum ExceptionMessage {
     SCHEDULE_ALREADY_INITIALIZED("일정이 이미 초기화 되어 있습니다."),
     ACTIVITY_POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
+    USER_NOT_REJECTED("현재 상태가 REJECTED인 사용자만 재검토할 수 있습니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
