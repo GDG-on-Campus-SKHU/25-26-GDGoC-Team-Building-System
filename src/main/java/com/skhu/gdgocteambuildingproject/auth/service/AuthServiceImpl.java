@@ -5,12 +5,12 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
-import com.skhu.gdgocteambuildingproject.auth.repository.RefreshTokenRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
-import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
+import com.skhu.gdgocteambuildingproject.global.jwt.service.TokenService;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -21,37 +21,35 @@ import org.springframework.transaction.annotation.Transactional;
 public class AuthServiceImpl implements AuthService {
 
     private final UserRepository userRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
-    private final TokenProvider tokenProvider;
+    private final TokenService tokenService;
 
     @Override
     @Transactional
     public LoginResponseDto signUp(SignUpRequestDto dto) {
-
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail())) {
-            throw new RuntimeException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
+            throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
         }
 
         if (!dto.getPassword().equals(dto.getPasswordConfirm())) {
-            throw new RuntimeException(ExceptionMessage.INVALID_PASSWORD.getMessage());
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
 
-        User user = dto.toEntity(passwordEncoder.encode(dto.getPassword()));
-        userRepository.save(user);
+        User savedUser = userRepository.save(
+                dto.toEntity(passwordEncoder.encode(dto.getPassword()))
+        );
 
-        return createLoginResponse(user);
+        return createLoginResponse(savedUser);
     }
 
     @Override
     @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
-
         User user = userRepository.findByEmailAndDeletedFalse(dto.getEmail())
-                .orElseThrow(() -> new RuntimeException(ExceptionMessage.USER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage()));
 
         if (!passwordEncoder.matches(dto.getPassword(), user.getPassword())) {
-            throw new RuntimeException(ExceptionMessage.INVALID_PASSWORD.getMessage());
+            throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
 
         validateUserStatus(user);
@@ -62,58 +60,55 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public LoginResponseDto refresh(RefreshTokenRequestDto dto) {
+        RefreshToken oldToken = tokenService.validate(dto.getRefreshToken());
+        User user = oldToken.getUser();
 
-        RefreshToken existing = refreshTokenRepository.findByToken(dto.getRefreshToken())
-                .orElseThrow(() -> new RuntimeException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()));
-
-        User user = existing.getUser();
         validateUserStatus(user);
 
-        refreshTokenRepository.delete(existing);
+        String newAccess = tokenService.createAccessToken(user);
+        String newRefresh = tokenService.rotate(oldToken);
 
-        return createLoginResponse(user);
+        return buildLoginResponse(user, newAccess, newRefresh);
     }
 
     @Override
     @Transactional
     public void logout(RefreshTokenRequestDto dto) {
-        refreshTokenRepository.deleteByToken(dto.getRefreshToken());
+        tokenService.deleteByToken(dto.getRefreshToken());
     }
 
     @Override
     @Transactional
     public void delete(Long userId) {
-
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
 
-        refreshTokenRepository.deleteAllByUser(user);
+        tokenService.deleteAllByUser(user);
         user.softDelete();
     }
 
     private void validateUserStatus(User user) {
-
         if (user.isDeleted()) {
-            throw new RuntimeException(ExceptionMessage.USER_NOT_EXIST.getMessage());
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_EXIST.getMessage());
         }
 
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
-            throw new RuntimeException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
         }
     }
 
     private LoginResponseDto createLoginResponse(User user) {
+        String accessToken = tokenService.createAccessToken(user);
+        String refreshToken = tokenService.createRefreshToken(user);
 
-        String accessToken = tokenProvider.createAccessToken(user);
-        String refreshToken = tokenProvider.createRefreshToken(user);
+        tokenService.store(user, refreshToken);
 
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .user(user)
-                        .token(refreshToken)
-                        .build()
-        );
+        return buildLoginResponse(user, accessToken, refreshToken);
+    }
 
+    private LoginResponseDto buildLoginResponse(User user,
+                                                String accessToken,
+                                                String refreshToken) {
         return LoginResponseDto.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

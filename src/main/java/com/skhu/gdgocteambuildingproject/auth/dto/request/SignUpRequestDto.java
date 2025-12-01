@@ -36,8 +36,8 @@ public class SignUpRequestDto {
     private String generation;
     private Part part;
 
-    private UserPosition position; // MEMBER / CORE / ORGANIZER
-    private UserRole role;         // SKHU_MEMBER / OTHERS
+    private UserPosition position;
+    private UserRole role;
 
     public User toEntity(String encodedPassword) {
         return User.builder()

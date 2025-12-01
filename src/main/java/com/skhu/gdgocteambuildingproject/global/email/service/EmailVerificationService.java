@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.global.email.service;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -12,32 +13,24 @@ public class EmailVerificationService {
 
     private final StringRedisTemplate redisTemplate;
 
+    private static final String PREFIX = "emailCode:";
+
     public void saveCode(String email, String code) {
-        redisTemplate.opsForValue().set(email, code, 5, TimeUnit.MINUTES);
+        redisTemplate.opsForValue().set(PREFIX + email, code, 5, TimeUnit.MINUTES);
     }
 
-    public boolean verifyCode(String email, String inputCode) {
-        String storedCode = redisTemplate.opsForValue().get(email);
-        boolean isValid = storedCode != null && storedCode.equals(inputCode);
+    public void verifyCodeOrThrow(String email, String inputCode) {
+        String key = PREFIX + email;
+        String storedCode = redisTemplate.opsForValue().get(key);
 
-        if (isValid) {
-            markVerified(email);
-            redisTemplate.delete(email);
+        if (storedCode == null) {
+            throw new IllegalArgumentException(ExceptionMessage.VERIFICATION_CODE_EXPIRED.getMessage());
         }
 
-        return isValid;
-    }
+        if (!storedCode.equals(inputCode)) {
+            throw new IllegalArgumentException(ExceptionMessage.VERIFICATION_CODE_INVALID.getMessage());
+        }
 
-    public void markVerified(String email) {
-        redisTemplate.opsForValue().set("verified:" + email, "true", 10, TimeUnit.MINUTES);
-    }
-
-    public boolean isVerified(String email) {
-        String verified = redisTemplate.opsForValue().get("verified:" + email);
-        return "true".equals(verified);
-    }
-
-    public void deleteVerifiedStatus(String email) {
-        redisTemplate.delete("verified:" + email);
+        redisTemplate.delete(key);
     }
 }

@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.global.email.controller;
 
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailService;
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailVerificationService;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -32,9 +33,8 @@ public class EmailController {
             @ApiResponse(responseCode = "400", description = "이메일이 존재하지 않음 또는 입력값 오류")
     })
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
-
         if (email == null || email.isBlank()) {
-            return ResponseEntity.badRequest().body("이메일을 입력해주세요.");
+            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
         }
 
         emailService.validateEmailExists(email);
@@ -57,16 +57,11 @@ public class EmailController {
     })
     public ResponseEntity<String> verifyCode(@RequestParam("email") String email,
                                              @RequestParam("code") String code) {
-
         if (email == null || email.isBlank() || code == null || code.isBlank()) {
-            return ResponseEntity.badRequest().body("이메일 또는 인증코드를 입력해주세요.");
+            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
         }
 
-        boolean isValid = emailVerificationService.verifyCode(email, code);
-
-        if (!isValid) {
-            return ResponseEntity.badRequest().body("인증 실패 (코드가 틀렸거나 만료되었습니다.)");
-        }
+        emailVerificationService.verifyCodeOrThrow(email, code);
 
         return ResponseEntity.ok("인증 성공");
     }
