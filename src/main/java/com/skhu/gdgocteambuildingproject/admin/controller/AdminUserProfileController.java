@@ -50,6 +50,7 @@ public class AdminUserProfileController implements AdminUserProfileApi {
         return ResponseEntity.ok().build();
     }
 
+    @Override
     @GetMapping("/search-name")
     public ResponseEntity<ApproveUserInfoPageResponseDto> searchUsersByName(
             @RequestParam String name,
@@ -64,6 +65,7 @@ public class AdminUserProfileController implements AdminUserProfileApi {
         return ResponseEntity.ok(response);
     }
 
+    @Override
     @GetMapping("/search-part")
     public ResponseEntity<ApproveUserInfoPageResponseDto> searchUsersByPart(
             @RequestParam Part part,
@@ -78,6 +80,7 @@ public class AdminUserProfileController implements AdminUserProfileApi {
         return ResponseEntity.ok(response);
     }
 
+    @Override
     @GetMapping("/search-school")
     public ResponseEntity<ApproveUserInfoPageResponseDto> searchUsersBySchool(
             @RequestParam String school,
