@@ -1,7 +1,6 @@
 package com.skhu.gdgocteambuildingproject.global.config;
 
 import com.skhu.gdgocteambuildingproject.global.jwt.JwtFilter;
-import com.skhu.gdgocteambuildingproject.global.jwt.TokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +22,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final TokenProvider tokenProvider;
+    private final JwtFilter jwtFilter;
 
     // 비밀번호 암호화
     @Bean
@@ -45,7 +44,7 @@ public class SecurityConfig {
                         .requestMatchers("/**").permitAll()
                         .anyRequest().denyAll()
                 )
-                .addFilterBefore(new JwtFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(new Http403ForbiddenEntryPoint())
                 )
