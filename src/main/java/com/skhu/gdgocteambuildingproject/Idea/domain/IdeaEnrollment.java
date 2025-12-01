@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.*;
+
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -45,7 +47,7 @@ public class IdeaEnrollment extends BaseEntity {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private EnrollmentStatus status = EnrollmentStatus.WAITING;
+    private EnrollmentStatus status = WAITING;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
@@ -59,11 +61,31 @@ public class IdeaEnrollment extends BaseEntity {
     @JoinColumn(nullable = false)
     private ProjectSchedule schedule;
 
+    public boolean isConfirmable() {
+        return status == SCHEDULED_TO_ACCEPT || status == SCHEDULED_TO_REJECT;
+    }
+
+    public boolean isScheduledToAccept() {
+        return status == SCHEDULED_TO_ACCEPT;
+    }
+
+    public boolean isScheduledToReject() {
+        return status == SCHEDULED_TO_REJECT;
+    }
+
+    public void scheduleToAccept() {
+        status = SCHEDULED_TO_ACCEPT;
+    }
+
+    public void scheduleToReject() {
+        status = SCHEDULED_TO_REJECT;
+    }
+
     public void accept() {
-        status = EnrollmentStatus.ACCEPTED;
+        status = ACCEPTED;
     }
 
     public void reject() {
-        status = EnrollmentStatus.REJECTED;
+        status = REJECTED;
     }
 }
