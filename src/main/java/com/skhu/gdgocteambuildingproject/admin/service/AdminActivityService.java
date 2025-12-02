@@ -12,4 +12,8 @@ public interface AdminActivityService {
     List<ActivityCategoryInfoResponseDto> getCategoryInfos();
 
     List<ActivityResponseDto> getActivitiesByCategory(Long categoryId);
+
+    void deleteActivityPost(Long postId);
+
+    void deleteCategory(Long categoryId);
 }

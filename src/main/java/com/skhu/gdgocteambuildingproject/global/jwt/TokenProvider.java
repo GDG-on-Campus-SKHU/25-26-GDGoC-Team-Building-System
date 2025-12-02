@@ -70,7 +70,7 @@ public class TokenProvider {
         return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
     }
 
-    private String getUserPk(String token) {
+    public String getUserPk(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(key)
                 .build()

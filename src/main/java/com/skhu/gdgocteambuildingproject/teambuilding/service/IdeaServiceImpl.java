@@ -14,6 +14,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -31,7 +32,6 @@ import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
-import io.micrometer.common.util.StringUtils;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -66,7 +66,7 @@ public class IdeaServiceImpl implements IdeaService {
         validateRegistrationSchedule(currentSchedule);
 
         if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
-            validateContents(requestDto);
+            validateIdeaTexts(requestDto.getTexts());
         }
 
         TeamBuildingProject project = findProjectBy(projectId);
@@ -153,6 +153,26 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
+    public void updateIdeaByAdmin(
+            long ideaId,
+            IdeaUpdateRequestDto requestDto
+    ) {
+        validateIdeaTexts(requestDto.getTexts());
+
+        Idea idea = findIdeaIncludeDeleted(ideaId);
+
+        idea.updateTexts(
+                requestDto.topic(),
+                requestDto.title(),
+                requestDto.introduction(),
+                requestDto.description()
+        );
+        idea.updateCreatorPart(requestDto.creatorPart());
+        updateIdeaCompositions(idea, requestDto.compositions());
+    }
+
+    @Override
+    @Transactional
     public void softDeleteIdea(
             long projectId,
             long ideaId,
@@ -199,12 +219,11 @@ public class IdeaServiceImpl implements IdeaService {
         }
     }
 
-    private void validateContents(IdeaCreateRequestDto requestDto) {
-        if (StringUtils.isBlank(requestDto.title())
-                || StringUtils.isBlank(requestDto.introduction())
-                || StringUtils.isBlank(requestDto.description())
-                || StringUtils.isBlank(requestDto.topic())
-        ) {
+    private void validateIdeaTexts(List<String> texts) {
+        boolean anyBlank = texts.stream()
+                .anyMatch(String::isBlank);
+
+        if (anyBlank) {
             throw new IllegalArgumentException(IDEA_CONTENTS_EMPTY.getMessage());
         }
     }
@@ -314,6 +333,11 @@ public class IdeaServiceImpl implements IdeaService {
 
     private Idea findDeletedIdea(long ideaId) {
         return ideaRepository.findDeletedIdeaById(ideaId)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
+    private Idea findIdeaIncludeDeleted(long ideaId) {
+        return ideaRepository.findByIdIncludeDeleted(ideaId)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
     }
 

@@ -22,9 +22,11 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.CompositionResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.CompositionMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.EnrollmentAvailabilityMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ReceivedEnrollmentMapper;
@@ -52,6 +54,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentAvailabilityMapper availabilityMapper;
     private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ReceivedEnrollmentMapper receivedEnrollmentMapper;
+    private final CompositionMapper compositionMapper;
     private final ProjectUtil projectUtil;
 
     @Override
@@ -99,6 +102,17 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         } else {
             idea.rejectEnrollment(enrollment);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public CompositionResponseDto getComposition(long userId) {
+        User user = findUserBy(userId);
+        TeamBuildingProject currentProject = findCurrentProject();
+        Idea idea = user.getIdeaFrom(currentProject)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+
+        return compositionMapper.map(user, idea);
     }
 
     @Override

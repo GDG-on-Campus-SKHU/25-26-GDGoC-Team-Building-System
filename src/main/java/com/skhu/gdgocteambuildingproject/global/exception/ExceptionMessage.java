@@ -8,6 +8,9 @@ public enum ExceptionMessage {
     USER_NOT_EXIST("회원이 존재하지 않습니다."),
     USER_NOT_FOUND("해당 ID의 회원을 찾을 수 없습니다."),
     FILE_NOT_EXIST("파일이 존재하지 않습니다."),
+    BANNED_USER("정지된 계정입니다."),
+    ALREADY_BANNED_USER("이미 정지된 계정입니다."),
+    ALREADY_ACTIVE_USER("이미 활성화된 계정입니다."),
 
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
@@ -22,6 +25,7 @@ public enum ExceptionMessage {
     ALREADY_ENROLL("해당 아이디어에 이미 지원했습니다."),
     PROJECT_NOT_EXIST("프로젝트가 존재하지 않습니다."),
     IDEA_NOT_EXIST("아이디어가 존재하지 않습니다."),
+    NOT_MEMBER_OF_IDEA("해당 아이디어에 소속되지 않았습니다"),
     REGISTERED_IDEA_NOT_EXIST("등록된 아이디어가 존재하지 않습니다."),
     REGISTERED_IDEA_ALREADY_EXIST("등록한 아이디어가 이미 존재합니다."),
     IDEA_CONTENTS_EMPTY("내용이 비어 있습니다."),

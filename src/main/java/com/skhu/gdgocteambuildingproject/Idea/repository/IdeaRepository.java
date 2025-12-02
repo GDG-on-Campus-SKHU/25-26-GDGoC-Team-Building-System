@@ -27,6 +27,11 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
     );
 
     @Query(
+            value = "SELECT i FROM Idea i JOIN FETCH i.project JOIN FETCH i.project.availableParts WHERE i.id = :ideaId"
+    )
+    Optional<Idea> findByIdIncludeDeleted(@Param("ideaId") long ideaId);
+
+    @Query(
             value = "SELECT * FROM idea i WHERE i.id = :idea_id AND i.deleted = true",
             nativeQuery = true
     )
