@@ -26,11 +26,10 @@ public abstract class BaseEntity {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof BaseEntity otherBaseEntity)) {
             return false;
         }
-        BaseEntity that = (BaseEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(id, otherBaseEntity.id);
     }
 
     @Override
