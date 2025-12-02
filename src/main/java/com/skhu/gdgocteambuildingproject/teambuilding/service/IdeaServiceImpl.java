@@ -2,10 +2,13 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CONTENTS_EMPTY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_PROJECT;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_PASSED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TEMPORARY_IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
@@ -14,7 +17,8 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -72,7 +76,7 @@ public class IdeaServiceImpl implements IdeaService {
         User creator = findUserBy(userId);
 
         Idea postedIdea = ideaRepository.findByCreatorAndProject(creator, project)
-                .map(idea -> updateExistIdea(idea, requestDto))
+                .map(idea -> updateExistTemporaryIdea(idea, requestDto))
                 .orElseGet(() -> saveNewIdea(creator, project, requestDto));
 
         return ideaDetailInfoMapper.map(postedIdea);
@@ -148,6 +152,55 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new EntityNotFoundException(TEMPORARY_IDEA_NOT_EXIST.getMessage()));
 
         return ideaDetailInfoMapper.map(idea);
+    }
+
+    @Override
+    @Transactional
+    public void updateTexts(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaTextUpdateRequestDto requestDto
+    ) {
+        validateIdeaTexts(requestDto.getTexts());
+
+        Idea idea = findRegisteredIdeaBy(ideaId);
+
+        validateIdeaInProject(idea, projectId);
+        validateIdeaOwnership(idea, userId);
+
+        idea.updateTexts(
+                requestDto.topic(),
+                requestDto.title(),
+                requestDto.introduction(),
+                requestDto.description()
+        );
+    }
+
+    @Override
+    @Transactional
+    public void updateBeforeEnrollment(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaUpdateRequestDto requestDto
+    ) {
+        validateIdeaTexts(requestDto.getTexts());
+
+        Idea idea = findRegisteredIdeaBy(ideaId);
+
+        validateIdeaInProject(idea, projectId);
+        validateIdeaOwnership(idea, userId);
+        validateBeforeEnrollment(idea);
+
+        idea.updateTexts(
+                requestDto.topic(),
+                requestDto.title(),
+                requestDto.introduction(),
+                requestDto.description()
+        );
+        idea.updateCreatorPart(requestDto.creatorPart());
+        updateIdeaCompositions(idea, requestDto.compositions());
     }
 
     @Override
@@ -253,9 +306,38 @@ public class IdeaServiceImpl implements IdeaService {
         return ideaRepository.save(idea);
     }
 
-    private void validateIdeaModifiable(Idea idea) {
-        if (idea.getRegisterStatus() != IdeaStatus.TEMPORARY) {
+    private void validateIdeaNotRegistered(Idea idea) {
+        if (idea.getRegisterStatus() == IdeaStatus.REGISTERED) {
             throw new IllegalStateException(REGISTERED_IDEA_ALREADY_EXIST.getMessage());
+        }
+    }
+
+    private void validateIdeaInProject(Idea idea, long projectId) {
+        Long actualProjectId = idea.getProject().getId();
+
+        if (!actualProjectId.equals(projectId)) {
+            throw new IllegalStateException(ILLEGAL_PROJECT.getMessage());
+        }
+    }
+
+    private void validateIdeaOwnership(Idea idea, long userId) {
+        Long creatorId = idea.getCreator().getId();
+
+        if (!creatorId.equals(userId)) {
+            throw new IllegalStateException(NOT_CREATOR_OF_IDEA.getMessage());
+        }
+    }
+
+    private void validateBeforeEnrollment(Idea idea) {
+        ProjectSchedule currentSchedule = getCurrentSchedule();
+        TeamBuildingProject currentProject = currentSchedule.getProject();
+
+        if (!currentProject.equals(idea.getProject())) {
+            throw new IllegalStateException(SCHEDULE_PASSED.getMessage());
+        }
+
+        if (currentSchedule.getType() != ScheduleType.IDEA_REGISTRATION) {
+            throw new IllegalStateException(SCHEDULE_PASSED.getMessage());
         }
     }
 
@@ -279,11 +361,11 @@ public class IdeaServiceImpl implements IdeaService {
         return idea;
     }
 
-    private Idea updateExistIdea(
+    private Idea updateExistTemporaryIdea(
             Idea idea,
             IdeaCreateRequestDto requestDto
     ) {
-        validateIdeaModifiable(idea);
+        validateIdeaNotRegistered(idea);
 
         idea.updateTexts(
                 requestDto.topic(),
@@ -321,6 +403,11 @@ public class IdeaServiceImpl implements IdeaService {
     private User findUserBy(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_EXIST.getMessage()));
+    }
+
+    private Idea findRegisteredIdeaBy(long ideaId) {
+        return ideaRepository.findByIdAndRegisterStatus(ideaId, IdeaStatus.REGISTERED)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
     }
 
     private Idea findDeletedIdea(long ideaId) {

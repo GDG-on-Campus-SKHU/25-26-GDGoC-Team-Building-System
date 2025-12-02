@@ -1,7 +1,6 @@
-package com.skhu.gdgocteambuildingproject.admin.dto.idea;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.request;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaMemberCompositionRequestDto;
 import java.util.List;
 
 public record IdeaUpdateRequestDto(
