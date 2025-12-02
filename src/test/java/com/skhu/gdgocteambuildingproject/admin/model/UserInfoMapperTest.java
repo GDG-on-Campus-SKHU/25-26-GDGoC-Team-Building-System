@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.model;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import org.junit.jupiter.api.BeforeEach;
@@ -12,11 +13,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 
+import java.util.Set;
+
 class UserInfoMapperTest {
 
     private static final String TEST_USER_NAME = "테스트유저";
     private static final Part TEST_USER_PART = Part.BACKEND;
-    private static final String TEST_USER_GENERATION = "25-26";
+    private static final String TEST_USER_GENERATION = "GEN_25_26";
     private static final String TEST_USER_SCHOOL = "성공회대학교";
     private static final String TEST_USER_EMAIL = "test@example.com";
     private static final String TEST_USER_NUMBER = "010-1234-5678";
@@ -38,11 +41,11 @@ class UserInfoMapperTest {
         User testUser = User.builder()
                 .name(TEST_USER_NAME)
                 .part(TEST_USER_PART)
-                .generation(TEST_USER_GENERATION)
+                .generations(Set.of(Generation.GEN_24_25))
                 .school(TEST_USER_SCHOOL)
                 .email(TEST_USER_EMAIL)
                 .number(TEST_USER_NUMBER)
-                .position(UserPosition.CORE)
+                .positions(Set.of(UserPosition.MEMBER))
                 .role(UserRole.SKHU_ADMIN)
                 .introduction(INTRODUCTION)
                 .password(PASSWORD)
