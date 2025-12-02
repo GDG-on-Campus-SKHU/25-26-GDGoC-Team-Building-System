@@ -17,6 +17,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
@@ -151,6 +152,29 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new EntityNotFoundException(TEMPORARY_IDEA_NOT_EXIST.getMessage()));
 
         return ideaDetailInfoMapper.map(idea);
+    }
+
+    @Override
+    @Transactional
+    public void updateTexts(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaTextUpdateRequestDto requestDto
+    ) {
+        validateIdeaTexts(requestDto.getTexts());
+
+        Idea idea = findRegisteredIdeaBy(ideaId);
+
+        validateIdeaInProject(idea, projectId);
+        validateIdeaOwnership(idea, userId);
+
+        idea.updateTexts(
+                requestDto.topic(),
+                requestDto.title(),
+                requestDto.introduction(),
+                requestDto.description()
+        );
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
@@ -153,6 +154,28 @@ public class TeamBuildingController {
         IdeaDetailInfoResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/projects/{projectId}/ideas/{ideaId}")
+    @Operation(
+            summary = "아이디어 수정(텍스트만)",
+            description = """
+                    아이디어의 내용(텍스트)을 수정합니다.
+                    
+                    일정에 상관 없이 호출할 수 있습니다.
+                    """
+    )
+    public ResponseEntity<Void> updateIdea(
+            Principal principal,
+            @PathVariable long projectId,
+            @PathVariable long ideaId,
+            @RequestBody IdeaTextUpdateRequestDto requestDto
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        ideaService.updateTexts(projectId, ideaId, userId, requestDto);
+
+        return NO_CONTENT;
     }
 
     @PutMapping("/projects/{projectId}/ideas/{ideaId}/before-enrollment")

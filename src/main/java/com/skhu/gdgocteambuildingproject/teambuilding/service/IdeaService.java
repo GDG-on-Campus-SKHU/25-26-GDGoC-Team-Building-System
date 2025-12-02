@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
@@ -40,6 +41,13 @@ public interface IdeaService {
     IdeaDetailInfoResponseDto findTemporaryIdea(
             long projectId,
             long userId
+    );
+
+    void updateTexts(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaTextUpdateRequestDto requestDto
     );
 
     void updateBeforeEnrollment(
