@@ -9,22 +9,11 @@ import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.*;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -48,12 +37,14 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @ElementCollection
     @Enumerated(EnumType.STRING)
-    private UserPosition position;
+    @Column(name = "position")
+    @CollectionTable(name = "user_positions", joinColumns = @JoinColumn(name = "user_id"))
+    private Set<UserPosition> positions = new HashSet<>();
 
     @Enumerated(EnumType.STRING)
     private Part part;
-    private String generation;
 
     private boolean deleted;
     private LocalDateTime deletedAt;
@@ -62,6 +53,12 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
+
+    @ElementCollection
+    @Enumerated(EnumType.STRING)
+    @Column(name = "generation")
+    @CollectionTable(name = "user_generations", joinColumns = @JoinColumn(name = "user_id"))
+    private Set<Generation> generations = new HashSet<>();
 
     // 승인 여부
     @Column(nullable = false)
@@ -91,8 +88,8 @@ public class User extends BaseEntity {
 
     @Builder
     public User(String email, String password, String name, String number,
-                String introduction, String school, UserRole role, UserPosition position,
-                Part part, String generation) {
+                String introduction, String school, UserRole role, Set<UserPosition> positions,
+                Part part, Set<Generation> generations) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -100,9 +97,9 @@ public class User extends BaseEntity {
         this.introduction = introduction;
         this.school = school;
         this.role = role;
-        this.position = position;
+        this.positions = positions;
         this.part = part;
-        this.generation = generation;
+        this.generations = generations;
     }
 
     public void updatePassword(String newPassword) {
