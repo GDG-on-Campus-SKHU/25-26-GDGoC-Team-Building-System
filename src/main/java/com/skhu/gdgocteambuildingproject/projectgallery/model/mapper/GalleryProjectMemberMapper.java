@@ -5,9 +5,12 @@ import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchL
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Component
 public class GalleryProjectMemberMapper {
@@ -37,9 +40,23 @@ public class GalleryProjectMemberMapper {
         return MemberSearchResponseDto.builder()
                 .name(user.getName())
                 .school(user.getSchool())
-                .generationAndPosition(user.getGeneration() + " " + user.getPosition())
+                .generationAndPosition(
+                        joinGenerations(user) + " " + joinPositions(user)
+                )
                 .isSelected(false)
                 .build();
+    }
+
+    private String joinGenerations(User user) {
+        return user.getGenerations().stream()
+                .map(Generation::getLabel)
+                .collect(Collectors.joining(", "));
+    }
+
+    private String joinPositions(User user) {
+        return user.getPositions().stream()
+                .map(UserPosition::name)
+                .collect(Collectors.joining(", "));
     }
 
     private MemberSearchListResponseDto mapToListDto(List<MemberSearchResponseDto> memberSearchResponseDtos) {
