@@ -37,7 +37,6 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
         }
 
         user.approve();
-        userRepository.save(user);
     }
 
     @Override
@@ -50,7 +49,6 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
         }
 
         user.reject();
-        userRepository.save(user);
     }
 
     @Override
@@ -69,6 +67,18 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
                 .users(userResponseDtos)
                 .pageInfo(PageInfo.from(userPage))
                 .build();
+    }
+
+    @Override
+    @Transactional
+    public void resetRejectedUser(Long userId) {
+        User user = findUserByIdOrThrow(userId);
+
+        if (user.getApprovalStatus() != ApprovalStatus.REJECTED) {
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_REJECTED.getMessage());
+        }
+
+        user.resetToWaiting();
     }
 
     private User findUserByIdOrThrow(Long userId) {
