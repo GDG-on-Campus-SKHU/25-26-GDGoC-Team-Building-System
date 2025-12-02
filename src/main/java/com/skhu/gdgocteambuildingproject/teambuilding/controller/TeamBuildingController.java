@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -151,6 +154,52 @@ public class TeamBuildingController {
         IdeaDetailInfoResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
 
         return ResponseEntity.ok(response);
+    }
+
+    @PutMapping("/projects/{projectId}/ideas/{ideaId}")
+    @Operation(
+            summary = "아이디어 수정(텍스트만)",
+            description = """
+                    아이디어의 내용(텍스트)을 수정합니다.
+                    
+                    일정에 상관 없이 호출할 수 있습니다.
+                    """
+    )
+    public ResponseEntity<Void> updateIdea(
+            Principal principal,
+            @PathVariable long projectId,
+            @PathVariable long ideaId,
+            @RequestBody IdeaTextUpdateRequestDto requestDto
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        ideaService.updateTexts(projectId, ideaId, userId, requestDto);
+
+        return NO_CONTENT;
+    }
+
+    @PutMapping("/projects/{projectId}/ideas/{ideaId}/before-enrollment")
+    @Operation(
+            summary = "아이디어 수정(모집 전)",
+            description = """
+                    아이디어의 내용 및 파트 구성 정보를 수정합니다.
+                    
+                    팀빌딩 시작 전에만 호출할 수 있습니다.(아이디어 등록 기간에만 호출할 수 있습니다)
+                    
+                    creatorPart, part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    public ResponseEntity<Void> updateIdeaBeforeEnrollment(
+            Principal principal,
+            @PathVariable long projectId,
+            @PathVariable long ideaId,
+            @RequestBody IdeaUpdateRequestDto requestDto
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        ideaService.updateBeforeEnrollment(projectId, ideaId, userId, requestDto);
+
+        return NO_CONTENT;
     }
 
     @DeleteMapping("/projects/{projectId}/ideas/{ideaId}")

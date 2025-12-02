@@ -62,6 +62,7 @@ public class User extends BaseEntity {
 
     // 승인 여부
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
 
     @Column(nullable = false)
@@ -114,6 +115,10 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.REJECTED;
     }
 
+    public void resetToWaiting() {
+        this.approvalStatus = ApprovalStatus.WAITING;
+    }
+
     public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
         return ideas.stream()
                 .filter(Idea::isRegistered)
@@ -158,7 +163,10 @@ public class User extends BaseEntity {
      */
     public void addIdea(Idea idea) {
         ideas.add(idea);
-        idea.setCreator(this);
+    }
+
+    public void removeIdea(Idea idea) {
+        ideas.remove(idea);
     }
 
     public void addEnrollment(IdeaEnrollment enrollment) {

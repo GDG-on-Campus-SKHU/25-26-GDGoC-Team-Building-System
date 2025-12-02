@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdminUserManageController implements AdminUserManageApi {
 
-    private final AdminUserManageServiceImpl adminUserManageService;
+    private final AdminUserManageService adminUserManageService;
 
     @Override
     @PostMapping("/{userId}/approve")
@@ -31,6 +31,13 @@ public class AdminUserManageController implements AdminUserManageApi {
     @PostMapping("/{userId}/reject")
     public ResponseEntity<Void> rejectUser(@PathVariable Long userId) {
         adminUserManageService.rejectUser(userId);
+        return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @PostMapping("/{userId}/reset")
+    public ResponseEntity<Void> resetRejectedUser(@PathVariable Long userId) {
+        adminUserManageService.resetRejectedUser(userId);
         return ResponseEntity.ok().build();
     }
 

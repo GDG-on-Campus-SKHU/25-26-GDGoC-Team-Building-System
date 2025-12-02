@@ -38,6 +38,12 @@ public interface AdminUserManageApi {
             @Parameter(description = "거절할 회원의 ID") Long userId
     );
 
+    @Operation(summary = "거부된 회원 상태 초기화", description = "REJECTED 상태인 회원을 대기중 상태로 되돌립니다.")
+    @ApiResponse(responseCode = "200", description = "초기화 성공")
+    ResponseEntity<Void> resetRejectedUser(
+            @Parameter(description = "사용자 ID", example = "1") Long userId
+    );
+
     @Operation(summary = "전체 회원 목록 조회", description = "관리자가 페이지네이션을 통해 전체 회원 목록을 조회합니다.")
     @ApiResponse(responseCode = "200", description = "조회 성공")
     ResponseEntity<UserInfoPageResponseDto> getAllUsers(

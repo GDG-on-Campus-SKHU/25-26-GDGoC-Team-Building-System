@@ -24,6 +24,7 @@ public enum ExceptionMessage {
     IDEA_CREATOR_CANNOT_ENROLL("아이디어를 게시한 회원은 다른 아이디어에 지원할 수 없습니다"),
     ALREADY_ENROLL("해당 아이디어에 이미 지원했습니다."),
     PROJECT_NOT_EXIST("프로젝트가 존재하지 않습니다."),
+    ILLEGAL_PROJECT("잘못된 프로젝트입니다."),
     IDEA_NOT_EXIST("아이디어가 존재하지 않습니다."),
     NOT_MEMBER_OF_IDEA("해당 아이디어에 소속되지 않았습니다"),
     REGISTERED_IDEA_NOT_EXIST("등록된 아이디어가 존재하지 않습니다."),
@@ -41,6 +42,7 @@ public enum ExceptionMessage {
     SCHEDULE_ALREADY_INITIALIZED("일정이 이미 초기화 되어 있습니다."),
     ACTIVITY_POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
+    USER_NOT_REJECTED("현재 상태가 REJECTED인 사용자만 재검토할 수 있습니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
