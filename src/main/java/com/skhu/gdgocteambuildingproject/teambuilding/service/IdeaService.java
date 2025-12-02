@@ -42,6 +42,13 @@ public interface IdeaService {
             long userId
     );
 
+    void updateBeforeEnrollment(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaUpdateRequestDto requestDto
+    );
+
     void updateIdeaByAdmin(
             long ideaId,
             IdeaUpdateRequestDto requestDto

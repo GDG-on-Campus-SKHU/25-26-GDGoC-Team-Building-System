@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
+    Optional<Idea> findByIdAndRegisterStatus(long ideaId, IdeaStatus registerStatus);
+
     Page<Idea> findByProjectId(long projectId, Pageable pageable);
 
     Page<Idea> findByProjectIdAndRecruitingIsTrue(long projectId, Pageable pageable);
