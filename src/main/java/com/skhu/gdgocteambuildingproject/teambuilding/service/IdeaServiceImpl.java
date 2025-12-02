@@ -17,7 +17,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
