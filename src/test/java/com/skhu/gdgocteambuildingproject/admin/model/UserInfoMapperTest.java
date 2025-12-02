@@ -19,7 +19,7 @@ class UserInfoMapperTest {
 
     private static final String TEST_USER_NAME = "테스트유저";
     private static final Part TEST_USER_PART = Part.BACKEND;
-    private static final String TEST_USER_GENERATION = "GEN_25_26";
+    private static final String TEST_USER_GENERATION = "25-26";
     private static final String TEST_USER_SCHOOL = "성공회대학교";
     private static final String TEST_USER_EMAIL = "test@example.com";
     private static final String TEST_USER_NUMBER = "010-1234-5678";
@@ -41,7 +41,7 @@ class UserInfoMapperTest {
         User testUser = User.builder()
                 .name(TEST_USER_NAME)
                 .part(TEST_USER_PART)
-                .generations(Set.of(Generation.GEN_24_25))
+                .generations(Set.of(Generation.GEN_25_26))
                 .school(TEST_USER_SCHOOL)
                 .email(TEST_USER_EMAIL)
                 .number(TEST_USER_NUMBER)
@@ -58,7 +58,7 @@ class UserInfoMapperTest {
         assertThat(responseDto).isNotNull();
         assertThat(responseDto.userName()).isEqualTo(TEST_USER_NAME);
         assertThat(responseDto.part()).isEqualTo(TEST_USER_PART);
-        assertThat(responseDto.generation()).isEqualTo(TEST_USER_GENERATION);
+        assertThat(responseDto.generation()).containsExactly(TEST_USER_GENERATION);
         assertThat(responseDto.school()).isEqualTo(TEST_USER_SCHOOL);
         assertThat(responseDto.approvalStatus()).isEqualTo(TEST_USER_STATUS);
         assertThat(responseDto.email()).isEqualTo(TEST_USER_EMAIL);
