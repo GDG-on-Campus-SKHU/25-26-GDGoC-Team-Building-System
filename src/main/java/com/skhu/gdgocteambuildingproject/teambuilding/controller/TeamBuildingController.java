@@ -185,6 +185,8 @@ public class TeamBuildingController {
                     아이디어의 내용 및 파트 구성 정보를 수정합니다.
                     
                     팀빌딩 시작 전에만 호출할 수 있습니다.(아이디어 등록 기간에만 호출할 수 있습니다)
+                    
+                    creatorPart, part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
     public ResponseEntity<Void> updateIdeaBeforeEnrollment(
