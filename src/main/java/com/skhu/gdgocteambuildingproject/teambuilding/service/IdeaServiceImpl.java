@@ -189,6 +189,11 @@ public class IdeaServiceImpl implements IdeaService {
         ProjectSchedule currentSchedule = getCurrentSchedule();
         TeamBuildingProject project = currentSchedule.getProject();
 
+        // 멤버가 없는 아이디어라면 일정에 상관 없이 삭제 가능
+        if (!idea.hasMember()) {
+            return;
+        }
+
         if (!project.equals(idea.getProject())) {
             throw new IllegalStateException(SCHEDULE_PASSED.getMessage());
         }
