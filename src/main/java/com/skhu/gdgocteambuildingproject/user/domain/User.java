@@ -161,7 +161,10 @@ public class User extends BaseEntity {
      */
     public void addIdea(Idea idea) {
         ideas.add(idea);
-        idea.setCreator(this);
+    }
+
+    public void removeIdea(Idea idea) {
+        ideas.remove(idea);
     }
 
     public void addEnrollment(IdeaEnrollment enrollment) {

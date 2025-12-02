@@ -56,4 +56,8 @@ public interface IdeaService {
     void hardDeleteIdea(
             long ideaId
     );
+
+    void restoreIdea(
+            long ideaId
+    );
 }
