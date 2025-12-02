@@ -19,11 +19,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Auth API", description = "인증/인가 관련 API")
+@Tag(name = "Auth API",
+        description = "사용자 인증(로그인/회원가입) 및 JWT 기반 토큰 발급·갱신·삭제 기능을 담당")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tag(name = "Auth API", description = "회원가입, 로그인, 토큰 재발급, 로그아웃, 회원 탈퇴 등 인증 관련 API")
 public class AuthController {
 
     private final AuthService authService;
