@@ -33,7 +33,6 @@ import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingPro
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -202,14 +201,7 @@ public class IdeaServiceImpl implements IdeaService {
     }
 
     private ProjectSchedule getCurrentSchedule() {
-        List<TeamBuildingProject> unfinishedProjects = projectRepository.findProjectsWithScheduleNotEndedBefore(
-                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
-                LocalDateTime.now()
-        );
-        TeamBuildingProject project = projectUtil.findCurrentProject(unfinishedProjects)
-                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
-
-        return project.getCurrentSchedule()
+        return projectUtil.findCurrentSchedule()
                 .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_EXIST.getMessage()));
     }
 

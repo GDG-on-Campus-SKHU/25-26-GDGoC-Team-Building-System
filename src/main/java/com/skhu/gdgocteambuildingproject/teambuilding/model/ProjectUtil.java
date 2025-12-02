@@ -1,27 +1,45 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
+
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
+import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
+@RequiredArgsConstructor
 public class ProjectUtil {
-    public Optional<TeamBuildingProject> findCurrentProject(List<TeamBuildingProject> projects) {
-        List<TeamBuildingProject> unfinishedProjects = filterUnfinishedProjects(projects);
+
+    private final TeamBuildingProjectRepository projectRepository;
+
+    public Optional<TeamBuildingProject> findCurrentProject() {
+        List<TeamBuildingProject> unfinishedProjects = findUnfinishedProjects();
 
         return findEarliestScheduledProject(unfinishedProjects)
                 .or(() -> findUnscheduledProject(unfinishedProjects));
     }
 
-    private List<TeamBuildingProject> filterUnfinishedProjects(List<TeamBuildingProject> projects) {
-        LocalDateTime now = LocalDateTime.now();
+    public Optional<ProjectSchedule> findCurrentSchedule() {
+        TeamBuildingProject currentProject = findCurrentProject()
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
 
-        return projects.stream()
-                .filter(project -> project.isUnscheduled() || project.getEndDate().isAfter(now))
-                .toList();
+        return currentProject.getCurrentSchedule();
+    }
+
+    private List<TeamBuildingProject> findUnfinishedProjects() {
+        // 아직 마지막 일정이 끝나지 않은 프로젝트들만 조회
+        return projectRepository.findProjectsWithScheduleNotEndedBefore(
+                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
+                LocalDateTime.now()
+        );
     }
 
     private Optional<TeamBuildingProject> findUnscheduledProject(List<TeamBuildingProject> projects) {

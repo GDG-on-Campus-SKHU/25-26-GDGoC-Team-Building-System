@@ -76,9 +76,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Transactional(readOnly = true)
     public TeamBuildingInfoResponseDto findCurrentProjectInfo(long userId) {
         User user = findUserBy(userId);
-        List<TeamBuildingProject> allProjects = projectRepository.findAll();
 
-        TeamBuildingProject currentProject = projectUtil.findCurrentProject(allProjects)
+        TeamBuildingProject currentProject = projectUtil.findCurrentProject()
                 .orElseThrow(() -> new IllegalStateException(PROJECT_NOT_EXIST.getMessage()));
 
         return teamBuildingInfoMapper.map(currentProject, user);
