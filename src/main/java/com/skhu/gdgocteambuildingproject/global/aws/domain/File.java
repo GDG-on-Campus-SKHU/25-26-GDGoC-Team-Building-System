@@ -6,9 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
@@ -21,7 +18,6 @@ public class File extends BaseEntity {
     private String url;
     private String mimeType;
     private long size;
-    private LocalDateTime uploadedAt;
 
     @Builder
     private File(String originalName,
@@ -29,15 +25,13 @@ public class File extends BaseEntity {
                  String bucketPath,
                  String url,
                  String mimeType,
-                 long size,
-                 LocalDateTime uploadedAt) {
+                 long size) {
         this.originalName = originalName;
         this.s3FileName = s3FileName;
         this.bucketPath = bucketPath;
         this.url = url;
         this.mimeType = mimeType;
         this.size = size;
-        this.uploadedAt = uploadedAt;
     }
 
     public static File ofUploadResult(String originalName,
@@ -53,7 +47,6 @@ public class File extends BaseEntity {
                 .url(url)
                 .mimeType(mimeType)
                 .size(size)
-                .uploadedAt(LocalDateTime.now())
                 .build();
     }
 }

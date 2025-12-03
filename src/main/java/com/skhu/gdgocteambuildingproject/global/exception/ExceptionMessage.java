@@ -68,7 +68,16 @@ public enum ExceptionMessage {
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
 
     // Idea
-    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다");
+    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
+
+    // S3
+    IO_EXCEPTION_ON_IMAGE_DELETE("이미지 삭제 과정에서 예외가 발생했습니다."),
+    EMPTY_FILE("파일이 비어있거나 파일 이름이 비어있습니다."),
+    IO_EXCEPTION_ON_IMAGE_UPLOAD("이미지 업로드 과정에서 에외가 발생했습니다."),
+    NO_FILE_NAME("올바르지 않은 파일의 이름입니다."),
+    NO_FILE_EXTENSION("파일 확장자가 없습니다."),
+    INVALID_FILE_EXTENSION("업로드를 지원하지 않는 확장자입니다."),
+    PUT_OBJECT_EXCEPTION("S3 버킷에 이미지를 업로드하는 과정에서 예외가 발생했습니다.");
 
     private final String message;
 
