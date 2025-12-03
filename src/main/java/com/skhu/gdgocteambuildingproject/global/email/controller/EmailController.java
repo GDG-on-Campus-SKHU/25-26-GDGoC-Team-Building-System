@@ -2,7 +2,6 @@ package com.skhu.gdgocteambuildingproject.global.email.controller;
 
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailService;
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailVerificationService;
-import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -33,16 +32,7 @@ public class EmailController {
             @ApiResponse(responseCode = "400", description = "이메일이 존재하지 않음 또는 입력값 오류")
     })
     public ResponseEntity<String> sendCode(@RequestParam("email") String email) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
-        }
-
-        emailService.validateEmailExists(email);
-
-        String code = emailService.generateVerificationCode();
-        emailVerificationService.saveCode(email, code);
-        emailService.sendVerificationEmail(email, code);
-
+        emailService.sendCode(email);
         return ResponseEntity.ok("인증번호가 전송되었습니다.");
     }
 
@@ -55,14 +45,11 @@ public class EmailController {
             @ApiResponse(responseCode = "200", description = "인증 성공"),
             @ApiResponse(responseCode = "400", description = "인증 실패 또는 입력값 오류")
     })
-    public ResponseEntity<String> verifyCode(@RequestParam("email") String email,
-                                             @RequestParam("code") String code) {
-        if (email == null || email.isBlank() || code == null || code.isBlank()) {
-            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
-        }
-
-        emailVerificationService.verifyCodeOrThrow(email, code);
-
+    public ResponseEntity<String> verifyCode(
+            @RequestParam("email") String email,
+            @RequestParam("code") String code
+    ) {
+        emailVerificationService.verify(email, code);
         return ResponseEntity.ok("인증 성공");
     }
 }

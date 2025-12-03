@@ -12,8 +12,18 @@ import java.util.concurrent.TimeUnit;
 public class EmailVerificationService {
 
     private final StringRedisTemplate redisTemplate;
-
     private static final String PREFIX = "emailCode:";
+
+    public void verify(String email, String inputCode) {
+        validateInput(email, inputCode);
+        verifyCodeOrThrow(email, inputCode);
+    }
+
+    private void validateInput(String email, String code) {
+        if (email == null || email.isBlank() || code == null || code.isBlank()) {
+            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
+        }
+    }
 
     public void saveCode(String email, String code) {
         redisTemplate.opsForValue().set(PREFIX + email, code, 5, TimeUnit.MINUTES);
