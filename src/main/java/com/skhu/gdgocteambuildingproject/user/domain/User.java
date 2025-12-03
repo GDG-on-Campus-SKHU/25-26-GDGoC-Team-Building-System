@@ -11,14 +11,17 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.*;
 import jakarta.persistence.*;
-
-import java.time.LocalDateTime;
-import java.util.*;
-
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDateTime;
+import java.util.*;
 
 @Entity
 @Getter
