@@ -21,11 +21,12 @@ public enum ExceptionMessage {
     INVALID_JWT_TOKEN("유효하지 않은 JWT 토큰입니다."),
 
     // Email
-    EMAIL_NOT_VERIFIED("이메일 인증이 완료되지 않았습니다."),
     USER_EMAIL_NOT_EXIST("존재하지 않거나 탈퇴한 이메일입니다."),
     EMAIL_INVALID_FORMAT("유효하지 않은 이메일 형식입니다."),
     VERIFICATION_CODE_EXPIRED("인증번호가 만료되었습니다."),
     VERIFICATION_CODE_INVALID("인증번호가 일치하지 않습니다."),
+    PASSWORD_INVALID_FORMAT("비밀번호 형식이 올바르지 않습니다."),
+    PASSWORD_SAME_AS_OLD("새 비밀번호는 기존 비밀번호와 달라야 합니다."),
 
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
