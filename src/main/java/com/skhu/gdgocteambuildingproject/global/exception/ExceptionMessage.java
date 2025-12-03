@@ -18,6 +18,7 @@ public enum ExceptionMessage {
     USER_NOT_APPROVED("관리자 승인 대기 중입니다."),
     USER_REJECTED("승인이 거절된 사용자입니다."),
     REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
+    INVALID_JWT_TOKEN("유효하지 않은 JWT 토큰입니다."),
 
     // Email
     EMAIL_NOT_VERIFIED("이메일 인증이 완료되지 않았습니다."),

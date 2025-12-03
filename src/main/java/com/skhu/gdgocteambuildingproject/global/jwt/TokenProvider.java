@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.global.jwt;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.CustomUserDetailsService;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import io.jsonwebtoken.Jwts;
@@ -92,7 +93,7 @@ public class TokenProvider {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            log.error("Invalid JWT token: {}", e.getMessage());
+            log.error(ExceptionMessage.INVALID_JWT_TOKEN.getMessage() + ": {}", e.getMessage());
             return false;
         }
     }
