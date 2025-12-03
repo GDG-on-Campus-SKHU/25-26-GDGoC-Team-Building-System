@@ -99,7 +99,7 @@ public class S3ImageService {
         }
 
         String extension = filename.substring(lastDotIndex + 1).toLowerCase();
-        List<String> allowedExtensionList = Arrays.asList("jpg", "jpeg", "png", "gif");
+        List<String> allowedExtensionList = List.of("jpg", "jpeg", "png", "gif");
 
         if (!allowedExtensionList.contains(extension)) {
             throw new ResponseStatusException(
