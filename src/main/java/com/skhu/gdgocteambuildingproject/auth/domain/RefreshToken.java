@@ -20,7 +20,7 @@ public class RefreshToken {
     @Column(nullable = false, unique = true, length = 300)
     private String token;
 
-    public RefreshToken(User user, String token) {
+    private RefreshToken(User user, String token) {
         this.user = user;
         this.token = token;
     }
