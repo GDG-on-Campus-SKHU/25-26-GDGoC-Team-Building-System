@@ -295,6 +295,10 @@ public class Idea extends BaseEntity {
         return currentCount < maxMemberCount;
     }
 
+    public void removeEnrollment(IdeaEnrollment enrollment) {
+        enrollments.remove(enrollment);
+    }
+
     private Map<Part, Integer> initCurrentCounts() {
         EnumMap<Part, Integer> partMap = new EnumMap<>(Part.class);
 
