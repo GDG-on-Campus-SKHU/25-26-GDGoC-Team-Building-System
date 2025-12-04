@@ -61,11 +61,7 @@ public class IdeaEnrollment extends BaseEntity {
     @JoinColumn(nullable = false)
     private ProjectSchedule schedule;
 
-    public boolean isConfirmable() {
-        return status.isWaitingToConfirm();
-    }
-
-    public void confirm() {
+    public void confirmStatus() {
         switch (status) {
             case SCHEDULED_TO_ACCEPT -> status = ACCEPTED;
             case SCHEDULED_TO_REJECT -> status = REJECTED;
