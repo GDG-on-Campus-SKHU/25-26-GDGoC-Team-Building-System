@@ -12,9 +12,14 @@ public interface TeamBuildingProjectRepository extends JpaRepository<TeamBuildin
     @Query("""
     SELECT DISTINCT p
     FROM TeamBuildingProject p
-    LEFT JOIN FETCH p.schedules s
-    WHERE s.type = :type
-      AND s.endDate < :criteria
+    LEFT JOIN FETCH p.schedules
+    WHERE EXISTS (
+        SELECT 1
+        FROM ProjectSchedule s
+        WHERE s.project = p
+          AND s.type = :type
+          AND s.endDate < :criteria
+    )
     """)
     List<TeamBuildingProject> findProjectsWithScheduleEndedBefore(
             @Param("type") ScheduleType type,
@@ -24,9 +29,14 @@ public interface TeamBuildingProjectRepository extends JpaRepository<TeamBuildin
     @Query("""
     SELECT DISTINCT p
     FROM TeamBuildingProject p
-    LEFT JOIN FETCH p.schedules s
-    WHERE s.type = :type
-      AND s.endDate > :criteria
+    LEFT JOIN FETCH p.schedules
+    WHERE EXISTS (
+        SELECT 1
+        FROM ProjectSchedule s
+        WHERE s.project = p
+          AND s.type = :type
+          AND s.endDate > :criteria
+    )
     """)
     List<TeamBuildingProject> findProjectsWithScheduleNotEndedBefore(
             @Param("type") ScheduleType type,

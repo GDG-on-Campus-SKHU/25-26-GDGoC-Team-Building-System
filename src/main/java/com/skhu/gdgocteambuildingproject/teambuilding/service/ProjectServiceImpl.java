@@ -3,13 +3,18 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
@@ -20,6 +25,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,6 +41,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final ProjectUtil projectUtil;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
+    private final ProjectInfoMapper projectInfoMapper;
 
     @Override
     @Transactional
@@ -49,11 +58,26 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     @Transactional(readOnly = true)
+    public ProjectInfoPageResponseDto findProjects(int page, int size, String sortBy, SortOrder order) {
+        Pageable pagination = setupPagination(page, size, sortBy, order);
+        Page<TeamBuildingProject> projects = projectRepository.findAll(pagination);
+
+        List<ProjectInfoResponseDto> projectDtos = projects.stream()
+                .map(projectInfoMapper::map)
+                .toList();
+
+        return ProjectInfoPageResponseDto.builder()
+                .projects(projectDtos)
+                .pageInfo(PageInfo.from(projects))
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public TeamBuildingInfoResponseDto findCurrentProjectInfo(long userId) {
         User user = findUserBy(userId);
-        List<TeamBuildingProject> allProjects = projectRepository.findAll();
 
-        TeamBuildingProject currentProject = projectUtil.findCurrentProject(allProjects)
+        TeamBuildingProject currentProject = projectUtil.findCurrentProject()
                 .orElseThrow(() -> new IllegalStateException(PROJECT_NOT_EXIST.getMessage()));
 
         return teamBuildingInfoMapper.map(currentProject, user);
@@ -97,6 +121,19 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.findProjectsWithScheduleEndedBefore(
                 ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
                 criteriaTime
+        );
+    }
+
+    private Pageable setupPagination(
+            int page,
+            int size,
+            String sortBy,
+            SortOrder order
+    ) {
+        return PageRequest.of(
+                page,
+                size,
+                order.sort(sortBy)
         );
     }
 }

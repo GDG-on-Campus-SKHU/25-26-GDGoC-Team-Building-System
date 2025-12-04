@@ -1,6 +1,8 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
@@ -41,6 +43,25 @@ public interface IdeaService {
             long userId
     );
 
+    void updateTexts(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaTextUpdateRequestDto requestDto
+    );
+
+    void updateBeforeEnrollment(
+            long projectId,
+            long ideaId,
+            long userId,
+            IdeaUpdateRequestDto requestDto
+    );
+
+    void updateIdeaByAdmin(
+            long ideaId,
+            IdeaUpdateRequestDto requestDto
+    );
+
     void softDeleteIdea(
             long projectId,
             long ideaId,
@@ -48,6 +69,10 @@ public interface IdeaService {
     );
 
     void hardDeleteIdea(
+            long ideaId
+    );
+
+    void restoreIdea(
             long ideaId
     );
 }

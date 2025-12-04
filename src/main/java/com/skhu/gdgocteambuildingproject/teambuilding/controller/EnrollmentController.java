@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequ
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.CompositionResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -98,13 +99,40 @@ public class EnrollmentController {
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    private ResponseEntity<EnrollmentAvailabilityResponseDto> getEnrollmentInfo(
+    public ResponseEntity<EnrollmentAvailabilityResponseDto> getEnrollmentInfo(
             Principal principal,
             @PathVariable long ideaId
     ) {
         long userId = findUserIdBy(principal);
 
         EnrollmentAvailabilityResponseDto response = enrollmentService.getAvailabilityInfo(ideaId, userId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/compositions")
+    @Operation(
+            summary = "팀원 구성 조회",
+            description = """
+                    본인이 소속한 아이디어(팀)에 대한 정보와 팀원 구성 정보를 조회합니다.
+                    
+                    또한, 본인의 역할도 같이 반환합니다.
+                    
+                    소속한 아이디어가 없을 경우 404를 응답합니다.
+                    
+                    아이디어에 지원 가능한 파트와 별개로, 항상 모든 파트에 대한 정보를 조회합니다.
+                    (지원 불가능한 파트의 경우, 현재 인원수와 최대 인원수가 0으로 설정됩니다)
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    myRole, memberRole: CREATOR, MEMBER
+                    """
+    )
+    public ResponseEntity<CompositionResponseDto> findMyIdeaComposition(
+            Principal principal
+    ) {
+        long userId = findUserIdBy(principal);
+
+        CompositionResponseDto response = enrollmentService.getComposition(userId);
 
         return ResponseEntity.ok(response);
     }
@@ -123,7 +151,7 @@ public class EnrollmentController {
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    private ResponseEntity<List<SentEnrollmentResponseDto>> findSentEnrollments(
+    public ResponseEntity<List<SentEnrollmentResponseDto>> findSentEnrollments(
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
@@ -152,7 +180,7 @@ public class EnrollmentController {
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    private ResponseEntity<List<ReceivedEnrollmentResponseDto>> findReceivedApplyHistory(
+    public ResponseEntity<List<ReceivedEnrollmentResponseDto>> findReceivedApplyHistory(
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {

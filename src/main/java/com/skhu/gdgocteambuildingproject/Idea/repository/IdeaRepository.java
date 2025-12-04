@@ -12,6 +12,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface IdeaRepository extends JpaRepository<Idea, Long> {
+    Optional<Idea> findByIdAndRegisterStatus(long ideaId, IdeaStatus registerStatus);
+
     Page<Idea> findByProjectId(long projectId, Pageable pageable);
 
     Page<Idea> findByProjectIdAndRecruitingIsTrue(long projectId, Pageable pageable);
@@ -25,6 +27,17 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
             @Param("project_id") long projectId,
             Pageable pageable
     );
+
+    @Query(
+            value = "SELECT i FROM Idea i JOIN FETCH i.project JOIN FETCH i.project.availableParts WHERE i.id = :ideaId"
+    )
+    Optional<Idea> findByIdIncludeDeleted(@Param("ideaId") long ideaId);
+
+    @Query(
+            value = "SELECT * FROM idea i WHERE i.id = :idea_id AND i.deleted = true",
+            nativeQuery = true
+    )
+    Optional<Idea> findDeletedIdeaById(@Param("idea_id") long ideaId);
 
     Optional<Idea> findByIdAndProjectId(long ideaId, long projectId);
 

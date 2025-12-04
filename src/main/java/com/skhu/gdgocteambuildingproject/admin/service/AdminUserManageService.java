@@ -14,4 +14,6 @@ public interface AdminUserManageService {
             String sortBy,
             SortOrder order
     );
+
+    void resetRejectedUser(Long userId);
 }

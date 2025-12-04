@@ -13,4 +13,7 @@ public record IdeaCreateRequestDto(
         IdeaStatus registerStatus,
         List<IdeaMemberCompositionRequestDto> compositions
 ) {
+    public List<String> getTexts() {
+        return List.of(title, introduction, description, topic);
+    }
 }
