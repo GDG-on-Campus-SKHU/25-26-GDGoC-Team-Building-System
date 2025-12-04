@@ -2,8 +2,6 @@ package com.skhu.gdgocteambuildingproject.admin.model;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -22,16 +20,16 @@ public class ApproveUserInfoMapper {
     }
 
     private List<String> mapPositions(User user) {
-        return user.getPositions()
+        return user.getGeneration()
                 .stream()
-                .map(UserPosition::name)
+                .map(gen -> gen.getPosition().name())
                 .toList();
     }
 
     private List<String> mapGenerations(User user) {
-        return user.getGenerations()
+        return user.getGeneration()
                 .stream()
-                .map(Generation::getLabel)
+                .map(gen -> gen.getGeneration().getLabel())
                 .toList();
     }
 }
