@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.admin.model;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.UserResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
+import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
@@ -26,6 +27,8 @@ class UserInfoMapperTest {
     private static final String INTRODUCTION = "방가방가합니다";
     private static final String PASSWORD = "123456";
     private static final ApprovalStatus TEST_USER_STATUS = ApprovalStatus.WAITING;
+    private static final Generation generationEnum = Generation.GEN_25_26;
+    private static final UserPosition positionEnum = UserPosition.CORE;
 
     private UserInfoMapper userInfoMapper;
 
@@ -41,15 +44,22 @@ class UserInfoMapperTest {
         User testUser = User.builder()
                 .name(TEST_USER_NAME)
                 .part(TEST_USER_PART)
-                .generations(Set.of(Generation.GEN_25_26))
                 .school(TEST_USER_SCHOOL)
                 .email(TEST_USER_EMAIL)
                 .number(TEST_USER_NUMBER)
-                .positions(Set.of(UserPosition.MEMBER))
                 .role(UserRole.SKHU_ADMIN)
                 .introduction(INTRODUCTION)
                 .password(PASSWORD)
                 .build();
+
+
+        UserGeneration userGeneration = UserGeneration.builder()
+                .user(testUser)
+                .generation(generationEnum)
+                .position(positionEnum)
+                .build();
+
+        testUser.addGeneration(userGeneration);
 
         // when
         UserResponseDto responseDto = userInfoMapper.toUserResponseDto(testUser);
