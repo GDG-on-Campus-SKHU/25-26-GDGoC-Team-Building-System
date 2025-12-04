@@ -3,9 +3,15 @@ package com.skhu.gdgocteambuildingproject.user.domain;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
-public class UserGenerationRole {
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class UserGeneration {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,4 +26,11 @@ public class UserGenerationRole {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public UserGeneration(Generation generation, UserPosition position, User user) {
+        this.generation = generation;
+        this.position = position;
+        this.user = user;
+    }
 }
