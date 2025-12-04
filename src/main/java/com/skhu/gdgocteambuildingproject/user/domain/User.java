@@ -58,6 +58,8 @@ public class User extends BaseEntity {
     private boolean deleted;
     private LocalDateTime deletedAt;
 
+    private LocalDateTime approvedAt;
+
     private String banReason;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -111,6 +113,7 @@ public class User extends BaseEntity {
 
     public void approve() {
         this.approvalStatus = ApprovalStatus.APPROVED;
+        this.approvedAt = LocalDateTime.now();
     }
 
     public void reject() {
