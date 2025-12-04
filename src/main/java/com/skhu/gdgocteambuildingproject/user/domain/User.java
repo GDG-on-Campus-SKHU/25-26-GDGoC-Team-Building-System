@@ -11,8 +11,10 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import jakarta.persistence.*;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
