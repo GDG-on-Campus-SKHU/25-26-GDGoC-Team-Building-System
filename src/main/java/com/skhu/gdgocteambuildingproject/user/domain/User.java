@@ -21,6 +21,7 @@ import jakarta.persistence.Enumerated;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,11 +59,11 @@ public class User extends BaseEntity {
     private boolean deleted;
     private LocalDateTime deletedAt;
 
-    private LocalDateTime approvedAt;
+    private LocalDate approvedAt;
 
-    private LocalDateTime bannedAt;
+    private LocalDate bannedAt;
 
-    private LocalDateTime unbannedAt;
+    private LocalDate unbannedAt;
 
     private String banReason;
 
@@ -117,7 +118,7 @@ public class User extends BaseEntity {
 
     public void approve() {
         this.approvalStatus = ApprovalStatus.APPROVED;
-        this.approvedAt = LocalDateTime.now();
+        this.approvedAt = LocalDate.now();
     }
 
     public void reject() {
@@ -192,12 +193,12 @@ public class User extends BaseEntity {
     public void ban(String reason) {
         this.userStatus = UserStatus.BANNED;
         this.banReason = reason;
-        this.bannedAt = LocalDateTime.now();
+        this.bannedAt = LocalDate.now();
     }
 
     public void unban() {
         this.userStatus = UserStatus.ACTIVE;
         this.banReason = null;
-        this.unbannedAt = LocalDateTime.now();
+        this.unbannedAt = LocalDate.now();
     }
 }
