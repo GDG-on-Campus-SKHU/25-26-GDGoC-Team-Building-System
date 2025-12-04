@@ -55,4 +55,8 @@ public class IdeaMember extends BaseEntity {
     public boolean isCreator() {
         return role == IdeaMemberRole.CREATOR;
     }
+
+    public boolean isMember() {
+        return role == IdeaMemberRole.MEMBER;
+    }
 }

@@ -226,6 +226,11 @@ public class Idea extends BaseEntity {
         return currentCounts;
     }
 
+    public boolean hasMember() {
+        return members.stream()
+                .anyMatch(IdeaMember::isMember);
+    }
+
     public boolean isRegistered() {
         return registerStatus == IdeaStatus.REGISTERED;
     }
