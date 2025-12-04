@@ -29,6 +29,7 @@ public enum ExceptionMessage {
     PASSWORD_SAME_AS_OLD("새 비밀번호는 기존 비밀번호와 달라야 합니다."),
 
     // TeamBuilding
+    NOT_PARTICIPATED("프로젝트에 접근 권한이 없습니다."),
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
     NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
     SCHEDULE_PASSED("일정이 지났습니다."),
