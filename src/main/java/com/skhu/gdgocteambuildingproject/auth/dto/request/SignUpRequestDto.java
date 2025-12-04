@@ -36,10 +36,10 @@ public class SignUpRequestDto {
     @NotBlank
     private String school;
 
-    private Set<Generation> generations;
+    private Generation generation;
     private Part part;
 
-    private Set<UserPosition> positions;// MEMBER / CORE / ORGANIZER
+    private UserPosition position;// MEMBER / CORE / ORGANIZER
     private UserRole role;         // SKHU_MEMBER / OTHERS
 
     public User toEntity(String encodedPassword) {
@@ -51,9 +51,7 @@ public class SignUpRequestDto {
                 .introduction(this.introduction)
                 .school(this.school)
                 .role(this.role)
-                .positions(this.positions)
                 .part(this.part)
-                .generations(this.generations)
                 .build();
     }
 }
