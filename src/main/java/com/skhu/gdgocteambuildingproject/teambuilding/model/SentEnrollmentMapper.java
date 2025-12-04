@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
@@ -21,7 +22,7 @@ public class SentEnrollmentMapper {
         return SentEnrollmentResponseDto.builder()
                 .enrollmentId(enrollment.getId())
                 .choice(enrollment.getChoice())
-                .enrollmentStatus(enrollment.getStatus())
+                .enrollmentStatus(convertToProperStatus(enrollment.getStatus()))
                 .ideaTitle(idea.getTitle())
                 .ideaIntroduction(idea.getIntroduction())
                 .enrollmentPart(enrollmentPart)
@@ -34,5 +35,13 @@ public class SentEnrollmentMapper {
         return (int) idea.getEnrollmentsOf(schedule).stream()
                 .filter(enrollment -> enrollment.getPart() == part)
                 .count();
+    }
+
+    private EnrollmentStatus convertToProperStatus(EnrollmentStatus status) {
+        if (status.isWaitingToConfirm()) {
+            return EnrollmentStatus.WAITING;
+        }
+
+        return status;
     }
 }

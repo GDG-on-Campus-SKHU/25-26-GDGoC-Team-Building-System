@@ -107,22 +107,47 @@ public class Idea extends BaseEntity {
         enrollments.add(enrollment);
     }
 
+    /**
+     * 지원을 수락 예정 상태로 만든다.
+     */
     public void acceptEnrollment(IdeaEnrollment enrollment) {
         validateContains(enrollment);
         validateEnrollmentStatus(enrollment);
         validateMemberCount(enrollment.getPart());
 
-        enrollment.accept();
-        IdeaMember member = createMember(enrollment);
-
-        members.add(member);
+        enrollment.scheduleToAccept();
     }
 
+    /**
+     * 지원을 거절 예정 상태로 만든다.
+     */
     public void rejectEnrollment(IdeaEnrollment enrollment) {
         validateContains(enrollment);
         validateEnrollmentStatus(enrollment);
 
-        enrollment.reject();
+        enrollment.scheduleToReject();
+    }
+
+    /**
+     * 수락/거절 예정인 지원을 수락/거절 상태로 만든다.
+     * 수락한 지원자들을 멤버로 추가한다.
+     */
+    public void confirmEnrollments() {
+        List<IdeaEnrollment> confirmableEnrollments = enrollments.stream()
+                .filter(IdeaEnrollment::isConfirmable)
+                .toList();
+
+        for (IdeaEnrollment enrollment : confirmableEnrollments) {
+            if (enrollment.isScheduledToAccept()) {
+                enrollment.accept();
+
+                IdeaMember member = createMember(enrollment);
+                members.add(member);
+            }
+            if (enrollment.isScheduledToReject()) {
+                enrollment.reject();
+            }
+        }
     }
 
     public void updateTexts(
@@ -201,10 +226,27 @@ public class Idea extends BaseEntity {
         return members.size();
     }
 
+    /**
+     * 수락 확정인 멤버만 포함한 현재 인원수
+     */
     public int getCurrentMemberCountOf(Part part) {
         return (int) members.stream()
                 .filter(member -> member.getPart() == part)
                 .count();
+    }
+
+    /**
+     * 수락 예정인 멤버를 포함한 현재 인원수
+     */
+    public int getCurrentMemberCountIncludeNotConfirm(Part part) {
+        int confirmedMemberCount = getCurrentMemberCountOf(part);
+
+        int notConfirmedMemberCount = (int) enrollments.stream()
+                .filter(member -> member.getPart() == part)
+                .filter(member -> member.getStatus() == EnrollmentStatus.SCHEDULED_TO_ACCEPT)
+                .count();
+
+        return confirmedMemberCount + notConfirmedMemberCount;
     }
 
     public Map<Part, Integer> getMaxMemberCountsByPart() {
@@ -306,7 +348,7 @@ public class Idea extends BaseEntity {
 
     private void validateMemberCount(Part part) {
         int maxMemberCount = getMaxMemberCountOf(part);
-        int currentMemberCount = getCurrentMemberCountOf(part);
+        int currentMemberCount = getCurrentMemberCountIncludeNotConfirm(part);
 
         if (currentMemberCount >= maxMemberCount) {
             throw new IllegalStateException(ENROLLMENT_NOT_AVAILABLE.getMessage());
