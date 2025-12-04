@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.global.email.service;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
@@ -14,8 +16,30 @@ import java.util.Random;
 public class EmailService {
 
     private final JavaMailSender mailSender;
+    private final UserRepository userRepository;
+    private final EmailVerificationService emailVerificationService;
 
-    // 6자리 인증번호 생성
+    public void sendCode(String email) {
+        validateEmailFormat(email);
+        validateEmailExists(email);
+
+        String code = generateVerificationCode();
+        emailVerificationService.saveCode(email, code);
+        sendVerificationEmail(email, code);
+    }
+
+    private void validateEmailFormat(String email) {
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
+        }
+    }
+
+    public void validateEmailExists(String email) {
+        if (!userRepository.existsByEmailAndDeletedFalse(email)) {
+            throw new IllegalArgumentException(ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage());
+        }
+    }
+
     public String generateVerificationCode() {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
@@ -25,7 +49,6 @@ public class EmailService {
         return code.toString();
     }
 
-    // 이메일 전송
     public void sendVerificationEmail(String to, String code) {
         String subject = "[GDGoC Team Project] 비밀번호 재설정 인증번호";
         String content = """
@@ -40,11 +63,9 @@ public class EmailService {
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
-
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(content, true);
-
             mailSender.send(message);
         } catch (MessagingException e) {
             throw new RuntimeException("이메일 전송 실패: " + e.getMessage());

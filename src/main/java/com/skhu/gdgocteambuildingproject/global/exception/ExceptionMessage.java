@@ -12,6 +12,22 @@ public enum ExceptionMessage {
     ALREADY_BANNED_USER("이미 정지된 계정입니다."),
     ALREADY_ACTIVE_USER("이미 활성화된 계정입니다."),
 
+    //Auth
+    EMAIL_ALREADY_EXISTS("이미 가입된 이메일입니다."),
+    INVALID_PASSWORD("비밀번호가 일치하지 않습니다."),
+    USER_NOT_APPROVED("관리자 승인 대기 중입니다."),
+    USER_REJECTED("승인이 거절된 사용자입니다."),
+    REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
+    INVALID_JWT_TOKEN("유효하지 않은 JWT 토큰입니다."),
+
+    // Email
+    USER_EMAIL_NOT_EXIST("존재하지 않거나 탈퇴한 이메일입니다."),
+    EMAIL_INVALID_FORMAT("유효하지 않은 이메일 형식입니다."),
+    VERIFICATION_CODE_EXPIRED("인증번호가 만료되었습니다."),
+    VERIFICATION_CODE_INVALID("인증번호가 일치하지 않습니다."),
+    PASSWORD_INVALID_FORMAT("비밀번호 형식이 올바르지 않습니다."),
+    PASSWORD_SAME_AS_OLD("새 비밀번호는 기존 비밀번호와 달라야 합니다."),
+
     // TeamBuilding
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
     NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
