@@ -60,6 +60,10 @@ public class User extends BaseEntity {
 
     private LocalDateTime approvedAt;
 
+    private LocalDateTime bannedAt;
+
+    private LocalDateTime unbannedAt;
+
     private String banReason;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -188,10 +192,12 @@ public class User extends BaseEntity {
     public void ban(String reason) {
         this.userStatus = UserStatus.BANNED;
         this.banReason = reason;
+        this.bannedAt = LocalDateTime.now();
     }
 
     public void unban() {
         this.userStatus = UserStatus.ACTIVE;
         this.banReason = null;
+        this.unbannedAt = LocalDateTime.now();
     }
 }
