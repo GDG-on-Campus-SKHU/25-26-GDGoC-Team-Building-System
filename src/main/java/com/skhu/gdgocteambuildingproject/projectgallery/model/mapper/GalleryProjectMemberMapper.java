@@ -40,22 +40,14 @@ public class GalleryProjectMemberMapper {
         return MemberSearchResponseDto.builder()
                 .name(user.getName())
                 .school(user.getSchool())
-                .generationAndPosition(
-                        joinGenerations(user) + " " + joinPositions(user)
-                )
+                .generationAndPosition(joinGenerationAndPositions(user))
                 .isSelected(false)
                 .build();
     }
 
-    private String joinGenerations(User user) {
-        return user.getGenerations().stream()
-                .map(Generation::getLabel)
-                .collect(Collectors.joining(", "));
-    }
-
-    private String joinPositions(User user) {
-        return user.getPositions().stream()
-                .map(UserPosition::name)
+    private String joinGenerationAndPositions(User user) {
+        return user.getGeneration().stream()
+                .map(gen -> gen.getGeneration().getLabel() + " " + gen.getPosition().name())
                 .collect(Collectors.joining(", "));
     }
 
