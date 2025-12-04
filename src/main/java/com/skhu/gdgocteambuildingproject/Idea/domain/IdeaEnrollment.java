@@ -62,15 +62,19 @@ public class IdeaEnrollment extends BaseEntity {
     private ProjectSchedule schedule;
 
     public boolean isConfirmable() {
-        return status == SCHEDULED_TO_ACCEPT || status == SCHEDULED_TO_REJECT;
+        return status.isWaitingToConfirm();
+    }
+
+    public void confirm() {
+        switch (status) {
+            case SCHEDULED_TO_ACCEPT -> status = ACCEPTED;
+            case SCHEDULED_TO_REJECT -> status = REJECTED;
+            case WAITING -> status = EXPIRED;
+        }
     }
 
     public boolean isScheduledToAccept() {
         return status == SCHEDULED_TO_ACCEPT;
-    }
-
-    public boolean isScheduledToReject() {
-        return status == SCHEDULED_TO_REJECT;
     }
 
     public void scheduleToAccept() {
@@ -79,13 +83,5 @@ public class IdeaEnrollment extends BaseEntity {
 
     public void scheduleToReject() {
         status = SCHEDULED_TO_REJECT;
-    }
-
-    public void accept() {
-        status = ACCEPTED;
-    }
-
-    public void reject() {
-        status = REJECTED;
     }
 }
