@@ -23,9 +23,9 @@ public class UserInfoMapper {
     }
 
     private List<String> mapGenerations(User user) {
-        return user.getGenerations()
+        return user.getGeneration()
                 .stream()
-                .map(Generation::getLabel)
+                .map(gen -> gen.getGeneration().getLabel())
                 .toList();
     }
 }
