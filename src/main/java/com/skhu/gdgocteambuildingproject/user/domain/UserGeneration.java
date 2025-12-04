@@ -18,13 +18,15 @@ public class UserGeneration {
     private Long id;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private Generation generation;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private UserPosition position;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
     @Builder
