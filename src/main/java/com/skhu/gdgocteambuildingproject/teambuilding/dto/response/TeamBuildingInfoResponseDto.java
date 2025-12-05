@@ -9,6 +9,7 @@ public record TeamBuildingInfoResponseDto(
         String projectName,
         int maxMemberCount,
         boolean registrable,
+        boolean canEnroll,
         List<ProjectScheduleResponseDto> schedules
 ) {
 }
