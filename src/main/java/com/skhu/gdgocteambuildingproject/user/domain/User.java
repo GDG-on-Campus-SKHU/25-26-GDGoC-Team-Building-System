@@ -18,6 +18,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -43,6 +44,12 @@ public class User extends BaseEntity {
 
     private boolean deleted;
     private LocalDateTime deletedAt;
+
+    private LocalDate approvedAt;
+
+    private LocalDate bannedAt;
+
+    private LocalDate unbannedAt;
 
     private String banReason;
 
@@ -99,6 +106,7 @@ public class User extends BaseEntity {
 
     public void approve() {
         this.approvalStatus = ApprovalStatus.APPROVED;
+        this.approvedAt = LocalDate.now();
     }
 
     public void reject() {
@@ -173,11 +181,13 @@ public class User extends BaseEntity {
     public void ban(String reason) {
         this.userStatus = UserStatus.BANNED;
         this.banReason = reason;
+        this.bannedAt = LocalDate.now();
     }
 
     public void unban() {
         this.userStatus = UserStatus.ACTIVE;
         this.banReason = null;
+        this.unbannedAt = LocalDate.now();
     }
 
     public void addGeneration(UserGeneration userGeneration) {
