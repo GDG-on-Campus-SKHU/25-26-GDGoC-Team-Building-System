@@ -9,20 +9,17 @@ import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
+import jakarta.persistence.*;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
-import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Entity
 @Getter
@@ -42,11 +39,7 @@ public class User extends BaseEntity {
     private UserRole role;
 
     @Enumerated(EnumType.STRING)
-    private UserPosition position;
-
-    @Enumerated(EnumType.STRING)
     private Part part;
-    private String generation;
 
     private boolean deleted;
     private LocalDateTime deletedAt;
@@ -56,6 +49,10 @@ public class User extends BaseEntity {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserGeneration> generation = new HashSet<>();
+
+    // 승인 여부
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ApprovalStatus approvalStatus = ApprovalStatus.WAITING;
@@ -84,8 +81,8 @@ public class User extends BaseEntity {
 
     @Builder
     public User(String email, String password, String name, String number,
-                String introduction, String school, UserRole role, UserPosition position,
-                Part part, String generation) {
+                String introduction, String school, UserRole role,
+                Part part) {
         this.email = email;
         this.password = password;
         this.name = name;
@@ -93,9 +90,7 @@ public class User extends BaseEntity {
         this.introduction = introduction;
         this.school = school;
         this.role = role;
-        this.position = position;
         this.part = part;
-        this.generation = generation;
     }
 
     public void updatePassword(String newPassword) {
@@ -183,5 +178,9 @@ public class User extends BaseEntity {
     public void unban() {
         this.userStatus = UserStatus.ACTIVE;
         this.banReason = null;
+    }
+
+    public void addGeneration(UserGeneration userGeneration) {
+        generation.add(userGeneration);
     }
 }

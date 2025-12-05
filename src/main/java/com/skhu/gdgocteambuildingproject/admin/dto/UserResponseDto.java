@@ -4,12 +4,14 @@ import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record UserResponseDto(
         Long id,
         String userName,
         String email,
-        String generation,
+        List<String> generation,
         String number,
         Part part,
         String school,

@@ -8,7 +8,11 @@ import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.TokenService;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
+import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +27,7 @@ public class AuthServiceImpl implements AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final TokenService tokenService;
+    private final UserGenerationRepository userGenerationRepository;
 
     @Override
     @Transactional
@@ -38,6 +43,8 @@ public class AuthServiceImpl implements AuthService {
         User savedUser = userRepository.save(
                 dto.toEntity(passwordEncoder.encode(dto.getPassword()))
         );
+
+        saveUserGeneration(savedUser, dto.getGeneration(), dto.getPosition());
 
         return createLoginResponse(savedUser);
     }
@@ -120,5 +127,17 @@ public class AuthServiceImpl implements AuthService {
                 .name(user.getName())
                 .role(user.getRole().name())
                 .build();
+    }
+
+    private void saveUserGeneration(User user, Generation generation, UserPosition position) {
+        UserGeneration userGeneration = UserGeneration.builder()
+                .user(user)
+                .position(position)
+                .generation(generation)
+                .build();
+
+        user.addGeneration(userGeneration);
+
+        userGenerationRepository.save(userGeneration);
     }
 }
