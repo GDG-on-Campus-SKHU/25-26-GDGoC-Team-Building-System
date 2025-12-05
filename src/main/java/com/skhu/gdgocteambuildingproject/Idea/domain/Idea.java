@@ -107,6 +107,11 @@ public class Idea extends BaseEntity {
         enrollments.add(enrollment);
     }
 
+    public void acceptAsMember(IdeaEnrollment enrollment) {
+        IdeaMember member = createMember(enrollment);
+        members.add(member);
+    }
+
     /**
      * 지원을 수락 예정 상태로 만든다.
      */
@@ -126,28 +131,6 @@ public class Idea extends BaseEntity {
         validateEnrollmentStatus(enrollment);
 
         enrollment.scheduleToReject();
-    }
-
-    /**
-     * 수락/거절 예정인 지원을 수락/거절 상태로 만든다.
-     * 수락한 지원자들을 멤버로 추가한다.
-     */
-    public void confirmEnrollments() {
-        List<IdeaEnrollment> confirmableEnrollments = enrollments.stream()
-                .filter(IdeaEnrollment::isConfirmable)
-                .toList();
-
-        for (IdeaEnrollment enrollment : confirmableEnrollments) {
-            if (enrollment.isScheduledToAccept()) {
-                enrollment.accept();
-
-                IdeaMember member = createMember(enrollment);
-                members.add(member);
-            }
-            if (enrollment.isScheduledToReject()) {
-                enrollment.reject();
-            }
-        }
     }
 
     public void updateTexts(

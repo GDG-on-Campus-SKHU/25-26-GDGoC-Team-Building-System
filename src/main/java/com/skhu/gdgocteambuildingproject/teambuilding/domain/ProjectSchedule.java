@@ -28,6 +28,9 @@ public class ProjectSchedule extends BaseEntity {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
+    @Builder.Default
+    private boolean confirmed = false;
+
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private ScheduleType type;
@@ -56,6 +59,10 @@ public class ProjectSchedule extends BaseEntity {
 
         this.startDate = startDate;
         this.endDate = endDate;
+    }
+
+    public void markAsConfirm() {
+        this.confirmed = true;
     }
 
     private void validateDates(
