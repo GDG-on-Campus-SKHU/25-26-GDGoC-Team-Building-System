@@ -21,6 +21,7 @@ public class TeamBuildingInfoMapper {
                 .registrable(isRegistrable(project, user))
                 .canEnroll(isCanEnroll(project, user))
                 .schedules(scheduleMapper.map(project.getSchedules()))
+                .availableParts(project.getAvailableParts())
                 .build();
     }
 
