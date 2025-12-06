@@ -2,10 +2,12 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserSelectOptionsDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
@@ -83,4 +85,13 @@ public interface AdminUserProfileApi {
             @Parameter(description = "정렬 기준 필드", example = DEFAULT_SORT_BY) String sortBy,
             @Parameter(description = "정렬 방향 (ASC/DESC)", example = DEFAULT_ORDER) SortOrder order
     );
+
+    @Operation(
+            summary = "관리자 페이지에서 선택지 옵션 조회",
+            description = "프론트에서 필요한 Part, UserPosition, Generation의 선택지 데이터를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200", description = "조회 성공")
+            })
+    ResponseEntity<UserSelectOptionsDto> getUserSelectOptions();
 }
