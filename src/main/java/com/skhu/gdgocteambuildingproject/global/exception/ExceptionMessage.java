@@ -65,7 +65,7 @@ public enum ExceptionMessage {
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
 
     // Idea
-    IDEAMEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다");
+    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다");
 
     private final String message;
 

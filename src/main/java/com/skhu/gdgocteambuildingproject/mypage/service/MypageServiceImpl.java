@@ -51,7 +51,7 @@ public class MypageServiceImpl implements MypageService {
     @Transactional(readOnly = true)
     public ProfileInfoResponseDto getProfileByIdeaMemberId(Long ideaMemberId) {
         IdeaMember ideaMember = ideaMemberRepository.findByIdWithUser(ideaMemberId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.IDEAMEMBER_NOT_FOUND.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.IDEA_MEMBER_NOT_FOUND.getMessage()));
 
         return profileInfoMapper.map(ideaMember.getUser());
     }
