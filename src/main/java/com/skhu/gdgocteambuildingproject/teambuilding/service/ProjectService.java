@@ -1,7 +1,8 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -23,7 +24,9 @@ public interface ProjectService {
 
     List<PastProjectResponseDto> findPastProjects();
 
-    ProjectTotalResponseDto findUpdatableProject();
+    ModifiableProjectResponseDto findModifiableProject();
+
+    void updateProject(long projectId, ProjectUpdateRequestDto requestDto);
 
     void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto);
 }

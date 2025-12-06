@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ALREADY_PARTICIPATED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_ALREADY_INITIALIZED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
 
@@ -7,6 +8,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -44,6 +46,10 @@ public class TeamBuildingProject extends BaseEntity {
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private final List<ProjectSchedule> schedules = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private final List<ProjectParticipant> participants = new ArrayList<>();
 
     public List<Part> getAvailableParts() {
         return availableParts.stream()
@@ -134,5 +140,48 @@ public class TeamBuildingProject extends BaseEntity {
                 .orElseThrow(() -> new IllegalStateException(SCHEDULE_NOT_EXIST.getMessage()));
 
         projectSchedule.updateDates(startDate, endDate);
+    }
+
+    public void update(String name, int maxMemberCount, List<Part> availableParts) {
+        this.name = name;
+        this.maxMemberCount = maxMemberCount;
+
+        this.availableParts.clear();
+
+        if (availableParts != null) {
+            for (Part part : availableParts) {
+                ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
+                        .part(part)
+                        .project(this)
+                        .build();
+
+                this.availableParts.add(projectAvailablePart);
+            }
+        }
+    }
+
+    public void participate(User user) {
+        validateParticipate(user);
+
+        ProjectParticipant participant = ProjectParticipant.builder()
+                .project(this)
+                .user(user)
+                .build();
+
+        participants.add(participant);
+    }
+
+    public void clearParticipants() {
+        participants.clear();
+    }
+
+    private void validateParticipate(User user) {
+        boolean alreadyParticipated = participants.stream()
+                .map(ProjectParticipant::getUser)
+                .anyMatch(user::equals);
+
+        if (alreadyParticipated) {
+            throw new IllegalStateException(ALREADY_PARTICIPATED.getMessage());
+        }
     }
 }
