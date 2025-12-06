@@ -12,10 +12,12 @@ import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -105,6 +107,9 @@ public class AuthServiceImpl implements AuthService {
 
         if (user.getApprovalStatus() == ApprovalStatus.REJECTED) {
             throw new IllegalStateException(ExceptionMessage.USER_REJECTED.getMessage());
+        }
+        if (user.getUserStatus() == UserStatus.BANNED) {
+            throw new LockedException(ExceptionMessage.BANNED_USER.getMessage());
         }
     }
 
