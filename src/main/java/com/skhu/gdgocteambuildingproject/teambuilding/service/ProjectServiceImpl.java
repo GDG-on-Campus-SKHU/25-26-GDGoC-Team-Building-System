@@ -6,6 +6,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -104,6 +105,18 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject project = findModifiableProject();
 
         return projectTotalMapper.map(project);
+    }
+
+    @Override
+    @Transactional
+    public void updateProject(long projectId, ProjectUpdateRequestDto requestDto) {
+        TeamBuildingProject project = findProjectBy(projectId);
+
+        project.update(
+                requestDto.projectName(),
+                requestDto.maxMemberCount(),
+                requestDto.availableParts()
+        );
     }
 
     @Override

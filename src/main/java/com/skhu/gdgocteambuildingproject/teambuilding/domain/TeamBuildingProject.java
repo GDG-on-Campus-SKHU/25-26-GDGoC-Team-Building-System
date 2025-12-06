@@ -135,4 +135,22 @@ public class TeamBuildingProject extends BaseEntity {
 
         projectSchedule.updateDates(startDate, endDate);
     }
+
+    public void update(String name, int maxMemberCount, List<Part> availableParts) {
+        this.name = name;
+        this.maxMemberCount = maxMemberCount;
+
+        this.availableParts.clear();
+
+        if (availableParts != null) {
+            for (Part part : availableParts) {
+                ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
+                        .part(part)
+                        .project(this)
+                        .build();
+
+                this.availableParts.add(projectAvailablePart);
+            }
+        }
+    }
 }

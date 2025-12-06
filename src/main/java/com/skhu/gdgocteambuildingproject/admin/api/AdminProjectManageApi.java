@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -60,6 +61,17 @@ public interface AdminProjectManageApi {
                     """
     )
     ResponseEntity<ProjectTotalResponseDto> getModifiableProject();
+
+    @Operation(
+            summary = "프로젝트 정보 수정",
+            description = """
+                    프로젝트의 일정을 제외한 나머지 정보를 수정합니다.
+                    """
+    )
+    ResponseEntity<Void> updateProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId,
+            ProjectUpdateRequestDto requestDto
+    );
 
     @Operation(
             summary = "프로젝트 일정 등록 및 수정",
