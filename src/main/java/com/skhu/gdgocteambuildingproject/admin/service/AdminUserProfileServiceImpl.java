@@ -1,10 +1,8 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.PageInfo;
-import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.UserSelectOptionsMapper;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -28,7 +26,9 @@ import java.util.List;
 public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     private final UserRepository userRepository;
+
     private final ApproveUserInfoMapper approveUserInfoMapper;
+    private final UserSelectOptionsMapper userSelectOptionsMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -100,6 +100,12 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
         );
 
         return toPageResponse(userPage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserSelectOptionsDto getUserSelectOptions() {
+       return userSelectOptionsMapper.fromEnums();
     }
 
     private User getUserOrThrow(Long userId) {
