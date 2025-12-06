@@ -1,6 +1,10 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
-import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.*;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.ACCEPTED;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.REJECTED;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_REJECT;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.WAITING;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
@@ -60,6 +64,10 @@ public class IdeaEnrollment extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private ProjectSchedule schedule;
+
+    public boolean isCancelable() {
+        return status.isWaitingToConfirm();
+    }
 
     public boolean isConfirmable() {
         return status == SCHEDULED_TO_ACCEPT || status == SCHEDULED_TO_REJECT;

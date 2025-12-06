@@ -156,9 +156,6 @@ public class User extends BaseEntity {
         this.userLinks.addAll(newUserLinks);
     }
 
-    /**
-     * User - Idea 연관관계 편의 메서드
-     */
     public void addIdea(Idea idea) {
         ideas.add(idea);
     }
@@ -169,6 +166,10 @@ public class User extends BaseEntity {
 
     public void addEnrollment(IdeaEnrollment enrollment) {
         enrollments.add(enrollment);
+    }
+
+    public void removeEnrollment(IdeaEnrollment enrollment) {
+        enrollments.remove(enrollment);
     }
 
     public void softDelete() {

@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ALREADY_ENROLL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CHOICE_NOT_AVAILABLE;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_BY_OTHER_USER;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CREATOR_CANNOT_ENROLL;
@@ -16,6 +17,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
@@ -167,9 +169,26 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 .toList();
     }
 
+    @Override
+    @Transactional
+    public void cancelEnrollment(long userId, long enrollmentId) {
+        User user = findUserBy(userId);
+        IdeaEnrollment enrollment = findEnrollmentBy(enrollmentId);
+
+        validateEnrollmentOwnership(enrollment, user);
+        validateEnrollmentCancelable(enrollment);
+
+        removeEnrollment(enrollment);
+    }
+
     private Idea findIdeaBy(long ideaId) {
         return ideaRepository.findById(ideaId)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
+    private IdeaEnrollment findEnrollmentBy(long enrollmentId) {
+        return enrollmentRepository.findById(enrollmentId)
+                .orElseThrow(() -> new EntityNotFoundException(ENROLLMENT_NOT_EXIST.getMessage()));
     }
 
     private IdeaEnrollment findEnrollmentWithLock(long enrollmentId) {
@@ -242,6 +261,20 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         }
     }
 
+    private void validateEnrollmentOwnership(IdeaEnrollment enrollment, User user) {
+        User applicant = enrollment.getApplicant();
+
+        if (!applicant.equals(user)) {
+            throw new IllegalArgumentException(ENROLLMENT_BY_OTHER_USER.getMessage());
+        }
+    }
+
+    private void validateEnrollmentCancelable(IdeaEnrollment enrollment) {
+        if (!enrollment.isCancelable()) {
+            throw new IllegalStateException(ExceptionMessage.ENROLLMENT_NOT_CANCELABLE.getMessage());
+        }
+    }
+
     private void validateEnrollmentUnique(
             User applicant,
             Idea idea
@@ -266,5 +299,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         if (!enrollmentSchedule.equals(currentSchedule)) {
             throw new IllegalStateException(SCHEDULE_PASSED.getMessage());
         }
+    }
+
+    private void removeEnrollment(IdeaEnrollment enrollment) {
+        User applicant = enrollment.getApplicant();
+        Idea idea = enrollment.getIdea();
+
+        applicant.removeEnrollment(enrollment);
+        idea.removeEnrollment(enrollment);
     }
 }

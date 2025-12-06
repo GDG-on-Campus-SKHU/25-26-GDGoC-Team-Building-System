@@ -39,4 +39,9 @@ public interface EnrollmentService {
             long userId,
             ScheduleType scheduleType
     );
+
+    void cancelEnrollment(
+            long userId,
+            long enrollmentId
+    );
 }
