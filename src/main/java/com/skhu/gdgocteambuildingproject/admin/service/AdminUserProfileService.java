@@ -41,4 +41,6 @@ public interface AdminUserProfileService {
             String sortBy,
             SortOrder order
     );
+
+    void deleteUserGeneration(Long generationId);
 }
