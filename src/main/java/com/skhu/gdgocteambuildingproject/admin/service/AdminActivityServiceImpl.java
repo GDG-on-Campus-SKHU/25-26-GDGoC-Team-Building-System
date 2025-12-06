@@ -98,6 +98,12 @@ public class AdminActivityServiceImpl implements AdminActivityService {
         activityCategoryRepository.delete(category);
     }
 
+    @Transactional
+    public void updateCategoryTitleAndStatus(Long categoryId, ActivityUpdateRequestDto dto) {
+        ActivityCategory category = getCategoryOrThrow(categoryId);
+        category.changeCategoryInfo(dto.categoryName(), dto.published());
+    }
+
     private ActivityCategory getOrCreateCategory(ActivitySaveRequestDto requestDto) {
         return activityCategoryRepository.findByName(requestDto.categoryName())
                 .orElseGet(() -> createCategory(requestDto));
