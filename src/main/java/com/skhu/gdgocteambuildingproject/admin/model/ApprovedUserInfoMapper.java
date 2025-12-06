@@ -57,9 +57,9 @@ public class ApprovedUserInfoMapper {
                 .email(user.getEmail())
                 .phoneNum(user.getNumber())
                 .approveAt(user.getApprovedAt())
-                .banReason(user.getBanReason())
                 .part(user.getPart())
                 .generations(mapGenerations(user))
+                .bannedAt(user.getBannedAt())
                 .unbannedAt(user.getUnbannedAt())
                 .school(user.getSchool())
                 .build();
