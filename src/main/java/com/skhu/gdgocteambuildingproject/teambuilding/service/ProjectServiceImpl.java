@@ -20,6 +20,8 @@ import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectTotalMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectParticipant;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.ProjectParticipantRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -40,6 +42,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final ProjectParticipantRepository participantRepository;
 
     private final ProjectUtil projectUtil;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
@@ -117,6 +120,8 @@ public class ProjectServiceImpl implements ProjectService {
                 requestDto.maxMemberCount(),
                 requestDto.availableParts()
         );
+
+        updateParticipants(project, requestDto.participantUserIds());
     }
 
     @Override
@@ -164,5 +169,22 @@ public class ProjectServiceImpl implements ProjectService {
                 size,
                 order.sort(sortBy)
         );
+    }
+
+    private void updateParticipants(TeamBuildingProject project, List<Long> participantUserIds) {
+        participantRepository.deleteByProjectId(project.getId());
+
+        if (participantUserIds != null) {
+            for (Long userId : participantUserIds) {
+                User user = findUserBy(userId);
+
+                ProjectParticipant participant = ProjectParticipant.builder()
+                        .project(project)
+                        .user(user)
+                        .build();
+
+                participantRepository.save(participant);
+            }
+        }
     }
 }

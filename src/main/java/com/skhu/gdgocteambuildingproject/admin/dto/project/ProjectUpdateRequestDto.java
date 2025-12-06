@@ -12,7 +12,9 @@ public record ProjectUpdateRequestDto(
         @Min(value = 1, message = "최대 인원은 1명 이상이어야 합니다.")
         int maxMemberCount,
 
-        List<Part> availableParts
+        List<Part> availableParts,
+
+        List<Long> participantUserIds
 ) {
 }
 
