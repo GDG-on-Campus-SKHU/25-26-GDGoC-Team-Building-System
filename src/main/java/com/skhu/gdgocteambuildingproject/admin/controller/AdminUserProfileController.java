@@ -3,8 +3,8 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 import com.skhu.gdgocteambuildingproject.admin.api.AdminUserProfileApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
-import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileServiceImpl;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
@@ -93,5 +93,16 @@ public class AdminUserProfileController implements AdminUserProfileApi {
                 adminUserProfileService.searchUsersBySchool(school, page, size, sortBy, order);
 
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{userId}")
+    public ResponseEntity<UserProfileResponseDto> getProfileByUser(@PathVariable Long userId) {
+        UserProfileResponseDto response = adminUserProfileService.getProfileByUserid(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/{userId}")
+    public ResponseEntity<?> updateProfileByUser(@PathVariable Long userId) {
+
     }
 }
