@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -60,7 +60,7 @@ public interface AdminProjectManageApi {
                     해당하는 프로젝트가 존재하지 않는다면 404를 응답합니다.
                     """
     )
-    ResponseEntity<ProjectTotalResponseDto> getModifiableProject();
+    ResponseEntity<ModifiableProjectResponseDto> getModifiableProject();
 
     @Operation(
             summary = "프로젝트 정보 수정",

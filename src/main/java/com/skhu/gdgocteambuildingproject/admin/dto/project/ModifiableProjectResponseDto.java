@@ -5,11 +5,12 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record ProjectTotalResponseDto(
+public record ModifiableProjectResponseDto(
         Long projectId,
         String projectName,
         int maxMemberCount,
         List<ProjectAvailablePartResponseDto> availableParts,
-        List<ProjectScheduleResponseDto> schedules
+        List<ProjectScheduleResponseDto> schedules,
+        List<Long> participatedUserIds
 ) {
 }
