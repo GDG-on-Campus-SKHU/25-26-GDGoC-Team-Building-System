@@ -6,6 +6,9 @@ import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 
@@ -82,5 +85,22 @@ public interface AdminUserProfileApi {
             @Parameter(description = "페이지 크기", example = DEFAULT_SIZE) int size,
             @Parameter(description = "정렬 기준 필드", example = DEFAULT_SORT_BY) String sortBy,
             @Parameter(description = "정렬 방향 (ASC/DESC)", example = DEFAULT_ORDER) SortOrder order
+    );
+
+    @Operation(
+            summary = "유저 기수-역할(UserGeneration) 삭제",
+            description = """
+                관리자가 특정 유저의 기수-역할(UserGeneration) 정보를 삭제합니다.
+                요청한 ID가 존재하지 않을 경우 404 Not Found를 반환합니다.
+                삭제 성공 시 200 OK를 반환하며 본문은 없습니다.
+                """
+    )
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 Generation ", content = @Content),
+    })
+    ResponseEntity<Void> deleteUserGeneration(
+            @Parameter(description = "삭제할 UserGeneration ID", example = "1", required = true)
+            Long generationId
     );
 }
