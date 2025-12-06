@@ -7,4 +7,6 @@ public interface MypageService {
     ProfileInfoResponseDto getProfileByUserId(Long userId);
 
     ProfileInfoResponseDto updateUserModifiableProfile(Long userId, ProfileInfoUpdateRequestDto requestDto);
+
+    ProfileInfoResponseDto getProfileByIdeaMemberId(Long ideaMemberId);
 }
