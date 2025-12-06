@@ -117,16 +117,16 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
         User user = getUserOrThrow(userId);
 
         for (UserGenerationUpdateDto generationItem : dto.generations()) {
-            processGenerationUpdate(user, generationItem);
+            processUpdateGeneration(user, generationItem);
         }
         user.updateSchool(dto.school());
         user.updatePart(dto.part());
     }
 
-    private void processGenerationUpdate(User user, UserGenerationUpdateDto generationItem) {
+    private void processUpdateGeneration(User user, UserGenerationUpdateDto generationItem) {
         if (generationItem.id() != null) {
-            UserGeneration existingUG = findExistingGeneration(user, generationItem.id());
-            updateExistingGeneration(existingUG, generationItem);
+            UserGeneration existingGeneration = findExistingGeneration(user, generationItem.id());
+            updateExistingGeneration(existingGeneration, generationItem);
         } else {
             createNewGeneration(user, generationItem);
         }
@@ -146,14 +146,14 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     }
 
     private void createNewGeneration(User user, UserGenerationUpdateDto dto) {
-        UserGeneration newUG = UserGeneration.builder()
+        UserGeneration newGeneration = UserGeneration.builder()
                 .generation(Generation.fromLabel(dto.generation()))
                 .position(dto.position())
                 .user(user)
                 .isMain(dto.isMain())
                 .build();
 
-        user.addGeneration(newUG);
+        user.addGeneration(newGeneration);
     }
 
     private User getUserOrThrow(Long userId) {
