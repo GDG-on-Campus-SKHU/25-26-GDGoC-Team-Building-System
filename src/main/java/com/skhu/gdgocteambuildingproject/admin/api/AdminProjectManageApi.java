@@ -58,6 +58,8 @@ public interface AdminProjectManageApi {
                     일정이 모두 결정된 프로젝트가 없다면, 아직 일정이 정해지지 않은 프로젝트를 조회합니다.
                     
                     해당하는 프로젝트가 존재하지 않는다면 404를 응답합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
     ResponseEntity<ModifiableProjectResponseDto> getModifiableProject();
@@ -66,6 +68,8 @@ public interface AdminProjectManageApi {
             summary = "프로젝트 정보 수정",
             description = """
                     프로젝트의 일정을 제외한 나머지 정보를 수정합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
     ResponseEntity<Void> updateProject(

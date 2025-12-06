@@ -11,6 +11,6 @@ public record ModifiableProjectResponseDto(
         int maxMemberCount,
         List<ProjectAvailablePartResponseDto> availableParts,
         List<ProjectScheduleResponseDto> schedules,
-        List<Long> participatedUserIds
+        List<ProjectParticipantResponseDto> participants
 ) {
 }
