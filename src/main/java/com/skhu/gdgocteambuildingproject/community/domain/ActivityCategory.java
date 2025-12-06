@@ -23,4 +23,9 @@ public class ActivityCategory extends BaseEntity {
         this.name = name;
         this.isPublished = isPublished;
     }
+
+    public void changeCategoryInfo(String categoryName, boolean published) {
+        this.name = categoryName;
+        this.isPublished = published;
+    }
 }
