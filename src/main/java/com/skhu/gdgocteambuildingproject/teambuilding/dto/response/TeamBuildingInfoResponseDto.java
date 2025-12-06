@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
 
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import java.util.List;
 import lombok.Builder;
 
@@ -9,6 +10,8 @@ public record TeamBuildingInfoResponseDto(
         String projectName,
         int maxMemberCount,
         boolean registrable,
-        List<ProjectScheduleResponseDto> schedules
+        boolean canEnroll,
+        List<ProjectScheduleResponseDto> schedules,
+        List<Part> availableParts
 ) {
 }
