@@ -27,6 +27,13 @@ public class ProjectUtil {
                 .or(() -> findUnscheduledProject(unfinishedProjects));
     }
 
+    public Optional<TeamBuildingProject> findModifiableProject() {
+        List<TeamBuildingProject> unstartedProjects = findUnstartedProjects();
+
+        return findEarliestScheduledProject(unstartedProjects)
+                .or(() -> findUnscheduledProject(unstartedProjects));
+    }
+
     public Optional<ProjectSchedule> findCurrentSchedule() {
         TeamBuildingProject currentProject = findCurrentProject()
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
@@ -42,6 +49,14 @@ public class ProjectUtil {
         );
     }
 
+    private List<TeamBuildingProject> findUnstartedProjects() {
+        // 아직 첫 일정이 시작하지 않은 프로젝트들만 조회
+        return projectRepository.findProjectsWithScheduleNotStarted(
+                ScheduleType.IDEA_REGISTRATION,
+                LocalDateTime.now()
+        );
+    }
+
     private Optional<TeamBuildingProject> findUnscheduledProject(List<TeamBuildingProject> projects) {
         return projects.stream()
                 .filter(TeamBuildingProject::isUnscheduled)
@@ -51,6 +66,7 @@ public class ProjectUtil {
     private Optional<TeamBuildingProject> findEarliestScheduledProject(List<TeamBuildingProject> projects) {
         return projects.stream()
                 .filter(TeamBuildingProject::isScheduled)
+                .filter(p -> p.getStartDate() != null)
                 .min(Comparator.comparing(TeamBuildingProject::getStartDate));
     }
 }
