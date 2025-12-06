@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 
@@ -41,4 +42,6 @@ public interface AdminUserProfileService {
             String sortBy,
             SortOrder order
     );
+
+    UserProfileResponseDto getProfileByUserid(Long userId);
 }

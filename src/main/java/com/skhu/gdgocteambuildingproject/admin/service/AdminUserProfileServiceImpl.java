@@ -4,7 +4,9 @@ import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.PageInfo;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.UserProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -28,7 +30,9 @@ import java.util.List;
 public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     private final UserRepository userRepository;
+
     private final ApproveUserInfoMapper approveUserInfoMapper;
+    private final UserProfileInfoMapper userProfileInfoMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -100,6 +104,14 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
         );
 
         return toPageResponse(userPage);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileResponseDto getProfileByUserid(Long userId) {
+        User user = getUserOrThrow(userId);
+
+        return userProfileInfoMapper.toDto(user);
     }
 
     private User getUserOrThrow(Long userId) {
