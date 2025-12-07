@@ -2,7 +2,6 @@ package com.skhu.gdgocteambuildingproject.auth.dto.request;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -38,7 +37,7 @@ public class SignUpRequestDto {
     private String school;
 
     @Schema(example = "24-25", description = "기수(Generation, label 값 사용)")
-    private Generation generation;
+    private String generation;
 
     @Schema(example = "WEB", description = "파트(Part)")
     private Part part;

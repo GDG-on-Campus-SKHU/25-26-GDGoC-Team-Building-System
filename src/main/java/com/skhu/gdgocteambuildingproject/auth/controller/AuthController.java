@@ -36,10 +36,10 @@ public class AuthController {
                     아래 Enum 값 중 하나를 입력해야 한다.
 
                     🔹 Generation Enum 값  
-                    - GEN_22_23  
-                    - GEN_23_24  
-                    - GEN_24_25  
-                    - GEN_25_26  
+                    - 22-23
+                    - 23-24
+                    - 24-25
+                    - 25-26                    
 
                     🔹 Part Enum 값  
                     - WEB  

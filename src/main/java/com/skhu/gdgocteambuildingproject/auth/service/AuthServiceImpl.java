@@ -20,6 +20,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
+
 @Service
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
@@ -44,7 +46,8 @@ public class AuthServiceImpl implements AuthService {
                 dto.toEntity(passwordEncoder.encode(dto.getPassword()))
         );
 
-        saveUserGeneration(savedUser, dto.getGeneration(), dto.getPosition());
+        Generation generation = convertGenerationLabel(dto.getGeneration());
+        saveUserGeneration(savedUser, generation, dto.getPosition());
 
         return createLoginResponse(savedUser);
     }
@@ -139,5 +142,12 @@ public class AuthServiceImpl implements AuthService {
         user.addGeneration(userGeneration);
 
         userGenerationRepository.save(userGeneration);
+    }
+
+    private Generation convertGenerationLabel(String label) {
+        return Arrays.stream(Generation.values())
+                .filter(g -> g.getLabel().equals(label))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 기수 값입니다: " + label));
     }
 }
