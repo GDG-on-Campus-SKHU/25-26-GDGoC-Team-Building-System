@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -112,14 +113,18 @@ public class AdminUserProfileController implements AdminUserProfileApi {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/{userId}")
+    @Override
+    @GetMapping("/{userId}/profile")
     public ResponseEntity<UserProfileResponseDto> getProfileByUser(@PathVariable Long userId) {
         UserProfileResponseDto response = adminUserProfileService.getProfileByUserid(userId);
         return ResponseEntity.ok(response);
     }
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<?> updateProfileByUser(@PathVariable Long userId) {
-
+    @Override
+    @PatchMapping("/{userId}/profile")
+    public ResponseEntity<UserProfileResponseDto> updateProfileByUser(@PathVariable Long userId,
+                                                                      @RequestBody UpdateUserProfileRequestDto dto) {
+        adminUserProfileService.updateProfileByUser(userId, dto);
+        return ResponseEntity.ok().build();
     }
 }
