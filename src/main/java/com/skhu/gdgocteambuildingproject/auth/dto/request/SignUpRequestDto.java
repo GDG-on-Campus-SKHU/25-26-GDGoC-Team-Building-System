@@ -37,52 +37,16 @@ public class SignUpRequestDto {
     @NotBlank
     private String school;
 
-    @Schema(
-            example = "GEN_24_25",
-            description = """
-                    기수(Generation) Enum 값:
-                    - GEN_22_23
-                    - GEN_23_24
-                    - GEN_24_25
-                    - GEN_25_26
-                    """
-    )
+    @Schema(example = "24-25", description = "기수(Generation, label 값 사용)")
     private Generation generation;
 
-    @Schema(
-            example = "WEB",
-            description = """
-                    파트(Part) Enum 값 예시:
-                    - WEB
-                    - APP
-                    - AI
-                    - DESIGN
-                    """
-    )
+    @Schema(example = "WEB", description = "파트(Part)")
     private Part part;
 
-    @Schema(
-            example = "MEMBER",
-            description = """
-                    사용자 포지션(UserPosition) Enum 값:
-                    - MEMBER
-                    - CORE
-                    - ORGANIZER
-                    """
-    )
+    @Schema(example = "MEMBER", description = "사용자 포지션(UserPosition)")
     private UserPosition position;
 
-    @Schema(
-            example = "OTHERS",
-            description = """
-                    사용자 권한(UserRole) Enum 값:
-                    - OTHERS
-                    - SKHU_MEMBER
-                    - SKHU_ADMIN
-                    - BANNED
-                    """
-    )
-
+    @Schema(example = "OTHERS", description = "사용자 권한(UserRole)")
     private UserRole role;
 
     public User toEntity(String encodedPassword) {

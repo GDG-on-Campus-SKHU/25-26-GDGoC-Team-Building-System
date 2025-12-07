@@ -5,19 +5,17 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@EnableConfigurationProperties(SwaggerProperties.class)
 public class SwaggerConfig {
 
     private static final String BEARER_KEY = "bearerAuth";
 
     @Bean
-    public OpenAPI openAPI(SwaggerProperties swaggerProperties) {
-        OpenAPI openAPI = new OpenAPI()
+    public OpenAPI openAPI() {
+        return new OpenAPI()
                 .components(new Components()
                         .addSecuritySchemes(BEARER_KEY,
                                 new SecurityScheme()
@@ -29,8 +27,6 @@ public class SwaggerConfig {
                 )
                 .addSecurityItem(new SecurityRequirement().addList(BEARER_KEY))
                 .info(apiInfo());
-
-        return openAPI;
     }
 
     private Info apiInfo() {
