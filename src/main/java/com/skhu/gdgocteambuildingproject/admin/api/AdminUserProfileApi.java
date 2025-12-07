@@ -4,6 +4,8 @@ import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -128,5 +130,36 @@ public interface AdminUserProfileApi {
                     required = true
             )
             ApproveUserUpdateRequestDto dto
+    );
+
+    @Operation(summary = "회원의 마이페이지 프로필 단건 조회", description = "특정 회원의 마이페이지 프로필 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원", content = @Content)
+    })
+    ResponseEntity<UserProfileResponseDto> getProfileByUser(
+            @Parameter(description = "조회할 회원의 ID", example = "1", required = true)
+            Long userId
+    );
+
+    @Operation(summary = "회원의 마이페이지 프로필 수정", description = "관리자가 특정 회원의 프로필 정보를 부분 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 회원", content = @Content)
+    })
+    ResponseEntity<UserProfileResponseDto> updateProfileByUser(
+            @Parameter(description = "수정할 회원의 ID", example = "1", required = true)
+            Long userId,
+
+            @RequestBody(
+                    description = """
+                        ## 수정할 프로필 정보
+                        - **techStacks**: 기술 스택 목록
+                        - **userLinks**: 사용자 링크 목록
+                        - **introduction**: 자기소개
+                        """,
+                    required = true
+            )
+            UpdateUserProfileRequestDto dto
     );
 }
