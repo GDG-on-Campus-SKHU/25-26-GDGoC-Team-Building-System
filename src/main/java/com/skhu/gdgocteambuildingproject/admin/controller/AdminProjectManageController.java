@@ -3,7 +3,8 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectManageApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -66,10 +67,21 @@ public class AdminProjectManageController implements AdminProjectManageApi {
 
     @Override
     @GetMapping("/modifiable")
-    public ResponseEntity<ProjectTotalResponseDto> getModifiableProject() {
-        ProjectTotalResponseDto response = projectService.findUpdatableProject();
+    public ResponseEntity<ModifiableProjectResponseDto> getModifiableProject() {
+        ModifiableProjectResponseDto response = projectService.findModifiableProject();
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @PutMapping("/{projectId}")
+    public ResponseEntity<Void> updateProject(
+            @PathVariable long projectId,
+            @Valid @RequestBody ProjectUpdateRequestDto requestDto
+    ) {
+        projectService.updateProject(projectId, requestDto);
+
+        return NO_CONTENT;
     }
 
     @Override
