@@ -132,7 +132,7 @@ public interface AdminUserProfileApi {
             ApproveUserUpdateRequestDto dto
     );
 
-    @Operation(summary = "회원의 마이페이지 프로필 단건 조회", description = "특정 회원의 마이페이지 프로필 정보를 조회합니다.")
+    @Operation(summary = "회원의 마이페이지 프로필 단건 조회", description = "관리자가 특정 회원의 마이페이지 프로필 정보를 조회합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "조회 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 회원", content = @Content)
