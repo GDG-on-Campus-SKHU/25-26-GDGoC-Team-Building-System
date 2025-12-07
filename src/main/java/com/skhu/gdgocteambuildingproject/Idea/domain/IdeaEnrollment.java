@@ -1,6 +1,11 @@
 package com.skhu.gdgocteambuildingproject.Idea.domain;
 
-import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.*;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.ACCEPTED;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.EXPIRED;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.REJECTED;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_REJECT;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.WAITING;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
@@ -61,16 +66,20 @@ public class IdeaEnrollment extends BaseEntity {
     @JoinColumn(nullable = false)
     private ProjectSchedule schedule;
 
-    public boolean isConfirmable() {
-        return status == SCHEDULED_TO_ACCEPT || status == SCHEDULED_TO_REJECT;
+    public void confirmStatus() {
+        switch (status) {
+            case SCHEDULED_TO_ACCEPT -> status = ACCEPTED;
+            case SCHEDULED_TO_REJECT -> status = REJECTED;
+            case WAITING -> status = EXPIRED;
+        }
+    }
+
+    public boolean isCancelable() {
+        return status.isWaitingToConfirm();
     }
 
     public boolean isScheduledToAccept() {
         return status == SCHEDULED_TO_ACCEPT;
-    }
-
-    public boolean isScheduledToReject() {
-        return status == SCHEDULED_TO_REJECT;
     }
 
     public void scheduleToAccept() {
@@ -79,13 +88,5 @@ public class IdeaEnrollment extends BaseEntity {
 
     public void scheduleToReject() {
         status = SCHEDULED_TO_REJECT;
-    }
-
-    public void accept() {
-        status = ACCEPTED;
-    }
-
-    public void reject() {
-        status = REJECTED;
     }
 }

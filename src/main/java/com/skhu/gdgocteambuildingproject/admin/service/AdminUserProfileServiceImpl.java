@@ -1,17 +1,17 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.PageInfo;
-import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.UserProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +32,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     private final UserRepository userRepository;
 
     private final ApproveUserInfoMapper approveUserInfoMapper;
+    private final ApprovedUserInfoMapper approvedUserInfoMapper;
     private final UserProfileInfoMapper userProfileInfoMapper;
 
     @Override
@@ -108,10 +109,63 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     @Override
     @Transactional(readOnly = true)
+    public ApprovedUserInfoResponseDto getApproveUser(Long userId) {
+        User user = getUserOrThrow(userId);
+
+        return approvedUserInfoMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateApproveUser(Long userId, ApproveUserUpdateRequestDto dto) {
+        User user = getUserOrThrow(userId);
+
+        for (UserGenerationUpdateDto generationItem : dto.generations()) {
+            processUpdateGeneration(user, generationItem);
+        }
+        user.updateSchool(dto.school());
+        user.updatePart(dto.part());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public UserProfileResponseDto getProfileByUserid(Long userId) {
         User user = getUserOrThrow(userId);
 
         return userProfileInfoMapper.toDto(user);
+    }
+
+    private void processUpdateGeneration(User user, UserGenerationUpdateDto generationItem) {
+        if (generationItem.id() != null) {
+            UserGeneration existingGeneration = findExistingGeneration(user, generationItem.id());
+            updateExistingGeneration(existingGeneration, generationItem);
+        } else {
+            createNewGeneration(user, generationItem);
+        }
+    }
+
+    private UserGeneration findExistingGeneration(User user, Long id) {
+        return user.getGeneration().stream()
+                .filter(gen -> gen.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.GENERATION_NOT_FOUND.getMessage()));
+    }
+
+    private void updateExistingGeneration(UserGeneration userGeneration, UserGenerationUpdateDto dto) {
+        userGeneration.updateGeneration(Generation.fromLabel(dto.generation()));
+        userGeneration.updatePosition(dto.position());
+        userGeneration.updateMain(dto.isMain());
+    }
+
+    private void createNewGeneration(User user, UserGenerationUpdateDto dto) {
+        UserGeneration newGeneration = UserGeneration.builder()
+                .generation(Generation.fromLabel(dto.generation()))
+                .position(dto.position())
+                .user(user)
+                .isMain(dto.isMain())
+                .build();
+
+        user.addGeneration(newGeneration);
     }
 
     private User getUserOrThrow(Long userId) {

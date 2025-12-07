@@ -5,6 +5,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -15,6 +16,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectTotalMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
@@ -42,6 +44,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
     private final ProjectInfoMapper projectInfoMapper;
+    private final ProjectTotalMapper projectTotalMapper;
 
     @Override
     @Transactional
@@ -96,6 +99,14 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public ProjectTotalResponseDto findUpdatableProject() {
+        TeamBuildingProject project = findModifiableProject();
+
+        return projectTotalMapper.map(project);
+    }
+
+    @Override
     @Transactional
     public void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto) {
         TeamBuildingProject project = findProjectBy(projectId);
@@ -122,6 +133,11 @@ public class ProjectServiceImpl implements ProjectService {
                 ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
                 criteriaTime
         );
+    }
+
+    private TeamBuildingProject findModifiableProject() {
+        return projectUtil.findModifiableProject()
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
     }
 
     private Pageable setupPagination(

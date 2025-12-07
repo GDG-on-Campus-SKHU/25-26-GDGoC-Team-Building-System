@@ -2,6 +2,8 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminUserProfileApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
@@ -93,6 +95,21 @@ public class AdminUserProfileController implements AdminUserProfileApi {
                 adminUserProfileService.searchUsersBySchool(school, page, size, sortBy, order);
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{userId}")
+    public ResponseEntity<ApprovedUserInfoResponseDto> getApproveUser(@PathVariable Long userId) {
+        ApprovedUserInfoResponseDto response = adminUserProfileService.getApproveUser(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @PatchMapping("/{userId}")
+    public ResponseEntity<Void> updateApproveUser(@PathVariable Long userId,
+                                                  @RequestBody ApproveUserUpdateRequestDto dto) {
+        adminUserProfileService.updateApproveUser(userId, dto);
+        return ResponseEntity.ok().build();
     }
 
     @GetMapping("/{userId}")
