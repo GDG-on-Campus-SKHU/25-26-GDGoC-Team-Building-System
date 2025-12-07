@@ -54,6 +54,7 @@ public enum ExceptionMessage {
     CREATOR_NOT_INIT("아이디어 게시자에 대한 정보가 초기화되지 않았습니다."),
     CHOICE_NOT_AVAILABLE("해당 지망을 사용할 수 없습니다."),
     PART_NOT_AVAILABLE("해당 프로젝트에서 모집하지 않는 파트입니다."),
+    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
 
     // Admin
     USER_ALREADY_APPROVED("이미 승인된 회원입니다."),
@@ -67,17 +68,16 @@ public enum ExceptionMessage {
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
 
-    // Idea
-    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
-
     // S3
+    IO_EXCEPTION_ON_IMAGE_UPLOAD("이미지 업로드 과정에서 에외가 발생했습니다."),
     IO_EXCEPTION_ON_IMAGE_DELETE("이미지 삭제 과정에서 예외가 발생했습니다."),
     EMPTY_FILE("파일이 비어있거나 파일 이름이 비어있습니다."),
-    IO_EXCEPTION_ON_IMAGE_UPLOAD("이미지 업로드 과정에서 에외가 발생했습니다."),
     NO_FILE_NAME("올바르지 않은 파일의 이름입니다."),
     NO_FILE_EXTENSION("파일 확장자가 없습니다."),
-    INVALID_FILE_EXTENSION("업로드를 지원하지 않는 확장자입니다."),
-    PUT_OBJECT_EXCEPTION("S3 버킷에 이미지를 업로드하는 과정에서 예외가 발생했습니다.");
+    INVALID_FILE_EXTENSION("지원하지 않는 확장자입니다."),
+    PUT_OBJECT_EXCEPTION("S3 버킷에 이미지를 업로드하는 과정에서 예외가 발생했습니다."),
+    FILE_UPLOAD_TRANSACTION_FAILED("어쩌고");
+
 
     private final String message;
 
