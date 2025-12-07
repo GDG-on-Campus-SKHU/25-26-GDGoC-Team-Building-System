@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.dto.profile;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserGenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.mypage.dto.TechStackDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.UserLinkDto;
@@ -12,7 +13,7 @@ public record UserProfileResponseDto(
         Long userId,
         String name,
         String school,
-        //머지 된후 리스트 추가
+        List<ApprovedUserGenerationResponseDto> generations,
         Part part,
         List<TechStackDto> techStacks,
         List<UserLinkDto> userLinks,
