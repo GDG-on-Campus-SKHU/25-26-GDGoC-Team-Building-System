@@ -1,6 +1,8 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -43,4 +45,8 @@ public interface AdminUserProfileService {
     );
 
     void deleteUserGeneration(Long generationId);
+
+    ApprovedUserInfoResponseDto getApproveUser(Long userId);
+
+    void updateApproveUser(Long userId, ApproveUserUpdateRequestDto dto);
 }

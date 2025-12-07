@@ -63,13 +63,17 @@ public enum ExceptionMessage {
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
     USER_NOT_REJECTED("현재 상태가 REJECTED인 사용자만 재검토할 수 있습니다."),
     GENERATION_NOT_FOUND("해당 활동 기수를 찾을 수 없습니다."),
+    INVALID_GENERATION("잘못된 Generation 값입니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
 
     // Idea
-    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다");
+    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
+
+    // Scheduler
+    SCHEDULE_CONFIRM_FAILED("일정을 처리하던 중 예외가 발생했습니다.");
 
     private final String message;
 
