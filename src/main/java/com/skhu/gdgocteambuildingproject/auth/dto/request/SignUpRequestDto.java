@@ -29,8 +29,6 @@ public class SignUpRequestDto {
     @NotBlank
     private String number;
 
-    private String introduction;
-
     @NotBlank
     private String school;
 
@@ -46,7 +44,6 @@ public class SignUpRequestDto {
                 .password(encodedPassword)
                 .name(this.name)
                 .number(this.number)
-                .introduction(this.introduction)
                 .school(this.school)
                 .role(this.role)
                 .part(this.part)
