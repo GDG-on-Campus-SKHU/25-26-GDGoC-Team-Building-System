@@ -10,8 +10,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
-import java.util.Set;
-
 @Getter
 public class SignUpRequestDto {
 
@@ -39,8 +37,8 @@ public class SignUpRequestDto {
     private Generation generation;
     private Part part;
 
-    private UserPosition position;// MEMBER / CORE / ORGANIZER
-    private UserRole role;         // SKHU_MEMBER / OTHERS
+    private UserPosition position;
+    private UserRole role;
 
     public User toEntity(String encodedPassword) {
         return User.builder()
