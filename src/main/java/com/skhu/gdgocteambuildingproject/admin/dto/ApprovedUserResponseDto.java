@@ -11,7 +11,6 @@ public record ApprovedUserResponseDto(
         String userName,
         String school,
         Part part,
-        List<String> generation,
-        List<String> userPosition
+        List<ApprovedUserGenerationResponseDto> generations
 ) {
 }
