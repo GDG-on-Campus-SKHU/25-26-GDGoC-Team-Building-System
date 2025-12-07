@@ -1,16 +1,14 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectScheduleResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.List;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -24,14 +22,12 @@ class TeamBuildingInfoMapperTest {
     private static final long DEFAULT_ID = 999L;
     private static final String DEFAULT_NAME = "name";
     private static final int DEFAULT_MAX_MEMBER_COUNT = 5;
-    private static final List<ProjectSchedule> DEFAULT_SCHEDULES = List.of();
-    private static final List<ProjectScheduleResponseDto> EXPECTED_SCHEDULES_DTO = List.of();
 
     @InjectMocks
     private TeamBuildingInfoMapper teamBuildingInfoMapper;
 
     @Mock
-    private ProjectScheduleMapper scheduleMapper;
+    private ProjectTotalMapper projectTotalMapper;
 
     @Mock
     private User user;
@@ -39,12 +35,6 @@ class TeamBuildingInfoMapperTest {
     private Idea idea;
     @Mock
     private TeamBuildingProject project;
-
-    @BeforeEach
-    void mock() {
-        when(scheduleMapper.map(DEFAULT_SCHEDULES))
-                .thenReturn(EXPECTED_SCHEDULES_DTO);
-    }
 
     @Nested
     class 엔티티_정보_매핑 {
@@ -54,18 +44,28 @@ class TeamBuildingInfoMapperTest {
             project = TeamBuildingProject.builder()
                     .name(DEFAULT_NAME)
                     .maxMemberCount(DEFAULT_MAX_MEMBER_COUNT)
-                    .schedules(DEFAULT_SCHEDULES)
                     .build();
             setId(project, DEFAULT_ID);
+
+            ProjectTotalResponseDto projectTotal = ProjectTotalResponseDto.builder()
+                    .projectId(DEFAULT_ID)
+                    .projectName(DEFAULT_NAME)
+                    .maxMemberCount(DEFAULT_MAX_MEMBER_COUNT)
+                    .availableParts(List.of())
+                    .schedules(List.of())
+                    .build();
+
+            when(projectTotalMapper.map(project))
+                    .thenReturn(projectTotal);
 
             // when
             TeamBuildingInfoResponseDto dto = teamBuildingInfoMapper.map(project, user);
 
             // then
-            assertThat(dto.projectId()).isEqualTo(project.getId());
-            assertThat(dto.projectName()).isEqualTo(project.getName());
-            assertThat(dto.maxMemberCount()).isEqualTo(project.getMaxMemberCount());
-            assertThat(dto.schedules()).isEqualTo(EXPECTED_SCHEDULES_DTO);
+            assertThat(dto.project()).isNotNull();
+            assertThat(dto.project().projectId()).isEqualTo(project.getId());
+            assertThat(dto.project().projectName()).isEqualTo(project.getName());
+            assertThat(dto.project().maxMemberCount()).isEqualTo(project.getMaxMemberCount());
         }
     }
 
