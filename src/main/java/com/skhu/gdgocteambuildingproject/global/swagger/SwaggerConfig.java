@@ -7,7 +7,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
-import io.swagger.v3.oas.models.servers.Server;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
@@ -30,10 +29,6 @@ public class SwaggerConfig {
                 )
                 .addSecurityItem(new SecurityRequirement().addList(BEARER_KEY))
                 .info(apiInfo());
-
-        swaggerProperties.servers().forEach(url ->
-                openAPI.addServersItem(new Server().url(url))
-        );
 
         return openAPI;
     }
