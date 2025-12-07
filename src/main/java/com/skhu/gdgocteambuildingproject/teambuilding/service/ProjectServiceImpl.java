@@ -7,6 +7,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageRespon
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
@@ -104,6 +105,16 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject project = findModifiableProject();
 
         return projectTotalMapper.map(project);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchoolResponseDto> findSchools() {
+        List<String> schools = userRepository.findDistinctSchools();
+
+        return schools.stream()
+                .map(SchoolResponseDto::new)
+                .toList();
     }
 
     @Override

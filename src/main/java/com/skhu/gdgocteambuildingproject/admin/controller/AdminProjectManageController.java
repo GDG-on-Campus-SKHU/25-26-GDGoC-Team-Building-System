@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestD
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
@@ -68,6 +69,14 @@ public class AdminProjectManageController implements AdminProjectManageApi {
     @GetMapping("/modifiable")
     public ResponseEntity<ProjectTotalResponseDto> getModifiableProject() {
         ProjectTotalResponseDto response = projectService.findUpdatableProject();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/schools")
+    public ResponseEntity<List<SchoolResponseDto>> getSchools() {
+        List<SchoolResponseDto> response = projectService.findSchools();
 
         return ResponseEntity.ok(response);
     }
