@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.mypage.service;
 
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
+import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
@@ -21,6 +23,7 @@ public class MypageServiceImpl implements MypageService {
 
     private final UserRepository userRepository;
     private final ProfileInfoMapper profileInfoMapper;
+    private final IdeaMemberRepository ideaMemberRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,6 +45,15 @@ public class MypageServiceImpl implements MypageService {
         user.updateUserLinks(newUserLinks);
 
         return profileInfoMapper.map(user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProfileInfoResponseDto getProfileByIdeaMemberId(Long ideaMemberId) {
+        IdeaMember ideaMember = ideaMemberRepository.findByIdWithUser(ideaMemberId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.IDEA_MEMBER_NOT_FOUND.getMessage()));
+
+        return profileInfoMapper.map(ideaMember.getUser());
     }
 
     private User findUserByIdOrThrow(Long userId) {

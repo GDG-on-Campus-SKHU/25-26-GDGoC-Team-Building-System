@@ -2,12 +2,15 @@ package com.skhu.gdgocteambuildingproject.auth.dto.request;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+
+import java.util.Set;
 
 @Getter
 public class SignUpRequestDto {
@@ -33,11 +36,11 @@ public class SignUpRequestDto {
     @NotBlank
     private String school;
 
-    private String generation;
+    private Generation generation;
     private Part part;
 
-    private UserPosition position;
-    private UserRole role;
+    private UserPosition position;// MEMBER / CORE / ORGANIZER
+    private UserRole role;         // SKHU_MEMBER / OTHERS
 
     public User toEntity(String encodedPassword) {
         return User.builder()
@@ -48,9 +51,7 @@ public class SignUpRequestDto {
                 .introduction(this.introduction)
                 .school(this.school)
                 .role(this.role)
-                .position(this.position)
                 .part(this.part)
-                .generation(this.generation)
                 .build();
     }
 }

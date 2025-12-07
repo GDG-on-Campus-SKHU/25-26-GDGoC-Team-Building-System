@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -47,6 +48,18 @@ public interface AdminProjectManageApi {
             description = "과거에 진행된 프로젝트 목록을 조회합니다."
     )
     ResponseEntity<List<PastProjectResponseDto>> getPastProjects();
+
+    @Operation(
+            summary = "수정 가능한 프로젝트 조회",
+            description = """
+                    아직 시작하지 않은 프로젝트 중 시작 일자가 가장 빠른 프로젝트를 조회합니다.
+                    
+                    일정이 모두 결정된 프로젝트가 없다면, 아직 일정이 정해지지 않은 프로젝트를 조회합니다.
+                    
+                    해당하는 프로젝트가 존재하지 않는다면 404를 응답합니다.
+                    """
+    )
+    ResponseEntity<ProjectTotalResponseDto> getModifiableProject();
 
     @Operation(
             summary = "프로젝트 일정 등록 및 수정",

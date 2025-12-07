@@ -51,12 +51,26 @@ public class TeamBuildingProject extends BaseEntity {
                 .toList();
     }
 
+    public boolean isAvailable(Part part) {
+        return availableParts.stream()
+                .map(ProjectAvailablePart::getPart)
+                .anyMatch(availablePart -> availablePart == part);
+    }
+
     public boolean isScheduled() {
+        if (schedules.isEmpty()) {
+            return false;
+        }
+
         return schedules.stream()
                 .allMatch(ProjectSchedule::isScheduled);
     }
 
     public boolean isUnscheduled() {
+        if (schedules.isEmpty()) {
+            return true;
+        }
+
         return schedules.stream()
                 .anyMatch(ProjectSchedule::isUnscheduled);
     }

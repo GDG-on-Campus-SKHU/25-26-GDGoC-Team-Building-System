@@ -1,8 +1,9 @@
 package com.skhu.gdgocteambuildingproject.admin.dto;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import lombok.Builder;
+
+import java.util.List;
 
 @Builder
 public record ApprovedUserResponseDto(
@@ -10,7 +11,7 @@ public record ApprovedUserResponseDto(
         String userName,
         String school,
         Part part,
-        String generation,
-        UserPosition userPosition
+        List<String> generation,
+        List<String> userPosition
 ) {
 }

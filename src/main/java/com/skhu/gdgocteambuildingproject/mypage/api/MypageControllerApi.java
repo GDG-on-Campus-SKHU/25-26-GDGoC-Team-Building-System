@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponse
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,7 +23,7 @@ public interface MypageControllerApi {
             description = "마이페이지의 Profile 탭에서 사용자의 본인의 프로필을 조회합니다."
     )
     @ApiResponse(responseCode = "200")
-    ResponseEntity<ProfileInfoResponseDto> getProfileByUserid(
+    ResponseEntity<ProfileInfoResponseDto> getProfileByUserId(
             @Parameter(hidden = true) @AuthenticationPrincipal UserPrincipal userPrincipal
     );
 
@@ -37,5 +38,17 @@ public interface MypageControllerApi {
     ResponseEntity<ProfileInfoResponseDto> updateUserModifiableProfile(
             @Parameter(hidden = true) @AuthenticationPrincipal UserPrincipal userPrincipal,
             @RequestBody ProfileInfoUpdateRequestDto profileInfoRequestDto
+    );
+
+    @Operation(
+            summary = "아이디어 멤버 프로필 조회",
+            description = """
+                    아이디어 멤버 ID를 통해 해당 유저의 프로필을 조회합니다.
+                    아이디어 멤버와 연결된 유저 객체를 찾아 해당 유저의 프로필 정보를 반환합니다.
+                    """
+    )
+    @ApiResponse(responseCode = "200")
+    ResponseEntity<ProfileInfoResponseDto> getProfileByIdeaMemberId(
+            @Parameter(description = "아이디어 멤버 ID", example = "1") Long ideaMemberId
     );
 }

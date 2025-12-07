@@ -15,6 +15,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -189,6 +190,26 @@ public class EnrollmentController {
         List<ReceivedEnrollmentResponseDto> response = enrollmentService.getReceivedEnrollments(userId, scheduleType);
 
         return ResponseEntity.ok(response);
+    }
+
+    @DeleteMapping("/{enrollmentId}")
+    @Operation(
+            summary = "지원 취소",
+            description = """
+                    지원을 취소합니다.
+                    
+                    '대기 중'(혹은 '수락 예정', '거절 예정')인 지원이 아니라면 400을 응답합니다.
+                    """
+    )
+    public ResponseEntity<Void> cancelEnrollment(
+            Principal principal,
+            @PathVariable long enrollmentId
+    ) {
+        long userId = findUserIdBy(principal);
+
+        enrollmentService.cancelEnrollment(userId, enrollmentId);
+
+        return NO_CONTENT;
     }
 
     private long findUserIdBy(Principal principal) {

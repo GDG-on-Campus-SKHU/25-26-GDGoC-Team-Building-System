@@ -29,6 +29,7 @@ public enum ExceptionMessage {
     PASSWORD_SAME_AS_OLD("새 비밀번호는 기존 비밀번호와 달라야 합니다."),
 
     // TeamBuilding
+    NOT_PARTICIPATED("프로젝트에 접근 권한이 없습니다."),
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
     NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
     SCHEDULE_PASSED("일정이 지났습니다."),
@@ -36,7 +37,9 @@ public enum ExceptionMessage {
     ENROLLMENT_NOT_EXIST("지원이 존재하지 않습니다."),
     ILLEGAL_ENROLLMENT_STATUS("지원의 상태가 부적절합니다."),
     ENROLLMENT_FOR_OTHER_IDEA("다른 아이디어에 대한 지원입니다."),
+    ENROLLMENT_BY_OTHER_USER("본인의 지원이 아닙니다."),
     ENROLLMENT_NOT_AVAILABLE("지원할 수 없는 상태입니다."),
+    ENROLLMENT_NOT_CANCELABLE("지원을 취소할 수 없는 상태입니다."),
     IDEA_CREATOR_CANNOT_ENROLL("아이디어를 게시한 회원은 다른 아이디어에 지원할 수 없습니다"),
     ALREADY_ENROLL("해당 아이디어에 이미 지원했습니다."),
     PROJECT_NOT_EXIST("프로젝트가 존재하지 않습니다."),
@@ -63,6 +66,9 @@ public enum ExceptionMessage {
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
+
+    // Idea
+    IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
 
     // Scheduler
     SCHEDULE_CONFIRM_FAILED("일정을 처리하던 중 예외가 발생했습니다.");
