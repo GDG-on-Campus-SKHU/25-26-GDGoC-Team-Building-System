@@ -131,6 +131,7 @@ public class AuthServiceImpl implements AuthService {
         UserGeneration userGeneration = UserGeneration.builder()
                 .user(user)
                 .position(position)
+                .isMain(true)
                 .generation(generation)
                 .build();
 
