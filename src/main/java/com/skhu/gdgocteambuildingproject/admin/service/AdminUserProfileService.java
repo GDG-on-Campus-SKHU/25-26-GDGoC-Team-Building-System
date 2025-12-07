@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -50,4 +51,6 @@ public interface AdminUserProfileService {
     void updateApproveUser(Long userId, ApproveUserUpdateRequestDto dto);
 
     UserProfileResponseDto getProfileByUserid(Long userId);
+
+    void updateProfileByUser(Long userId, UpdateUserProfileRequestDto dto);
 }
