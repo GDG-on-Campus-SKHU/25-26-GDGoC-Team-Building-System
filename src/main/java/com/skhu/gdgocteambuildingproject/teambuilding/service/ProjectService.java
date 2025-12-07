@@ -26,4 +26,6 @@ public interface ProjectService {
     ProjectTotalResponseDto findUpdatableProject();
 
     void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto);
+
+    void deleteProject(long projectId);
 }
