@@ -123,6 +123,12 @@ public class User extends BaseEntity {
                 .anyMatch(idea -> idea.getProject().equals(project));
     }
 
+    public boolean isMemberOf(TeamBuildingProject project) {
+        return members.stream()
+                .map(IdeaMember::getIdea)
+                .anyMatch(idea -> project.equals(idea.getProject()));
+    }
+
     public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
