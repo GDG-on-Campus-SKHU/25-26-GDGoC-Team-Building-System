@@ -44,6 +44,9 @@ public class AuthServiceImpl implements AuthService {
                 dto.toEntity(passwordEncoder.encode(dto.getPassword()))
         );
 
+        Generation generation = Generation.fromLabel(dto.getGeneration());
+        saveUserGeneration(savedUser, generation, dto.getPosition());
+
         return createLoginResponse(savedUser);
     }
 
