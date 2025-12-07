@@ -32,6 +32,6 @@ public class TeamBuildingInfoMapper {
     }
 
     private boolean isCanEnroll(TeamBuildingProject project, User user) {
-        return !user.hasRegisteredIdeaIn(project);
+        return !user.isMemberOf(project);
     }
 }

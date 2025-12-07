@@ -5,7 +5,6 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_BY_OTHER_USER;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_EXIST;
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CREATOR_CANNOT_ENROLL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_MEMBER_CANNOT_ENROLL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
@@ -257,10 +256,6 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             User applicant,
             TeamBuildingProject project
     ) {
-        if (applicant.hasRegisteredIdeaIn(project)) {
-            throw new IllegalStateException(IDEA_CREATOR_CANNOT_ENROLL.getMessage());
-        }
-
         if (applicant.isMemberOf(project)) {
             throw new IllegalStateException(IDEA_MEMBER_CANNOT_ENROLL.getMessage());
         }
