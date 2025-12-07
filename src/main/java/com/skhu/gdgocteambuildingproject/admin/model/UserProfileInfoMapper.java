@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.model;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserGenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.TechStackDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.UserLinkDto;
@@ -18,6 +19,7 @@ public class UserProfileInfoMapper {
                 .name(user.getName())
                 .school(user.getSchool())
                 .part(user.getPart())
+                .generations(mapGenerations(user))
                 .introduction(user.getIntroduction())
                 .techStacks(convertTechStacks(user))
                 .userLinks(convertUserLinks(user))
@@ -28,14 +30,24 @@ public class UserProfileInfoMapper {
         return Optional.ofNullable(user.getTechStacks())
                 .map(list -> list.stream().map(TechStackDto::from)
                         .toList())
-                .orElse(Collections.emptyList());
+                .orElse(List.of());
     }
-
 
     private List<UserLinkDto> convertUserLinks(User user) {
         return Optional.ofNullable(user.getUserLinks())
                 .map(list -> list.stream().map(UserLinkDto::from)
                         .toList())
-                .orElse(Collections.emptyList());
+                .orElse(List.of());
+    }
+
+    private List<ApprovedUserGenerationResponseDto> mapGenerations(User user) {
+        return user.getGeneration().stream()
+                .map(gen -> new ApprovedUserGenerationResponseDto(
+                        gen.getId(),
+                        gen.getGeneration().getLabel(),
+                        gen.getPosition().name(),
+                        gen.isMain()
+                ))
+                .toList();
     }
 }
