@@ -28,7 +28,7 @@ public class S3ImageController implements S3ImageControllerApi {
     @PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<FileUploadResponseDto> uploadImage(
             @RequestPart(value = "imageFile", required = false) MultipartFile image,
-            @RequestParam(name = "directory", defaultValue = "image") String directoryName
+            @RequestParam(name = "directory", required = false) String directoryName
     ) {
         return ResponseEntity.ok(s3ImageService.upload(image, directoryName));
     }
@@ -37,6 +37,6 @@ public class S3ImageController implements S3ImageControllerApi {
     @DeleteMapping("/{fileId}")
     public ResponseEntity<Void> deleteImage(@PathVariable Long fileId) {
         s3ImageService.deleteFileById(fileId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.noContent().build();
     }
 }
