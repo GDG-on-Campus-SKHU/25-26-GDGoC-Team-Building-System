@@ -2,15 +2,17 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminUserManageApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserSearchResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserManageService;
-import com.skhu.gdgocteambuildingproject.admin.service.AdminUserManageServiceImpl;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/admin")
@@ -50,6 +52,16 @@ public class AdminUserManageController implements AdminUserManageApi {
             @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
     ) {
         UserInfoPageResponseDto response = adminUserManageService.getAllUsers(page, size, sortBy, order);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/users/search")
+    public ResponseEntity<List<UserSearchResponseDto>> searchUsers(
+            @RequestParam(required = false) String generation,
+            @RequestParam(required = false) List<String> schools
+    ) {
+        List<UserSearchResponseDto> response = adminUserManageService.searchUsers(generation, schools);
         return ResponseEntity.ok(response);
     }
 }
