@@ -76,7 +76,7 @@ public enum ExceptionMessage {
     NO_FILE_EXTENSION("파일 확장자가 없습니다."),
     INVALID_FILE_EXTENSION("지원하지 않는 확장자입니다."),
     PUT_OBJECT_EXCEPTION("S3 버킷에 이미지를 업로드하는 과정에서 예외가 발생했습니다."),
-    FILE_UPLOAD_TRANSACTION_FAILED("어쩌고");
+    FILE_UPLOAD_TRANSACTION_FAILED("데이터베이스에 파일 저장 실패, S3에 업로드된 파일을 삭제합니다.");
 
 
     private final String message;
