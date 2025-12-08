@@ -43,9 +43,11 @@ public class AuthController {
 
                     🔹 Part Enum 값  
                     - WEB  
-                    - APP  
+                    - MOBILE 
                     - AI  
-                    - DESIGN  
+                    - DESIGN
+                    - PM
+                    - BACKEND
 
                     🔹 UserPosition Enum 값  
                     - MEMBER  
