@@ -17,7 +17,7 @@ public class Activity extends BaseEntity {
 
     @Column(length = 5)
     private String speaker;
-    private String generation;
+    private String generation;  // TODO: Generation enum으로 바꾸기
     private String videoUrl;
     private String thumbnailUrl;
 
