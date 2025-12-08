@@ -95,18 +95,17 @@ public interface AdminUserProfileApi {
             description = """
             관리자가 특정 유저의 기수-역할(UserGeneration) 정보를 삭제합니다.
             요청한 ID가 존재하지 않을 경우 404 Not Found를 반환합니다.
-            삭제 성공 시 200 OK를 반환하며 본문은 없습니다.
+            삭제 성공 시 204 OK를 반환하며 본문은 없습니다.
             """
     )
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "삭제 성공"),
+            @ApiResponse(responseCode = "204", description = "삭제 성공"),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 Generation", content = @Content),
     })
     ResponseEntity<Void> deleteUserGeneration(
             @Parameter(description = "삭제할 UserGeneration ID", example = "1", required = true)
             Long generationId
     );
-
 
     @Operation(
             summary = "승인된 회원 상세 조회",
@@ -120,7 +119,6 @@ public interface AdminUserProfileApi {
             @Parameter(description = "조회할 회원 ID", example = "1", required = true)
             Long userId
     );
-
 
     @Operation(
             summary = "승인된 회원 정보 수정",
