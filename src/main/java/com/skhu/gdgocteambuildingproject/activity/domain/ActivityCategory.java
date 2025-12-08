@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.community.domain;
+package com.skhu.gdgocteambuildingproject.activity.domain;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import jakarta.persistence.Column;

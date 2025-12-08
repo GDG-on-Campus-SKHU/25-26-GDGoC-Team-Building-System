@@ -1,6 +1,6 @@
-package com.skhu.gdgocteambuildingproject.community.repository;
+package com.skhu.gdgocteambuildingproject.activity.repository;
 
-import com.skhu.gdgocteambuildingproject.community.domain.ActivityCategory;
+import com.skhu.gdgocteambuildingproject.activity.domain.ActivityCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
