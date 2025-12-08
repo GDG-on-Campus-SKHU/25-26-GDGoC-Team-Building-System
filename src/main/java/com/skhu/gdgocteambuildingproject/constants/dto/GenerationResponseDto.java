@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.admin.dto.project;
+package com.skhu.gdgocteambuildingproject.constants.dto;
 
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 

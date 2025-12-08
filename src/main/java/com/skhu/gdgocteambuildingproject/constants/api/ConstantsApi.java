@@ -1,13 +1,13 @@
-package com.skhu.gdgocteambuildingproject.admin.api;
+package com.skhu.gdgocteambuildingproject.constants.api;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.GenerationResponseDto;
+import com.skhu.gdgocteambuildingproject.constants.dto.GenerationResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 import org.springframework.http.ResponseEntity;
 
-@Tag(name = "관리자 상수 조회 API", description = "상수 값을 조회하는 API입니다.")
-public interface AdminConstantsApi {
+@Tag(name = "상수 조회 API", description = "상수 값을 조회하는 API입니다. 별도 권한을 요구하지 않습니다.")
+public interface ConstantsApi {
 
     @Operation(
             summary = "기수 목록 조회",

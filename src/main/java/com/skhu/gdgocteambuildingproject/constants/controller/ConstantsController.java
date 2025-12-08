@@ -1,23 +1,21 @@
-package com.skhu.gdgocteambuildingproject.admin.controller;
+package com.skhu.gdgocteambuildingproject.constants.controller;
 
-import com.skhu.gdgocteambuildingproject.admin.api.AdminConstantsApi;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.GenerationResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.service.AdminConstantsService;
+import com.skhu.gdgocteambuildingproject.constants.dto.GenerationResponseDto;
+import com.skhu.gdgocteambuildingproject.constants.api.ConstantsApi;
+import com.skhu.gdgocteambuildingproject.constants.service.ConstantsService;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/admin/constants")
-@PreAuthorize("hasAnyRole('SKHU_ADMIN')")
-public class AdminConstantsController implements AdminConstantsApi {
+@RequestMapping("/constants")
+public class ConstantsController implements ConstantsApi {
 
-    private final AdminConstantsService constantsService;
+    private final ConstantsService constantsService;
 
     @Override
     @GetMapping("/generations")

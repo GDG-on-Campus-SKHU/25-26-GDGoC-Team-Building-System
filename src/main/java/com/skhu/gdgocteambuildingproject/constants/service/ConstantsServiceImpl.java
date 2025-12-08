@@ -1,6 +1,6 @@
-package com.skhu.gdgocteambuildingproject.admin.service;
+package com.skhu.gdgocteambuildingproject.constants.service;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.GenerationResponseDto;
+import com.skhu.gdgocteambuildingproject.constants.dto.GenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -8,7 +8,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class AdminConstantsServiceImpl implements AdminConstantsService {
+public class ConstantsServiceImpl implements ConstantsService {
 
     @Override
     public List<GenerationResponseDto> getGenerations() {
