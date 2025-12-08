@@ -98,6 +98,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
         activityCategoryRepository.delete(category);
     }
 
+    @Override
     @Transactional
     public void updateCategoryTitleAndStatus(Long categoryId, ActivityUpdateRequestDto dto) {
         ActivityCategory category = getCategoryOrThrow(categoryId);
