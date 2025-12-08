@@ -70,6 +70,6 @@ public class AdminActivityController implements AdminActivityControllerApi {
     public ResponseEntity<Void> updateCategoryTitleAndStatus(@PathVariable Long categoryId,
                                                              @RequestBody ActivityUpdateRequestDto dto) {
         adminActivityService.updateCategoryTitleAndStatus(categoryId, dto);
-        return ResponseEntity.ok().build();
+        return NO_CONTENT;
     }
 }
