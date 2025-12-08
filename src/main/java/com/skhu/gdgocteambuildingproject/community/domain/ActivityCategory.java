@@ -16,16 +16,16 @@ public class ActivityCategory extends BaseEntity {
     @Column(length = 50, nullable = false)
     private String name;
 
-    private boolean isPublished = false; // 기본값은 미게시
+    private boolean published = false; // 기본값은 미게시
 
     @Builder
     public ActivityCategory(String name, boolean isPublished) {
         this.name = name;
-        this.isPublished = isPublished;
+        this.published = isPublished;
     }
 
     public void changeCategoryInfo(String categoryName, boolean published) {
         this.name = categoryName;
-        this.isPublished = published;
+        this.published = published;
     }
 }
