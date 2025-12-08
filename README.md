@@ -85,18 +85,18 @@ docker run -p 8080:8080 --env-file .env gdgoc-teambuilding
 
 프로젝트 실행을 위해 다음 환경 변수들이 필요합니다:
 
-| 변수명 | 설명 | 예시 |
+| 변수명 (Variable Name) | 설명 (Description) | 예시 (Example) |
 |--------|------|------|
-| `SPRING_DATASOURCE_URL` | MySQL 데이터베이스 URL | `jdbc:mysql://localhost:3306/teambuilding` |
-| `SPRING_DATASOURCE_USERNAME` | 데이터베이스 사용자명 | `root` |
-| `SPRING_DATASOURCE_PASSWORD` | 데이터베이스 비밀번호 | `password` |
-| `SPRING_MAIL_USERNAME` | Gmail 이메일 주소 | `your-email@gmail.com` |
-| `SPRING_MAIL_PASSWORD` | Gmail 앱 비밀번호 | `your-app-password` |
-| `JWT_SECRET` | JWT 시크릿 키 | `your-secret-key` |
-| `JWT_ACCESS_EXPIRATION` | Access Token 만료 시간 (ms) | `3600000` (1시간) |
-| `JWT_REFRESH_EXPIRATION` | Refresh Token 만료 시간 (ms) | `604800000` (7일) |
-| `SWAGGER_SERVER_LOCAL` | 로컬 서버 주소 | `http://localhost:8080` |
-| `SWAGGER_SERVER_PROD` | 배포 서버 주소 | `https://your-domain.com` |
+| `SPRING_DATASOURCE_URL` | MySQL 데이터베이스 URL<br>MySQL database URL | `jdbc:mysql://localhost:3306/teambuilding` |
+| `SPRING_DATASOURCE_USERNAME` | 데이터베이스 사용자명<br>Database username | `root` |
+| `SPRING_DATASOURCE_PASSWORD` | 데이터베이스 비밀번호<br>Database password | `password` |
+| `SPRING_MAIL_USERNAME` | Gmail 이메일 주소<br>Gmail email address | `your-email@gmail.com` |
+| `SPRING_MAIL_PASSWORD` | Gmail 앱 비밀번호<br>Gmail app password | `your-app-password` |
+| `JWT_SECRET` | JWT 시크릿 키<br>JWT secret key | `your-secret-key` |
+| `JWT_ACCESS_EXPIRATION` | Access Token 만료 시간 (ms)<br>Access token expiration time (ms) | `3600000` (1시간 / 1 hour) |
+| `JWT_REFRESH_EXPIRATION` | Refresh Token 만료 시간 (ms)<br>Refresh token expiration time (ms) | `604800000` (7일 / 7 days) |
+| `SWAGGER_SERVER_LOCAL` | 로컬 서버 주소<br>Local server URL | `http://localhost:8080` |
+| `SWAGGER_SERVER_PROD` | 배포 서버 주소<br>Production server URL | `https://your-domain.com` |
 
 ## 🔧 개발 환경
 

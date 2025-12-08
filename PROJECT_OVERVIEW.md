@@ -136,18 +136,18 @@ src/main/java/com/skhu/gdgocteambuildingproject/
 
 ```properties
 # 데이터베이스 설정
-SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/{DB이름}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
-SPRING_DATASOURCE_USERNAME={DB사용자이름}
-SPRING_DATASOURCE_PASSWORD={DB비밀번호}
+SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/{본인DB주소}?serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+SPRING_DATASOURCE_USERNAME={본인DB유저이름}
+SPRING_DATASOURCE_PASSWORD={본인DB비밀번호}
 
 # 이메일 설정
-SPRING_MAIL_USERNAME={Gmail주소}
-SPRING_MAIL_PASSWORD={Gmail앱비밀번호}
+SPRING_MAIL_USERNAME={본인구글이메일}
+SPRING_MAIL_PASSWORD={본인앱비밀번호}
 
 # JWT 설정
 JWT_SECRET={JWT시크릿키}
-JWT_ACCESS_EXPIRATION={액세스토큰만료시간(ms)}
-JWT_REFRESH_EXPIRATION={리프레시토큰만료시간(ms)}
+JWT_ACCESS_EXPIRATION={JWTaccesstoken만료시간(ms단위)}
+JWT_REFRESH_EXPIRATION={JWTrefreshtoken만료시간(ms단위)}
 
 # Swagger 설정
 SWAGGER_SERVER_LOCAL={로컬서버주소}
