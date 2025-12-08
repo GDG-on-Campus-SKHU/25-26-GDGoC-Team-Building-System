@@ -46,7 +46,8 @@ public class AuthServiceImpl implements AuthService {
                 dto.toEntity(passwordEncoder.encode(dto.getPassword()))
         );
 
-        saveUserGeneration(savedUser, dto.getGeneration(), dto.getPosition());
+        Generation generation = Generation.fromLabel(dto.getGeneration());
+        saveUserGeneration(savedUser, generation, dto.getPosition());
 
         return createLoginResponse(savedUser);
     }
@@ -146,4 +147,5 @@ public class AuthServiceImpl implements AuthService {
 
         userGenerationRepository.save(userGeneration);
     }
+
 }
