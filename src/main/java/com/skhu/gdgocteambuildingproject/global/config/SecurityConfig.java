@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.global.config;
 
 import com.skhu.gdgocteambuildingproject.global.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -16,7 +17,6 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
-import java.util.Arrays;
 import java.util.List;
 
 @Configuration
@@ -24,6 +24,18 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
+
+    @Value("${cors.allowed-origins}")
+    private List<String> allowedOrigins;
+
+    @Value("${cors.allowed-methods}")
+    private List<String> allowedMethods;
+
+    @Value("${cors.allowed-headers}")
+    private String allowedHeaders;
+
+    @Value("${cors.exposed-headers}")
+    private String exposedHeaders;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -55,15 +67,16 @@ public class SecurityConfig {
     @Bean
     public CorsConfigurationSource configurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of(
-                "http://localhost:3000",
-                "https://gdg-tbd.duckdns.org"
-        ));
-        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        configuration.setAllowedHeaders(Arrays.asList("Authorization", "Cache-Control", "Content-Type"));
+
+        configuration.setAllowedOrigins(allowedOrigins);
+        configuration.setAllowedMethods(allowedMethods);
+        configuration.addAllowedHeader(allowedHeaders);
         configuration.setAllowCredentials(true);
+        configuration.addExposedHeader(exposedHeaders);
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
+
         return source;
     }
 }
