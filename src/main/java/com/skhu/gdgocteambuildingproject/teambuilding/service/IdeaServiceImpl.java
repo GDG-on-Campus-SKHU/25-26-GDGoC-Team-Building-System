@@ -274,7 +274,8 @@ public class IdeaServiceImpl implements IdeaService {
 
         validateMemberDeletable(enrollment);
 
-        removeEnrollment(enrollment);
+        // '수락' 상태로 강제해서 스케줄러가 무시하도록 한다.
+        enrollment.accept();
     }
 
     private ProjectSchedule getCurrentSchedule() {
@@ -499,13 +500,5 @@ public class IdeaServiceImpl implements IdeaService {
                 .filter(Idea::isTemporary)
                 .findAny()
                 .ifPresent(user::removeIdea);
-    }
-
-    private void removeEnrollment(IdeaEnrollment enrollment) {
-        User applicant = enrollment.getApplicant();
-        Idea idea = enrollment.getIdea();
-
-        applicant.removeEnrollment(enrollment);
-        idea.removeEnrollment(enrollment);
     }
 }
