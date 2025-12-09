@@ -2,7 +2,8 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -57,9 +58,24 @@ public interface AdminProjectManageApi {
                     일정이 모두 결정된 프로젝트가 없다면, 아직 일정이 정해지지 않은 프로젝트를 조회합니다.
                     
                     해당하는 프로젝트가 존재하지 않는다면 404를 응답합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    ResponseEntity<ProjectTotalResponseDto> getModifiableProject();
+    ResponseEntity<ModifiableProjectResponseDto> getModifiableProject();
+
+    @Operation(
+            summary = "프로젝트 정보 수정",
+            description = """
+                    프로젝트의 일정을 제외한 나머지 정보를 수정합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    ResponseEntity<Void> updateProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId,
+            ProjectUpdateRequestDto requestDto
+    );
 
     @Operation(
             summary = "프로젝트 일정 등록 및 수정",
@@ -72,5 +88,17 @@ public interface AdminProjectManageApi {
     ResponseEntity<Void> updateSchedule(
             long projectId,
             ScheduleUpdateRequestDto requestDto
+    );
+
+    @Operation(
+            summary = "프로젝트 삭제",
+            description = """
+                    프로젝트를 삭제합니다.
+                    
+                    별도 검증 로직을 수행하지 않고 바로 삭제하니 주의해서 호출해야 합니다.
+                    """
+    )
+    ResponseEntity<Void> deleteProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId
     );
 }

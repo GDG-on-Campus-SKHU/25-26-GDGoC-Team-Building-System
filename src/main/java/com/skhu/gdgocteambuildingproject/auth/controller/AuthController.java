@@ -30,7 +30,36 @@ public class AuthController {
 
     @Operation(
             summary = "회원가입",
-            description = "새로운 사용자를 등록하고, Access Token과 Refresh Token을 발급한다."
+            description = """
+                    새로운 사용자를 등록하고 Access Token과 Refresh Token을 발급한다.
+                    
+                    아래 Enum 값 중 하나를 입력해야 한다.
+
+                    🔹 Generation Enum 값  
+                    - 22-23
+                    - 23-24
+                    - 24-25
+                    - 25-26                    
+
+                    🔹 Part Enum 값  
+                    - WEB  
+                    - MOBILE 
+                    - AI  
+                    - DESIGN
+                    - PM
+                    - BACKEND
+
+                    🔹 UserPosition Enum 값  
+                    - MEMBER  
+                    - CORE  
+                    - ORGANIZER  
+
+                    🔹 UserRole Enum 값  
+                    - OTHERS  
+                    - SKHU_MEMBER  
+                    - SKHU_ADMIN  
+                    - BANNED
+                    """
     )
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "회원가입 성공",

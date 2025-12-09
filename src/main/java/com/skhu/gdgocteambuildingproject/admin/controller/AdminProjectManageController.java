@@ -3,7 +3,8 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectManageApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -14,6 +15,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -66,10 +68,21 @@ public class AdminProjectManageController implements AdminProjectManageApi {
 
     @Override
     @GetMapping("/modifiable")
-    public ResponseEntity<ProjectTotalResponseDto> getModifiableProject() {
-        ProjectTotalResponseDto response = projectService.findUpdatableProject();
+    public ResponseEntity<ModifiableProjectResponseDto> getModifiableProject() {
+        ModifiableProjectResponseDto response = projectService.findModifiableProject();
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @PutMapping("/{projectId}")
+    public ResponseEntity<Void> updateProject(
+            @PathVariable long projectId,
+            @Valid @RequestBody ProjectUpdateRequestDto requestDto
+    ) {
+        projectService.updateProject(projectId, requestDto);
+
+        return NO_CONTENT;
     }
 
     @Override
@@ -79,6 +92,16 @@ public class AdminProjectManageController implements AdminProjectManageApi {
             @Valid @RequestBody ScheduleUpdateRequestDto requestDto
     ) {
         projectService.updateSchedule(projectId, requestDto);
+
+        return NO_CONTENT;
+    }
+
+    @Override
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<Void> deleteProject(
+            @PathVariable long projectId
+    ) {
+        projectService.deleteProject(projectId);
 
         return NO_CONTENT;
     }
