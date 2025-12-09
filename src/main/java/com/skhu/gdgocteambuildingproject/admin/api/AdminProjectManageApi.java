@@ -89,4 +89,16 @@ public interface AdminProjectManageApi {
             long projectId,
             ScheduleUpdateRequestDto requestDto
     );
+
+    @Operation(
+            summary = "프로젝트 삭제",
+            description = """
+                    프로젝트를 삭제합니다.
+                    
+                    별도 검증 로직을 수행하지 않고 바로 삭제하니 주의해서 호출해야 합니다.
+                    """
+    )
+    ResponseEntity<Void> deleteProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId
+    );
 }

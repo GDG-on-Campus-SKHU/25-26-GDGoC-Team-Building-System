@@ -29,4 +29,6 @@ public interface ProjectService {
     void updateProject(long projectId, ProjectUpdateRequestDto requestDto);
 
     void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto);
+
+    void deleteProject(long projectId);
 }

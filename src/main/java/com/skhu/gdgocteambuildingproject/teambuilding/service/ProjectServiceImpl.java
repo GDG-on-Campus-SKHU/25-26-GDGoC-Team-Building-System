@@ -134,6 +134,14 @@ public class ProjectServiceImpl implements ProjectService {
         );
     }
 
+    @Override
+    @Transactional
+    public void deleteProject(long projectId) {
+        TeamBuildingProject project = findProjectBy(projectId);
+
+        projectRepository.delete(project);
+    }
+
     private User findUserBy(long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(USER_NOT_EXIST.getMessage()));
