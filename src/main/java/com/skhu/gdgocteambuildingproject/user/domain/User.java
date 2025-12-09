@@ -116,10 +116,10 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.WAITING;
     }
 
-    public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
-        return ideas.stream()
-                .filter(Idea::isRegistered)
-                .anyMatch(idea -> idea.getProject().equals(project));
+    public boolean isMemberOf(TeamBuildingProject project) {
+        return members.stream()
+                .map(IdeaMember::getIdea)
+                .anyMatch(idea -> project.equals(idea.getProject()));
     }
 
     public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {
