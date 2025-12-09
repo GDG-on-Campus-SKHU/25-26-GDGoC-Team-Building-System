@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
@@ -13,40 +13,40 @@ import org.springframework.stereotype.Component;
 @Component
 public class RosterMemberMapper {
 
-    public RosterMemberResponseDto map(IdeaEnrollment enrollment) {
-        return switch (enrollment.getStatus()) {
-            case ACCEPTED -> mapAcceptedEnrollment(enrollment);
-            case SCHEDULED_TO_ACCEPT -> mapScheduledToAcceptEnrollment(enrollment.getApplicant());
-            default -> throw new IllegalStateException(ILLEGAL_ENROLLMENT_STATUS.getMessage());
-        };
-    }
-
-    private RosterMemberResponseDto mapAcceptedEnrollment(IdeaEnrollment enrollment) {
-        User applicant = enrollment.getApplicant();
-        IdeaMember member = findMemberFromEnrollment(enrollment);
+    /**
+     * 멤버를 DTO로 매핑한다.
+     */
+    public RosterMemberResponseDto map(IdeaMember member) {
+        User user = member.getUser();
 
         return RosterMemberResponseDto.builder()
-                .userId(applicant.getId())
-                .memberName(applicant.getName())
+                .userId(user.getId())
+                .memberName(user.getName())
                 .memberRole(member.getRole())
-                .deletable(false) // 수락된 멤버는 삭제 불가능
+                .confirmed(true)
                 .build();
     }
 
-    private RosterMemberResponseDto mapScheduledToAcceptEnrollment(User applicant) {
+    /**
+     * 수락 예정인 지원을 DTO로 매핑한다.
+     */
+    public RosterMemberResponseDto map(IdeaEnrollment enrollment) {
+        validateEnrollmentStatus(enrollment);
+
+        User applicant = enrollment.getApplicant();
+
         return RosterMemberResponseDto.builder()
                 .userId(applicant.getId())
                 .memberName(applicant.getName())
                 .memberRole(IdeaMemberRole.MEMBER)
-                .deletable(true) // 수락 예정 멤버만 삭제 가능
+                .confirmed(false)
                 .build();
     }
 
-    private IdeaMember findMemberFromEnrollment(IdeaEnrollment enrollment) {
-        return enrollment.getIdea().getMembers().stream()
-                .filter(member -> member.getUser().equals(enrollment.getApplicant()))
-                .findAny()
-                .orElseThrow(() -> new IllegalStateException(NOT_MEMBER_OF_IDEA.getMessage()));
+    private void validateEnrollmentStatus(IdeaEnrollment enrollment) {
+        if (enrollment.getStatus() != SCHEDULED_TO_ACCEPT) {
+            throw new IllegalStateException(ILLEGAL_ENROLLMENT_STATUS.getMessage());
+        }
     }
 }
 

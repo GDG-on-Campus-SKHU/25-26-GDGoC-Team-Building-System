@@ -129,6 +129,8 @@ public class EnrollmentController {
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     
                     myRole, memberRole: CREATOR, MEMBER
+                    
+                    confirmed: 해당 멤버의 참여가 확정되었는지 여부(확정된 멤버는 삭제할 수 없음)
                     """
     )
     public ResponseEntity<RosterResponseDto> findMyIdeaComposition(

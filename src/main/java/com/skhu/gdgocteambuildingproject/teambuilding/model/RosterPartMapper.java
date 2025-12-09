@@ -1,8 +1,5 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.ACCEPTED;
-import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
-
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -11,6 +8,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterPartRes
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -24,25 +22,39 @@ public class RosterPartMapper {
         List<RosterPartResponseDto> rosters = new ArrayList<>();
 
         for (Part part : Part.values()) {
-            List<RosterMemberResponseDto> members = idea.getEnrollments().stream()
-                    .filter(enrollment -> enrollment.getPart() == part)
-                    .filter(this::isAccepted)
-                    .map(rosterMemberMapper::map)
-                    .toList();
+            Stream<RosterMemberResponseDto> confirmedMembers = mapConfirmedMembers(idea, part);
+            Stream<RosterMemberResponseDto> notConfirmedMembers = mapNotConfirmedMembers(idea, part);
+
+            List<RosterMemberResponseDto> allMembers = Stream.concat(confirmedMembers, notConfirmedMembers).toList();
 
             rosters.add(RosterPartResponseDto.builder()
                     .part(part)
                     .currentMemberCount(idea.getCurrentMemberCountIncludeNotConfirm(part))
                     .maxMemberCount(idea.getMaxMemberCountOf(part))
-                    .members(members)
+                    .members(allMembers)
                     .build());
         }
 
         return Collections.unmodifiableList(rosters);
     }
 
-    private boolean isAccepted(IdeaEnrollment enrollment) {
-        return enrollment.getStatus() == ACCEPTED || enrollment.getStatus() == SCHEDULED_TO_ACCEPT;
+    /**
+     * 멤버를 DTO로 매핑한다.
+     */
+    private Stream<RosterMemberResponseDto> mapConfirmedMembers(Idea idea, Part part) {
+        return idea.getMembers().stream()
+                .filter(member -> member.getPart() == part)
+                .map(rosterMemberMapper::map);
+    }
+
+    /**
+     * 수락 예정인 지원을 DTO로 매핑한다.
+     */
+    private Stream<RosterMemberResponseDto> mapNotConfirmedMembers(Idea idea, Part part) {
+        return idea.getEnrollments().stream()
+                .filter(enrollment -> enrollment.getPart() == part)
+                .filter(IdeaEnrollment::isScheduledToAccept)
+                .map(rosterMemberMapper::map);
     }
 }
 

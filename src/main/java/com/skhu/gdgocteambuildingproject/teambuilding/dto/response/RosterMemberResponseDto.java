@@ -8,7 +8,7 @@ public record RosterMemberResponseDto(
         long userId,
         String memberName,
         IdeaMemberRole memberRole,
-        boolean deletable
+        boolean confirmed
 ) {
 }
 
