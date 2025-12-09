@@ -30,6 +30,7 @@ public enum ExceptionMessage {
 
     // TeamBuilding
     NOT_PARTICIPATED("프로젝트에 접근 권한이 없습니다."),
+    ALREADY_PARTICIPATED("이미 프로젝트에 참여하고 있습니다."),
     SCHEDULE_NOT_EXIST("일정이 존재하지 않습니다."),
     NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
     SCHEDULE_PASSED("일정이 지났습니다."),
@@ -62,6 +63,8 @@ public enum ExceptionMessage {
     ACTIVITY_POST_NOT_FOUND("게시글을 찾을 수 없습니다."),
     CATEGORY_NOT_FOUND("카테고리를 찾을 수 없습니다."),
     USER_NOT_REJECTED("현재 상태가 REJECTED인 사용자만 재검토할 수 있습니다."),
+    GENERATION_NOT_FOUND("해당 활동 기수를 찾을 수 없습니다."),
+    INVALID_GENERATION("잘못된 Generation 값입니다."),
 
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),

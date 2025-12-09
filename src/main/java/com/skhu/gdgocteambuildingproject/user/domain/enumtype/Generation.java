@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.user.domain.enumtype;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+
 import java.util.Arrays;
 
 public enum Generation {
@@ -20,8 +22,8 @@ public enum Generation {
 
     public static Generation fromLabel(String label) {
         return Arrays.stream(values())
-                .filter(generation -> generation.label.equals(label))
+                .filter(gen -> gen.label.equals(label))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 기수입니다: " + label));
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.INVALID_GENERATION.getMessage()));
     }
 }
