@@ -2,16 +2,14 @@ package com.skhu.gdgocteambuildingproject.auth.service;
 
 import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
+import com.skhu.gdgocteambuildingproject.auth.service.dto.AuthTokenBundle;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.TokenService;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -33,7 +31,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginResponseDto signUp(SignUpRequestDto dto) {
+    public AuthTokenBundle signUp(SignUpRequestDto dto) {
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail())) {
             throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
         }
@@ -42,19 +40,43 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
         }
 
-        User savedUser = userRepository.save(
-                dto.toEntity(passwordEncoder.encode(dto.getPassword()))
-        );
+        User user = User.builder()
+                .email(dto.getEmail())
+                .password(passwordEncoder.encode(dto.getPassword()))
+                .name(dto.getName())
+                .number(dto.getNumber())
+                .school(dto.getSchool())
+                .role(dto.getRole())
+                .part(dto.getPart())
+                .build();
 
-        Generation generation = Generation.fromLabel(dto.getGeneration());
-        saveUserGeneration(savedUser, generation, dto.getPosition());
+        User saved = userRepository.save(user);
 
-        return createLoginResponse(savedUser);
+        UserGeneration ug = UserGeneration.builder()
+                .user(saved)
+                .position(dto.getPosition())
+                .generation(Generation.fromLabel(dto.getGeneration()))
+                .isMain(true)
+                .build();
+
+        saved.addGeneration(ug);
+        userGenerationRepository.save(ug);
+
+        String access = tokenService.createAccessToken(saved);
+        String refresh = tokenService.createRefreshToken(saved);
+
+        tokenService.store(saved, refresh);
+
+        return AuthTokenBundle.builder()
+                .accessToken(access)
+                .refreshToken(refresh)
+                .user(saved)
+                .build();
     }
 
     @Override
-    @Transactional
-    public LoginResponseDto login(LoginRequestDto dto) {
+    @Transactional(readOnly = true)
+    public AuthTokenBundle login(LoginRequestDto dto) {
         User user = userRepository.findByEmailAndDeletedFalse(dto.getEmail())
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage()));
 
@@ -64,27 +86,51 @@ public class AuthServiceImpl implements AuthService {
 
         validateUserStatus(user);
 
-        return createLoginResponse(user);
+        String access = tokenService.createAccessToken(user);
+        String refresh = tokenService.createRefreshToken(user);
+
+        tokenService.store(user, refresh);
+
+        return AuthTokenBundle.builder()
+                .accessToken(access)
+                .refreshToken(refresh)
+                .user(user)
+                .build();
     }
 
     @Override
     @Transactional
-    public LoginResponseDto refresh(RefreshTokenRequestDto dto) {
-        RefreshToken oldToken = tokenService.validate(dto.getRefreshToken());
-        User user = oldToken.getUser();
+    public AuthTokenBundle refresh(String refreshToken) {
+        if (refreshToken == null) {
+            throw new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage());
+        }
+
+        RefreshToken old = tokenService.validate(refreshToken);
+
+        if (old == null) {
+            throw new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage());
+        }
+
+        User user = old.getUser();
 
         validateUserStatus(user);
 
         String newAccess = tokenService.createAccessToken(user);
-        String newRefresh = tokenService.rotate(oldToken);
+        String newRefresh = tokenService.rotate(old);
 
-        return buildLoginResponse(user, newAccess, newRefresh);
+        return AuthTokenBundle.builder()
+                .accessToken(newAccess)
+                .refreshToken(newRefresh)
+                .user(user)
+                .build();
     }
 
     @Override
     @Transactional
-    public void logout(RefreshTokenRequestDto dto) {
-        tokenService.deleteByToken(dto.getRefreshToken());
+    public void logout(String refreshToken) {
+        if (refreshToken != null) {
+            tokenService.deleteByToken(refreshToken);
+        }
     }
 
     @Override
@@ -101,11 +147,9 @@ public class AuthServiceImpl implements AuthService {
         if (user.isDeleted()) {
             throw new IllegalStateException(ExceptionMessage.USER_NOT_EXIST.getMessage());
         }
-
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
             throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
         }
-
         if (user.getApprovalStatus() == ApprovalStatus.REJECTED) {
             throw new IllegalStateException(ExceptionMessage.USER_REJECTED.getMessage());
         }
@@ -113,39 +157,4 @@ public class AuthServiceImpl implements AuthService {
             throw new LockedException(ExceptionMessage.BANNED_USER.getMessage());
         }
     }
-
-    private LoginResponseDto createLoginResponse(User user) {
-        String accessToken = tokenService.createAccessToken(user);
-        String refreshToken = tokenService.createRefreshToken(user);
-
-        tokenService.store(user, refreshToken);
-
-        return buildLoginResponse(user, accessToken, refreshToken);
-    }
-
-    private LoginResponseDto buildLoginResponse(User user,
-                                                String accessToken,
-                                                String refreshToken) {
-        return LoginResponseDto.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .build();
-    }
-
-    private void saveUserGeneration(User user, Generation generation, UserPosition position) {
-        UserGeneration userGeneration = UserGeneration.builder()
-                .user(user)
-                .position(position)
-                .isMain(true)
-                .generation(generation)
-                .build();
-
-        user.addGeneration(userGeneration);
-
-        userGenerationRepository.save(userGeneration);
-    }
-
 }

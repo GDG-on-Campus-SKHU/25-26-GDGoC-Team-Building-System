@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.auth.controller;
 
+import com.skhu.gdgocteambuildingproject.auth.cookie.RefreshTokenCookieWriter;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.service.AuthService;
@@ -12,9 +12,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -27,6 +26,7 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final RefreshTokenCookieWriter refreshTokenCookieWriter;
 
     @Operation(
             summary = "회원가입",
@@ -67,8 +67,13 @@ public class AuthController {
             @ApiResponse(responseCode = "400", description = "유효하지 않은 입력값 또는 이미 존재하는 이메일"),
     })
     @PostMapping("/signup")
-    public ResponseEntity<LoginResponseDto> signUp(@RequestBody @Valid SignUpRequestDto dto) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(authService.signUp(dto));
+    public ResponseEntity<LoginResponseDto> signUp(
+            @RequestBody SignUpRequestDto dto,
+            HttpServletResponse response
+    ) {
+        var bundle = authService.signUp(dto);
+        refreshTokenCookieWriter.write(response, bundle.getRefreshToken());
+        return ResponseEntity.status(201).body(bundle.toLoginResponse());
     }
 
     @Operation(
@@ -82,8 +87,13 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "삭제된 회원 또는 승인 대기 중인 사용자"),
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(@RequestBody @Valid LoginRequestDto dto) {
-        return ResponseEntity.ok(authService.login(dto));
+    public ResponseEntity<LoginResponseDto> login(
+            @RequestBody LoginRequestDto dto,
+            HttpServletResponse response
+    ) {
+        var bundle = authService.login(dto);
+        refreshTokenCookieWriter.write(response, bundle.getRefreshToken());
+        return ResponseEntity.ok(bundle.toLoginResponse());
     }
 
     @Operation(
@@ -97,8 +107,13 @@ public class AuthController {
             @ApiResponse(responseCode = "409", description = "탈퇴 회원 또는 승인 대기 중인 사용자"),
     })
     @PostMapping("/refresh")
-    public ResponseEntity<LoginResponseDto> refresh(@RequestBody @Valid RefreshTokenRequestDto dto) {
-        return ResponseEntity.ok(authService.refresh(dto));
+    public ResponseEntity<LoginResponseDto> refresh(
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response
+    ) {
+        var bundle = authService.refresh(refreshToken);
+        refreshTokenCookieWriter.write(response, bundle.getRefreshToken());
+        return ResponseEntity.ok(bundle.toLoginResponse());
     }
 
     @Operation(
@@ -109,8 +124,12 @@ public class AuthController {
             @ApiResponse(responseCode = "204", description = "로그아웃 성공"),
     })
     @PostMapping("/logout")
-    public ResponseEntity<Void> logout(@RequestBody RefreshTokenRequestDto dto) {
-        authService.logout(dto);
+    public ResponseEntity<Void> logout(
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+            HttpServletResponse response
+    ) {
+        authService.logout(refreshToken);
+        refreshTokenCookieWriter.clear(response);
         return ResponseEntity.noContent().build();
     }
 
@@ -124,8 +143,10 @@ public class AuthController {
             @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자"),
     })
     @DeleteMapping
-    public ResponseEntity<Void> delete(@AuthenticationPrincipal UserPrincipal userPrincipal) {
-        authService.delete(userPrincipal.getUser().getId());
+    public ResponseEntity<Void> delete(
+            @AuthenticationPrincipal UserPrincipal principal
+    ) {
+        authService.delete(principal.getUser().getId());
         return ResponseEntity.noContent().build();
     }
 }
