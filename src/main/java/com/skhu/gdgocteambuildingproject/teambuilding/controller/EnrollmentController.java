@@ -124,7 +124,10 @@ public class EnrollmentController {
                     아이디어에 지원 가능한 파트와 별개로, 항상 모든 파트에 대한 정보를 조회합니다.
                     (지원 불가능한 파트의 경우, 현재 인원수와 최대 인원수가 0으로 설정됩니다)
                     
+                    userId: 회원 정보에 대한 ID(프로필 조회 등에 사용 가능)
+                    
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
                     myRole, memberRole: CREATOR, MEMBER
                     """
     )

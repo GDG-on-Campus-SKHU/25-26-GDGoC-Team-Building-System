@@ -5,7 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record RosterMemberResponseDto(
-        long memberId,
+        long userId,
         String memberName,
         IdeaMemberRole memberRole,
         boolean deletable

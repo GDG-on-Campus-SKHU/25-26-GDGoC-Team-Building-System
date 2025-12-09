@@ -1,6 +1,10 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.ACCEPTED;
+import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
+
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterPartResponseDto;
@@ -20,7 +24,9 @@ public class RosterPartMapper {
         List<RosterPartResponseDto> rosters = new ArrayList<>();
 
         for (Part part : Part.values()) {
-            List<RosterMemberResponseDto> members = idea.getMembers().stream()
+            List<RosterMemberResponseDto> members = idea.getEnrollments().stream()
+                    .filter(enrollment -> enrollment.getPart() == part)
+                    .filter(this::isAccepted)
                     .map(rosterMemberMapper::map)
                     .toList();
 
@@ -33,6 +39,10 @@ public class RosterPartMapper {
         }
 
         return Collections.unmodifiableList(rosters);
+    }
+
+    private boolean isAccepted(IdeaEnrollment enrollment) {
+        return enrollment.getStatus() == ACCEPTED || enrollment.getStatus() == SCHEDULED_TO_ACCEPT;
     }
 }
 
