@@ -14,14 +14,12 @@ public class RefreshTokenCookieWriter {
     private final TokenService tokenService;
 
     public void write(HttpServletResponse response, String refreshToken) {
-        long maxAge = tokenService.getRefreshTokenExpirySeconds();
-
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
+                .httpOnly(false)
+                .secure(false)
+                .sameSite("Lax")
                 .path("/")
-                .maxAge(maxAge)
+                .maxAge(tokenService.getRefreshTokenExpirySeconds())
                 .build();
 
         response.addHeader(HttpHeaders.SET_COOKIE, cookie.toString());
@@ -29,9 +27,9 @@ public class RefreshTokenCookieWriter {
 
     public void clear(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(true)
-                .secure(true)
-                .sameSite("None")
+                .httpOnly(false)
+                .secure(false)
+                .sameSite("Lax")
                 .path("/")
                 .maxAge(0)
                 .build();

@@ -1,16 +1,11 @@
 package com.skhu.gdgocteambuildingproject.auth.controller;
 
-import com.skhu.gdgocteambuildingproject.auth.cookie.RefreshTokenCookieWriter;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.service.AuthService;
-import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.media.Content;
-import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -18,120 +13,79 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-@Tag(name = "Auth API",
-        description = "회원가입, 로그인, 토큰 갱신 및 로그아웃을 담당")
+@Tag(
+        name = "Auth API",
+        description = """
+인증 관련 기능을 제공합니다.
+
+사용 가능한 ENUM 값:
+
+Generation: 22-23, 23-24, 24-25, 25-26
+Part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+UserPosition: MEMBER, CORE, ORGANIZER
+UserRole: OTHERS, SKHU_MEMBER, SKHU_ADMIN
+""")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenCookieWriter refreshTokenCookieWriter;
 
-    @Operation(
-            summary = "회원가입",
-            description = """
-                    새로운 사용자를 등록한다.
-
-                    🔹 Generation  
-                    - 22-23, 23-24, 24-25, 25-26
-
-                    🔹 Part  
-                    - PM, DESIGN, WEB, MOBILE, BACKEND, AI
-
-                    🔹 UserPosition  
-                    - MEMBER, CORE, ORGANIZER
-
-                    🔹 UserRole  
-                    - OTHERS, SKHU_MEMBER, SKHU_ADMIN
-                    """
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "201", description = "회원가입 성공",
-                    content = @Content(schema = @Schema(implementation = LoginResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 입력값 또는 이미 존재하는 이메일"),
+    @Operation(summary = "회원가입", responses = {
+            @ApiResponse(responseCode = "200", description = "회원가입 성공")
     })
     @PostMapping("/signup")
     public ResponseEntity<LoginResponseDto> signUp(
             @RequestBody SignUpRequestDto dto,
             HttpServletResponse response
     ) {
-        var bundle = authService.signUp(dto);
-        refreshTokenCookieWriter.write(response, bundle.getRefreshToken());
-        return ResponseEntity.status(201).body(bundle.toLoginResponse());
+        return ResponseEntity.ok(authService.signUp(dto, response).toLoginResponse());
     }
 
-    @Operation(
-            summary = "로그인",
-            description = "이메일과 비밀번호를 입력하여 로그인하고, Access Token과 Refresh Token을 발급한다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(schema = @Schema(implementation = LoginResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "존재하지 않는 이메일 또는 비밀번호 불일치"),
-            @ApiResponse(responseCode = "409", description = "삭제된 회원 또는 승인 대기 중인 사용자"),
+    @Operation(summary = "로그인", responses = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공")
     })
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(
             @RequestBody LoginRequestDto dto,
             HttpServletResponse response
     ) {
-        var bundle = authService.login(dto);
-        refreshTokenCookieWriter.write(response, bundle.getRefreshToken());
-        return ResponseEntity.ok(bundle.toLoginResponse());
+        return ResponseEntity.ok(authService.login(dto, response).toLoginResponse());
     }
 
-    @Operation(
-            summary = "토큰 재발급",
-            description = "유효한 Refresh Token을 기반으로 Access Token 및 새로운 Refresh Token을 재발급한다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "토큰 재발급 성공",
-                    content = @Content(schema = @Schema(implementation = LoginResponseDto.class))),
-            @ApiResponse(responseCode = "400", description = "유효하지 않은 Refresh Token"),
-            @ApiResponse(responseCode = "409", description = "탈퇴 회원 또는 승인 대기 중인 사용자"),
+    @Operation(summary = "토큰 재발급(RefreshToken 재사용)", responses = {
+            @ApiResponse(responseCode = "200", description = "재발급 성공")
     })
     @PostMapping("/refresh")
     public ResponseEntity<LoginResponseDto> refresh(
             @CookieValue(name = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
     ) {
-        var bundle = authService.refresh(refreshToken);
-        refreshTokenCookieWriter.write(response, bundle.getRefreshToken());
-        return ResponseEntity.ok(bundle.toLoginResponse());
+        return ResponseEntity.ok(authService.refresh(refreshToken, response).toLoginResponse());
     }
 
-    @Operation(
-            summary = "로그아웃",
-            description = "해당 Refresh Token을 삭제하여 로그아웃 처리한다."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "로그아웃 성공"),
+    @Operation(summary = "로그아웃", responses = {
+            @ApiResponse(responseCode = "204", description = "로그아웃 성공")
     })
     @PostMapping("/logout")
     public ResponseEntity<Void> logout(
             @CookieValue(name = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
     ) {
-        authService.logout(refreshToken);
-        refreshTokenCookieWriter.clear(response);
+        authService.logout(refreshToken, response);
         return ResponseEntity.noContent().build();
     }
 
-    @Operation(
-            summary = "회원 탈퇴",
-            description = "현재 로그인한 사용자를 소프트 삭제 처리한다. 탈퇴 시점(deletedAt)도 저장됨."
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "회원 탈퇴 성공"),
-            @ApiResponse(responseCode = "400", description = "잘못된 요청"),
-            @ApiResponse(responseCode = "401", description = "인증되지 않은 사용자"),
+    @Operation(summary = "회원 탈퇴", responses = {
+            @ApiResponse(responseCode = "204", description = "탈퇴 성공")
     })
-    @DeleteMapping
+    @DeleteMapping("/delete")
     public ResponseEntity<Void> delete(
-            @AuthenticationPrincipal UserPrincipal principal
+            @AuthenticationPrincipal Long userId,
+            HttpServletResponse response
     ) {
-        authService.delete(principal.getUser().getId());
+        authService.delete(userId, response);
         return ResponseEntity.noContent().build();
     }
 }

@@ -26,23 +26,18 @@ public class TokenService {
 
     @Transactional
     public RefreshToken store(User user, String token) {
-        refreshTokenRepository.deleteAllByUser(user);
-        return refreshTokenRepository.save(RefreshToken.of(user, token));
+        return refreshTokenRepository.findByToken(token)
+                .orElseGet(() ->
+                        refreshTokenRepository.save(RefreshToken.of(user, token))
+                );
     }
 
     @Transactional(readOnly = true)
     public RefreshToken validate(String token) {
         return refreshTokenRepository.findByToken(token)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()));
-    }
-
-    public String rotate(RefreshToken oldToken) {
-        User user = oldToken.getUser();
-        refreshTokenRepository.deleteAllByUser(user);
-        String newRefresh = createRefreshToken(user);
-        refreshTokenRepository.save(RefreshToken.of(user, newRefresh));
-        return newRefresh;
+                        new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage())
+                );
     }
 
     public void deleteByToken(String token) {
