@@ -56,9 +56,7 @@ public class AuthController {
 
                     🔹 UserRole Enum 값  
                     - OTHERS  
-                    - SKHU_MEMBER  
-                    - SKHU_ADMIN  
-                    - BANNED
+                    - SKHU_MEMBER
                     """
     )
     @ApiResponses({

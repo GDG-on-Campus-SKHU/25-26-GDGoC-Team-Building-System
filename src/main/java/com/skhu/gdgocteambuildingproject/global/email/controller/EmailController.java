@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.global.email.controller;
 
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailService;
 import com.skhu.gdgocteambuildingproject.global.email.service.EmailVerificationService;
+import com.skhu.gdgocteambuildingproject.global.email.service.ResetPasswordService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -21,6 +22,7 @@ public class EmailController {
 
     private final EmailService emailService;
     private final EmailVerificationService emailVerificationService;
+    private final ResetPasswordService resetPasswordService;
 
     @PostMapping("/send")
     @Operation(
@@ -51,5 +53,16 @@ public class EmailController {
     ) {
         emailVerificationService.verify(email, code);
         return ResponseEntity.ok("인증 성공");
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(summary = "비밀번호 재설정")
+    public ResponseEntity<String> resetPassword(
+            @RequestParam String email,
+            @RequestParam String code,
+            @RequestParam String newPassword
+    ) {
+        resetPasswordService.resetPassword(email, code, newPassword);
+        return ResponseEntity.ok("비밀번호가 성공적으로 재설정되었습니다.");
     }
 }
