@@ -32,7 +32,7 @@ public class RosterPartMapper {
 
             rosters.add(RosterPartResponseDto.builder()
                     .part(part)
-                    .currentMemberCount(idea.getCurrentMemberCountOf(part))
+                    .currentMemberCount(idea.getCurrentMemberCountIncludeNotConfirm(part))
                     .maxMemberCount(idea.getMaxMemberCountOf(part))
                     .members(members)
                     .build());
