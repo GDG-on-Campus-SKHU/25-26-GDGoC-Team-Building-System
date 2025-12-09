@@ -75,4 +75,10 @@ public interface IdeaService {
     void restoreIdea(
             long ideaId
     );
+
+    void removeMember(
+            long creatorId,
+            long ideaId,
+            long memberId
+    );
 }
