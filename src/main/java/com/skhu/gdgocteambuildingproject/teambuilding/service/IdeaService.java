@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
@@ -34,6 +35,11 @@ public interface IdeaService {
     );
 
     IdeaDetailInfoResponseDto findIdeaDetail(
+            long projectId,
+            long ideaId
+    );
+
+    AdminIdeaDetailResponseDto findIdeaDetailByAdmin(
             long projectId,
             long ideaId
     );

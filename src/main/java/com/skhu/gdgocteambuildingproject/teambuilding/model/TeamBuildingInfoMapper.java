@@ -19,7 +19,9 @@ public class TeamBuildingInfoMapper {
                 .projectName(project.getName())
                 .maxMemberCount(project.getMaxMemberCount())
                 .registrable(isRegistrable(project, user))
+                .canEnroll(isCanEnroll(project, user))
                 .schedules(scheduleMapper.map(project.getSchedules()))
+                .availableParts(project.getAvailableParts())
                 .build();
     }
 
@@ -27,5 +29,9 @@ public class TeamBuildingInfoMapper {
         return user.getIdeas().stream()
                 .filter(idea -> idea.getProject() == project)
                 .noneMatch(Idea::isRegistered);
+    }
+
+    private boolean isCanEnroll(TeamBuildingProject project, User user) {
+        return !user.isMemberOf(project);
     }
 }

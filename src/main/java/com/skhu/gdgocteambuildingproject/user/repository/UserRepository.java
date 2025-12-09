@@ -3,13 +3,15 @@ package com.skhu.gdgocteambuildingproject.user.repository;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.repository.query.Param;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailAndDeletedFalse(String email);
@@ -40,4 +42,21 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     @Query("SELECT DISTINCT u.school FROM User u WHERE u.school IS NOT NULL")
     List<String> findDistinctSchools();
+
+    @Query("""
+            SELECT DISTINCT u
+            FROM User u
+                JOIN u.generation g
+            WHERE u.deleted = false
+                AND u.approvalStatus = :approvalStatus
+                AND u.userStatus = :userStatus
+                AND (:generation IS NULL OR g.generation = :generation)
+                AND (:schools IS NULL OR u.school IN :schools)
+            """)
+    List<User> searchUsers(
+            @Param("generation") Generation generation,
+            @Param("schools") List<String> schools,
+            @Param("approvalStatus") ApprovalStatus approvalStatus,
+            @Param("userStatus") UserStatus userStatus
+    );
 }
