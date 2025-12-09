@@ -1,17 +1,12 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
 
-import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import java.util.List;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import lombok.Builder;
 
 @Builder
 public record TeamBuildingInfoResponseDto(
-        Long projectId,
-        String projectName,
-        int maxMemberCount,
+        ProjectTotalResponseDto project,
         boolean registrable,
-        boolean canEnroll,
-        List<ProjectScheduleResponseDto> schedules,
-        List<Part> availableParts
+        boolean canEnroll
 ) {
 }

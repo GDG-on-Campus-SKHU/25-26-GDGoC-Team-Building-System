@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaMemberCompositionResponseDto;
@@ -26,6 +27,21 @@ public class IdeaDetailInfoMapper {
                 .description(idea.getDescription())
                 .creator(creator)
                 .compositions(compositions)
+                .build();
+    }
+
+    public AdminIdeaDetailResponseDto mapForAdmin(Idea idea) {
+        IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea);
+        List<IdeaMemberCompositionResponseDto> compositions = compositionMapper.map(idea);
+
+        return AdminIdeaDetailResponseDto.builder()
+                .ideaId(idea.getId())
+                .title(idea.getTitle())
+                .introduction(idea.getIntroduction())
+                .description(idea.getDescription())
+                .creator(creator)
+                .compositions(compositions)
+                .deleted(idea.isDeleted())
                 .build();
     }
 }

@@ -8,6 +8,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
@@ -123,6 +124,16 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<SchoolResponseDto> findSchools() {
+        List<String> schools = userRepository.findDistinctSchools();
+
+        return schools.stream()
+                .map(SchoolResponseDto::new)
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto) {
         TeamBuildingProject project = findProjectBy(projectId);
@@ -132,6 +143,14 @@ public class ProjectServiceImpl implements ProjectService {
                 requestDto.startAt(),
                 requestDto.endAt()
         );
+    }
+
+    @Override
+    @Transactional
+    public void deleteProject(long projectId) {
+        TeamBuildingProject project = findProjectBy(projectId);
+
+        projectRepository.delete(project);
     }
 
     private User findUserBy(long userId) {

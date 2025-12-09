@@ -15,6 +15,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
@@ -139,6 +140,20 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
 
         return ideaDetailInfoMapper.map(idea);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public AdminIdeaDetailResponseDto findIdeaDetailByAdmin(
+            long projectId,
+            long ideaId
+    ) {
+        Idea idea = ideaRepository.findByIdIncludeDeleted(ideaId)
+                .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
+
+        validateIdeaInProject(idea, projectId);
+
+        return ideaDetailInfoMapper.mapForAdmin(idea);
     }
 
     @Override
