@@ -8,6 +8,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDt
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
@@ -120,6 +121,16 @@ public class ProjectServiceImpl implements ProjectService {
         );
 
         updateParticipants(project, requestDto.participantUserIds());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<SchoolResponseDto> findSchools() {
+        List<String> schools = userRepository.findDistinctSchools();
+
+        return schools.stream()
+                .map(SchoolResponseDto::new)
+                .toList();
     }
 
     @Override

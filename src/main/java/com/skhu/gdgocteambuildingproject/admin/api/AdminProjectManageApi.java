@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageRespon
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -76,6 +77,14 @@ public interface AdminProjectManageApi {
             @Parameter(description = "프로젝트 ID", example = "1") long projectId,
             ProjectUpdateRequestDto requestDto
     );
+
+    @Operation(
+            summary = "학교 목록 조회",
+            description = """
+                    회원이 존재하는 모든 학교 목록을 조회합니다.
+                    """
+    )
+    ResponseEntity<List<SchoolResponseDto>> getSchools();
 
     @Operation(
             summary = "프로젝트 일정 등록 및 수정",

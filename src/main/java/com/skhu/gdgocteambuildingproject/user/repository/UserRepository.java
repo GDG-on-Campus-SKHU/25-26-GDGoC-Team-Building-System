@@ -5,14 +5,13 @@ import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-
-import java.util.List;
-import java.util.Optional;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByEmailAndDeletedFalse(String email);
@@ -40,6 +39,9 @@ public interface UserRepository extends JpaRepository<User, Long> {
             ApprovalStatus status,
             Pageable pageable
     );
+
+    @Query("SELECT DISTINCT u.school FROM User u WHERE u.school IS NOT NULL")
+    List<String> findDistinctSchools();
 
     @Query("""
             SELECT DISTINCT u

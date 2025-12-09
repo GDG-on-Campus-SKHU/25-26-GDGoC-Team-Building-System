@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageRespon
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
@@ -27,6 +28,8 @@ public interface ProjectService {
     ModifiableProjectResponseDto findModifiableProject();
 
     void updateProject(long projectId, ProjectUpdateRequestDto requestDto);
+
+    List<SchoolResponseDto> findSchools();
 
     void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto);
 
