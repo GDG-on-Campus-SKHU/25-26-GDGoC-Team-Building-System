@@ -44,6 +44,8 @@ public interface AdminUserProfileService {
             SortOrder order
     );
 
+    void deleteUserGeneration(Long generationId);
+
     ApprovedUserInfoResponseDto getApproveUser(Long userId);
 
     void updateApproveUser(Long userId, ApproveUserUpdateRequestDto dto);

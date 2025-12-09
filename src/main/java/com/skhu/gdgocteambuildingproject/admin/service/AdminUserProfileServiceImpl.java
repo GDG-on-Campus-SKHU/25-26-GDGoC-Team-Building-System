@@ -11,6 +11,7 @@ import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
+import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
@@ -28,6 +29,8 @@ import java.util.List;
 public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     private final UserRepository userRepository;
+    private final UserGenerationRepository userGenerationRepository;
+
     private final ApproveUserInfoMapper approveUserInfoMapper;
     private final ApprovedUserInfoMapper approvedUserInfoMapper;
 
@@ -104,6 +107,14 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     }
 
     @Override
+    @Transactional
+    public void deleteUserGeneration(Long generationId) {
+        UserGeneration userGeneration = userGenerationRepository.findById(generationId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.GENERATION_NOT_FOUND.getMessage()));
+
+        userGenerationRepository.delete(userGeneration);
+    }
+
     @Transactional(readOnly = true)
     public ApprovedUserInfoResponseDto getApproveUser(Long userId) {
         User user = getUserOrThrow(userId);
