@@ -19,7 +19,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(name = "Auth API",
-        description = "사용자 인증(로그인/회원가입) 및 JWT 기반 토큰 발급·갱신·삭제 기능을 담당")
+        description = "회원가입, 로그인, 토큰 갱신 및 로그아웃을 담당")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -31,33 +31,19 @@ public class AuthController {
     @Operation(
             summary = "회원가입",
             description = """
-                    새로운 사용자를 등록하고 Access Token과 Refresh Token을 발급한다.
-                    
-                    아래 Enum 값 중 하나를 입력해야 한다.
+                    새로운 사용자를 등록한다.
 
-                    🔹 Generation Enum 값  
-                    - 22-23
-                    - 23-24
-                    - 24-25
-                    - 25-26                    
+                    🔹 Generation  
+                    - 22-23, 23-24, 24-25, 25-26
 
-                    🔹 Part Enum 값  
-                    - WEB  
-                    - MOBILE 
-                    - AI  
-                    - DESIGN
-                    - PM
-                    - BACKEND
+                    🔹 Part  
+                    - PM, DESIGN, WEB, MOBILE, BACKEND, AI
 
-                    🔹 UserPosition Enum 값  
-                    - MEMBER  
-                    - CORE  
-                    - ORGANIZER  
+                    🔹 UserPosition  
+                    - MEMBER, CORE, ORGANIZER
 
-                    🔹 UserRole Enum 값  
-                    - OTHERS  
-                    - SKHU_MEMBER
-                    - SKHU_ADMIN
+                    🔹 UserRole  
+                    - OTHERS, SKHU_MEMBER, SKHU_ADMIN
                     """
     )
     @ApiResponses({
