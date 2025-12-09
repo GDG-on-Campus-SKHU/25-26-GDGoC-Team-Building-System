@@ -57,9 +57,19 @@ public class AuthServiceImpl implements AuthService {
         User user = stored.getUser();
         validateUserStatus(user);
 
+        String newRefresh = rotateRefreshToken(user, refreshToken);
         String newAccess = tokenService.createAccessToken(user);
 
-        return AuthTokenBundle.of(newAccess, refreshToken, user);
+        cookieWriter.write(response, newRefresh);
+
+        return AuthTokenBundle.of(newAccess, newRefresh, user);
+    }
+
+    private String rotateRefreshToken(User user, String oldToken) {
+        tokenService.deleteByToken(oldToken);
+        String newToken = tokenService.createRefreshToken(user);
+        tokenService.store(user, newToken);
+        return newToken;
     }
 
     @Override
