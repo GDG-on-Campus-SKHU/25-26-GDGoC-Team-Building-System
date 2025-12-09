@@ -6,7 +6,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequ
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.CompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -111,7 +111,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/compositions")
+    @GetMapping("/roster")
     @Operation(
             summary = "팀원 구성 조회",
             description = """
@@ -128,12 +128,12 @@ public class EnrollmentController {
                     myRole, memberRole: CREATOR, MEMBER
                     """
     )
-    public ResponseEntity<CompositionResponseDto> findMyIdeaComposition(
+    public ResponseEntity<RosterResponseDto> findMyIdeaComposition(
             Principal principal
     ) {
         long userId = findUserIdBy(principal);
 
-        CompositionResponseDto response = enrollmentService.getComposition(userId);
+        RosterResponseDto response = enrollmentService.getComposition(userId);
 
         return ResponseEntity.ok(response);
     }
