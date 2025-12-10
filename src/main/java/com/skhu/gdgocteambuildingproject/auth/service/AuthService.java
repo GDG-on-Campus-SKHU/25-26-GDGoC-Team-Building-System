@@ -1,19 +1,19 @@
 package com.skhu.gdgocteambuildingproject.auth.service;
 
 import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.request.RefreshTokenRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
+import jakarta.servlet.http.HttpServletResponse;
 
 public interface AuthService {
 
-    LoginResponseDto signUp(SignUpRequestDto dto);
+    LoginResponseDto signUp(SignUpRequestDto dto, HttpServletResponse response);
 
-    LoginResponseDto login(LoginRequestDto dto);
+    LoginResponseDto login(LoginRequestDto dto, HttpServletResponse response);
 
-    LoginResponseDto refresh(RefreshTokenRequestDto dto);
+    LoginResponseDto refresh(String refreshToken, HttpServletResponse response);
 
-    void logout(RefreshTokenRequestDto dto);
+    void logout(String refreshToken, HttpServletResponse response);
 
-    void delete(Long userId);
+    void delete(Long userId, HttpServletResponse response);
 }
