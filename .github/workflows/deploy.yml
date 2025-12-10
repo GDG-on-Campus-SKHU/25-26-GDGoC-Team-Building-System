@@ -124,8 +124,8 @@ jobs:
             SWAGGER_SERVER_PROD=${{ secrets.SWAGGER_SERVER_PROD }}
             
             # 2-5) --- Redis ---
-            SPRING_DATA_REDIS_HOST=redis
-            SPRING_DATA_REDIS_PORT=6379
+            SPRING_DATA_REDIS_HOST=${{ secrets.SPRING_DATA_REDIS_HOST }}
+            SPRING_DATA_REDIS_PORT=${{ secrets.SPRING_DATA_REDIS_PORT }}
             
             # 2-6) --- CORS ---
             CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}
