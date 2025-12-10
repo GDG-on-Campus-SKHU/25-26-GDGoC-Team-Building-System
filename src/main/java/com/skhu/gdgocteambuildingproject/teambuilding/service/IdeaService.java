@@ -78,6 +78,11 @@ public interface IdeaService {
             long ideaId
     );
 
+    void removeMemberByAdmin(
+            long ideaId,
+            long memberId
+    );
+
     void restoreIdea(
             long ideaId
     );

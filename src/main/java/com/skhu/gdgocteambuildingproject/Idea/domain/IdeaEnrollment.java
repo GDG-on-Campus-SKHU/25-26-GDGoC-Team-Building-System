@@ -96,4 +96,11 @@ public class IdeaEnrollment extends BaseEntity {
     public void scheduleToReject() {
         status = SCHEDULED_TO_REJECT;
     }
+
+    /**
+     * 지원 상태를 수락됨(ACCEPTED)으로 변경한다.
+     */
+    public void accept() {
+        status = ACCEPTED;
+    }
 }
