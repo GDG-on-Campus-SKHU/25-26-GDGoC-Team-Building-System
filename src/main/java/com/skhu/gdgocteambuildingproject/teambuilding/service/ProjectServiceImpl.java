@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_ALREADY_EXISTS;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
@@ -51,6 +52,8 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional
     public void createNewProject(ProjectCreateRequestDto requestDto) {
+        validateNewProjectCreatable();
+
         TeamBuildingProject project = TeamBuildingProject.builder()
                 .name(requestDto.projectName())
                 .maxMemberCount(requestDto.maxMemberCount())
@@ -199,6 +202,16 @@ public class ProjectServiceImpl implements ProjectService {
     private void validateProjectScheduled(TeamBuildingProject currentProject) {
         if (currentProject.isUnscheduled()) {
             throw new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage());
+        }
+    }
+
+    /**
+     * 새 프로젝트를 등록할 수 있는지 검증하는 메서드.
+     * 지금 진행중이거나 예정된 프로젝트가 있으면 생성할 수 없음.
+     */
+    private void validateNewProjectCreatable() {
+        if (projectUtil.findCurrentProject().isPresent()) {
+            throw new IllegalStateException(PROJECT_ALREADY_EXISTS.getMessage());
         }
     }
 }
