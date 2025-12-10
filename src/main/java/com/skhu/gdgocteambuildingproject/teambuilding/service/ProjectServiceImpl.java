@@ -83,7 +83,9 @@ public class ProjectServiceImpl implements ProjectService {
         User user = findUserBy(userId);
 
         TeamBuildingProject currentProject = projectUtil.findCurrentProject()
-                .orElseThrow(() -> new IllegalStateException(PROJECT_NOT_EXIST.getMessage()));
+                .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
+
+        validateProjectScheduled(currentProject);
 
         return teamBuildingInfoMapper.map(currentProject, user);
     }
@@ -191,6 +193,12 @@ public class ProjectServiceImpl implements ProjectService {
                 User user = findUserBy(userId);
                 project.participate(user);
             }
+        }
+    }
+
+    private void validateProjectScheduled(TeamBuildingProject currentProject) {
+        if (currentProject.isUnscheduled()) {
+            throw new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage());
         }
     }
 }
