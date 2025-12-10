@@ -51,15 +51,25 @@ public class AdminActivityController implements AdminActivityControllerApi {
         return ResponseEntity.ok().body(activitiesByCategory);
     }
 
+    @Override
     @DeleteMapping("/{postId}")
     public ResponseEntity<Void> deleteActivityPost(@PathVariable Long postId) {
         adminActivityService.deleteActivityPost(postId);
         return NO_CONTENT;
     }
 
+    @Override
     @DeleteMapping("/categories/{categoryId}")
     public ResponseEntity<Void> deleteCategory(@PathVariable Long categoryId) {
         adminActivityService.deleteCategory(categoryId);
+        return NO_CONTENT;
+    }
+
+    @Override
+    @PatchMapping("/{categoryId}")
+    public ResponseEntity<Void> updateCategoryTitleAndStatus(@PathVariable Long categoryId,
+                                                             @RequestBody ActivityUpdateRequestDto dto) {
+        adminActivityService.updateCategoryTitleAndStatus(categoryId, dto);
         return NO_CONTENT;
     }
 }
