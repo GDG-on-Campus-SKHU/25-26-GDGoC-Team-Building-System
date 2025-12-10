@@ -1,7 +1,6 @@
 package com.skhu.gdgocteambuildingproject.auth.dto.request;
 
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -47,16 +46,4 @@ public class SignUpRequestDto {
 
     @Schema(example = "OTHERS", description = "사용자 권한(UserRole)")
     private UserRole role;
-
-    public User toEntity(String encodedPassword) {
-        return User.builder()
-                .email(this.email)
-                .password(encodedPassword)
-                .name(this.name)
-                .number(this.number)
-                .school(this.school)
-                .role(this.role)
-                .part(this.part)
-                .build();
-    }
 }
