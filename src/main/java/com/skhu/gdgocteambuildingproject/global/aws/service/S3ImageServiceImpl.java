@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.global.aws.repository.FileRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -25,9 +26,10 @@ import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
-public class S3ImageServiceImpl implements S3ImageService{
+public class S3ImageServiceImpl implements S3ImageService {
 
     private static final List<String> ALLOWED_EXTENSION_LIST = List.of("jpg", "jpeg", "png", "gif");
 
@@ -199,7 +201,7 @@ public class S3ImageServiceImpl implements S3ImageService{
         try {
             fileRepository.save(file);
         } catch (Exception e) {
-            deleteImageFromS3(file.getBucketPath());
+            rollbackS3Upload(file.getBucketPath());
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     ExceptionMessage.FILE_UPLOAD_TRANSACTION_FAILED.getMessage(),
@@ -211,17 +213,30 @@ public class S3ImageServiceImpl implements S3ImageService{
     // 삭제 관련 로직
     private void deleteImageFromS3(String bucketPath) {
         try {
-            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
-                    .bucket(bucketName)
-                    .key(bucketPath)
-                    .build();
-
-            s3Client.deleteObject(deleteObjectRequest);
-        } catch (S3Exception e) {
+            executeDeleteS3Object(bucketPath);
+        } catch (Exception e) {
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
                     ExceptionMessage.IO_EXCEPTION_ON_IMAGE_DELETE.getMessage()
             );
         }
+    }
+
+    private void rollbackS3Upload(String bucketPath) {
+        try {
+            executeDeleteS3Object(bucketPath);
+            log.info("S3에 업로드했던 이미지 롤백 완료");
+        } catch (Exception e) {
+            log.error("S3에 업로드했던 이미지 롤백 실패, 수동 삭제 필요. 경로 = {}", bucketPath, e);
+        }
+    }
+
+    private void executeDeleteS3Object(String bucketPath) {
+        DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                .bucket(bucketName)
+                .key(bucketPath)
+                .build();
+
+        s3Client.deleteObject(deleteObjectRequest);
     }
 }
