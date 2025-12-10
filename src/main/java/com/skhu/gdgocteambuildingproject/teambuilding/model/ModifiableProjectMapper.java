@@ -1,24 +1,25 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-public class ProjectTotalMapper {
+public class ModifiableProjectMapper {
     private final ProjectAvailablePartMapper availablePartMapper;
     private final ProjectScheduleMapper scheduleMapper;
+    private final ProjectParticipantMapper participantMapper;
 
-    public ProjectTotalResponseDto map(TeamBuildingProject project) {
-        return ProjectTotalResponseDto.builder()
+    public ModifiableProjectResponseDto map(TeamBuildingProject project) {
+        return ModifiableProjectResponseDto.builder()
                 .projectId(project.getId())
                 .projectName(project.getName())
                 .maxMemberCount(project.getMaxMemberCount())
                 .availableParts(availablePartMapper.map(project))
                 .schedules(scheduleMapper.map(project.getSchedules()))
+                .participants(participantMapper.map(project.getParticipants()))
                 .build();
     }
 }
-

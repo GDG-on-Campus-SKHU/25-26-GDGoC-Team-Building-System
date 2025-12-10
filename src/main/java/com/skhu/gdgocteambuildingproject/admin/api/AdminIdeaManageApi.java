@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -49,6 +50,22 @@ public interface AdminIdeaManageApi {
             @Parameter(description = "페이지 당 항목 수", example = "20") int size,
             @Parameter(description = "정렬 기준 필드명 (id, topic, title, introduction, description)", example = "id") String sortBy,
             @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
+    );
+
+    @Operation(
+            summary = "아이디어 상세 조회",
+            description = """
+                    프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다.
+                    소프트 딜리트된 아이디어도 조회할 수 있습니다.
+                    
+                    아이디어의 소프트 딜리트 여부도 같이 반환합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    ResponseEntity<AdminIdeaDetailResponseDto> findIdeaDetail(
+            @Parameter(description = "프로젝트 ID") long projectId,
+            @Parameter(description = "아이디어 ID") long ideaId
     );
 
     @Operation(

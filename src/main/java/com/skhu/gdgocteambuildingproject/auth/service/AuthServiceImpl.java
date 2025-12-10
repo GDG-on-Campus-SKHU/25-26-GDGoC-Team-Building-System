@@ -12,10 +12,12 @@ import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +46,8 @@ public class AuthServiceImpl implements AuthService {
                 dto.toEntity(passwordEncoder.encode(dto.getPassword()))
         );
 
-        saveUserGeneration(savedUser, dto.getGeneration(), dto.getPosition());
+        Generation generation = Generation.fromLabel(dto.getGeneration());
+        saveUserGeneration(savedUser, generation, dto.getPosition());
 
         return createLoginResponse(savedUser);
     }
@@ -106,6 +109,9 @@ public class AuthServiceImpl implements AuthService {
         if (user.getApprovalStatus() == ApprovalStatus.REJECTED) {
             throw new IllegalStateException(ExceptionMessage.USER_REJECTED.getMessage());
         }
+        if (user.getUserStatus() == UserStatus.BANNED) {
+            throw new LockedException(ExceptionMessage.BANNED_USER.getMessage());
+        }
     }
 
     private LoginResponseDto createLoginResponse(User user) {
@@ -133,6 +139,7 @@ public class AuthServiceImpl implements AuthService {
         UserGeneration userGeneration = UserGeneration.builder()
                 .user(user)
                 .position(position)
+                .isMain(true)
                 .generation(generation)
                 .build();
 
@@ -140,4 +147,5 @@ public class AuthServiceImpl implements AuthService {
 
         userGenerationRepository.save(userGeneration);
     }
+
 }

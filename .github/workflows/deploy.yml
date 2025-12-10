@@ -136,9 +136,13 @@ jobs:
             docker stop teamBuildingSystem-app || true
             docker rm   teamBuildingSystem-app || true
             
-            # 4) 새 컨테이너 실행 (env-file 기반)
+            # 3-1) Docker 네트워크 없으면 생성
+            docker network create tbs-network || true
+            
+            # 4) 새 컨테이너 실행 (env-file 기반, mysql 컨테이너와 네트워크 연결)
             docker run -d --name teamBuildingSystem-app --restart unless-stopped \
             --env-file "$ENV_FILE" \
+            --network tbs-network \
             -p 8080:8080 \
             "$IMAGE"
             

@@ -25,12 +25,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+
+import java.util.*;
 
 @Entity
 @Getter
@@ -53,7 +49,7 @@ public class User extends BaseEntity {
     private Part part;
 
     private boolean deleted;
-    private LocalDateTime deletedAt;
+    private LocalDate deletedAt;
 
     private LocalDate approvedAt;
 
@@ -127,10 +123,10 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.WAITING;
     }
 
-    public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
-        return ideas.stream()
-                .filter(Idea::isRegistered)
-                .anyMatch(idea -> idea.getProject().equals(project));
+    public boolean isMemberOf(TeamBuildingProject project) {
+        return members.stream()
+                .map(IdeaMember::getIdea)
+                .anyMatch(idea -> project.equals(idea.getProject()));
     }
 
     public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {
@@ -184,7 +180,7 @@ public class User extends BaseEntity {
 
     public void softDelete() {
         this.deleted = true;
-        this.deletedAt = LocalDateTime.now();
+        this.deletedAt = LocalDate.now();
         this.email = null;
         this.number = null;
     }
@@ -203,5 +199,13 @@ public class User extends BaseEntity {
 
     public void addGeneration(UserGeneration userGeneration) {
         generation.add(userGeneration);
+    }
+
+    public void updateSchool(String school) {
+        this.school = school;
+    }
+
+    public void updatePart(Part part) {
+        this.part = part;
     }
 }
