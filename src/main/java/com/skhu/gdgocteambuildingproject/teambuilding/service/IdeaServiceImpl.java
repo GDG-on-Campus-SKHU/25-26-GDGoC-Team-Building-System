@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CONTENTS_EMPTY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_TOTAL_MEMBER_COUNT_EXCEEDED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_PROJECT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
@@ -69,11 +70,13 @@ public class IdeaServiceImpl implements IdeaService {
         ProjectSchedule currentSchedule = getCurrentSchedule();
         validateRegistrationSchedule(currentSchedule);
 
+        TeamBuildingProject project = findProjectBy(projectId);
+
         if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
             validateIdeaTexts(requestDto.getTexts());
+            validateTotalMemberCount(requestDto.compositions(), project);
         }
 
-        TeamBuildingProject project = findProjectBy(projectId);
         User creator = findUserBy(userId);
 
         Idea postedIdea = ideaRepository.findByCreatorAndProject(creator, project)
@@ -207,6 +210,7 @@ public class IdeaServiceImpl implements IdeaService {
         validateIdeaInProject(idea, projectId);
         validateIdeaOwnership(idea, userId);
         validateBeforeEnrollment(idea);
+        validateTotalMemberCount(requestDto.compositions(), idea.getProject());
 
         idea.updateTexts(
                 requestDto.topic(),
@@ -402,6 +406,10 @@ public class IdeaServiceImpl implements IdeaService {
     ) {
         validateIdeaNotRegistered(idea);
 
+        if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
+            validateTotalMemberCount(requestDto.compositions(), idea.getProject());
+        }
+
         idea.updateTexts(
                 requestDto.topic(),
                 requestDto.title(),
@@ -474,5 +482,20 @@ public class IdeaServiceImpl implements IdeaService {
                 .filter(Idea::isTemporary)
                 .findAny()
                 .ifPresent(user::removeIdea);
+    }
+
+    private void validateTotalMemberCount(
+            List<IdeaMemberCompositionRequestDto> compositions,
+            TeamBuildingProject project
+    ) {
+        int totalMemberCount = compositions.stream()
+                .mapToInt(IdeaMemberCompositionRequestDto::maxCount)
+                .sum();
+
+        int projectMaxMemberCount = project.getMaxMemberCount();
+
+        if (totalMemberCount > projectMaxMemberCount) {
+            throw new IllegalStateException(IDEA_TOTAL_MEMBER_COUNT_EXCEEDED.getMessage());
+        }
     }
 }
