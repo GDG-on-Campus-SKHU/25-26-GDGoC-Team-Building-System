@@ -13,3 +13,4 @@ public record ProjectTotalResponseDto(
         List<ProjectScheduleResponseDto> schedules
 ) {
 }
+

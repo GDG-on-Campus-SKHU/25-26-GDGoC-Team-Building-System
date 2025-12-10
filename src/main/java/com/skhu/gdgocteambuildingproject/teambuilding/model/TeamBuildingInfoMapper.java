@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -11,17 +12,15 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class TeamBuildingInfoMapper {
-    private final ProjectScheduleMapper scheduleMapper;
+    private final ProjectTotalMapper projectTotalMapper;
 
     public TeamBuildingInfoResponseDto map(TeamBuildingProject project, User user) {
+        ProjectTotalResponseDto projectTotal = projectTotalMapper.map(project);
+
         return TeamBuildingInfoResponseDto.builder()
-                .projectId(project.getId())
-                .projectName(project.getName())
-                .maxMemberCount(project.getMaxMemberCount())
+                .project(projectTotal)
                 .registrable(isRegistrable(project, user))
                 .canEnroll(isCanEnroll(project, user))
-                .schedules(scheduleMapper.map(project.getSchedules()))
-                .availableParts(project.getAvailableParts())
                 .build();
     }
 
@@ -32,6 +31,6 @@ public class TeamBuildingInfoMapper {
     }
 
     private boolean isCanEnroll(TeamBuildingProject project, User user) {
-        return !user.hasRegisteredIdeaIn(project);
+        return !user.isMemberOf(project);
     }
 }

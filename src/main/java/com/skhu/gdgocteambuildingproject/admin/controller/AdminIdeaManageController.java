@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminIdeaManageApi;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -58,6 +59,20 @@ public class AdminIdeaManageController implements AdminIdeaManageApi {
     }
 
     @Override
+    @GetMapping("/projects/{projectId}/ideas/{ideaId}")
+    public ResponseEntity<AdminIdeaDetailResponseDto> findIdeaDetail(
+            @PathVariable long projectId,
+            @PathVariable long ideaId
+    ) {
+        AdminIdeaDetailResponseDto response = ideaService.findIdeaDetailByAdmin(
+                projectId,
+                ideaId
+        );
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
     @PutMapping("/ideas/{ideaId}")
     public ResponseEntity<Void> updateIdea(
             @PathVariable long ideaId,
@@ -74,6 +89,17 @@ public class AdminIdeaManageController implements AdminIdeaManageApi {
             @PathVariable long ideaId
     ) {
         ideaService.restoreIdea(ideaId);
+
+        return NO_CONTENT;
+    }
+
+    @Override
+    @DeleteMapping("/ideas/{ideaId}/members/{memberId}")
+    public ResponseEntity<Void> deleteMember(
+            @PathVariable long ideaId,
+            @PathVariable long memberId
+    ) {
+        ideaService.removeMemberByAdmin(ideaId, memberId);
 
         return NO_CONTENT;
     }

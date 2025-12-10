@@ -6,7 +6,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequ
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.CompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -44,7 +44,7 @@ public class EnrollmentController {
             description = """
                     다른 사람이 게시한 아이디어에 지원합니다.
                     
-                    본인이 게시한 아이디어가 없어야 합니다.
+                    이미 다른 아이디어에 소속된 상태(아이디어를 게시한 경우 포함)라면 지원할 수 없습니다.
                     
                     이미 해당 아이디어에 지원했거나, 이미 사용한 지망을 중복 사용시 4XX로 응답합니다.
                     """
@@ -111,7 +111,7 @@ public class EnrollmentController {
         return ResponseEntity.ok(response);
     }
 
-    @GetMapping("/compositions")
+    @GetMapping("/roster")
     @Operation(
             summary = "팀원 구성 조회",
             description = """
@@ -124,16 +124,21 @@ public class EnrollmentController {
                     아이디어에 지원 가능한 파트와 별개로, 항상 모든 파트에 대한 정보를 조회합니다.
                     (지원 불가능한 파트의 경우, 현재 인원수와 최대 인원수가 0으로 설정됩니다)
                     
+                    userId: 회원 정보에 대한 ID(프로필 조회 등에 사용 가능)
+                    
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
                     myRole, memberRole: CREATOR, MEMBER
+                    
+                    confirmed: 해당 멤버의 참여가 확정되었는지 여부(확정된 멤버는 삭제할 수 없음)
                     """
     )
-    public ResponseEntity<CompositionResponseDto> findMyIdeaComposition(
+    public ResponseEntity<RosterResponseDto> findMyIdeaComposition(
             Principal principal
     ) {
         long userId = findUserIdBy(principal);
 
-        CompositionResponseDto response = enrollmentService.getComposition(userId);
+        RosterResponseDto response = enrollmentService.getComposition(userId);
 
         return ResponseEntity.ok(response);
     }
@@ -149,7 +154,11 @@ public class EnrollmentController {
                     
                     choice: FIRST, SECOND, THIRD
                     
+                    enrollmentStatus: WAITING(수락 예정/거절 예정 상태도 WAITING으로 표시), EXPIRED, REJECTED, ACCEPTED
+                    
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
+                    scheduleEnded: 일정(파라미터로 전달한 일정)이 마감되었는지 여부
                     """
     )
     public ResponseEntity<List<SentEnrollmentResponseDto>> findSentEnrollments(
