@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserDetailMapper;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -32,7 +32,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     private final UserGenerationRepository userGenerationRepository;
 
     private final ApproveUserInfoMapper approveUserInfoMapper;
-    private final ApprovedUserInfoMapper approvedUserInfoMapper;
+    private final ApprovedUserDetailMapper approvedUserDetailMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -119,7 +119,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     public ApprovedUserInfoResponseDto getApproveUser(Long userId) {
         User user = getUserOrThrow(userId);
 
-        return approvedUserInfoMapper.toDto(user);
+        return approvedUserDetailMapper.toDto(user);
     }
 
     @Override

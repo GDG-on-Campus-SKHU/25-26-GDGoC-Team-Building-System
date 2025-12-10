@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-public class ApprovedUserInfoMapper {
+public class ApprovedUserDetailMapper {
 
     public ApprovedUserInfoResponseDto toDto(User user) {
 

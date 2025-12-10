@@ -11,7 +11,7 @@ public record UserResponseDto(
         Long id,
         String userName,
         String email,
-        List<String> generation,
+        List<ApprovedUserGenerationResponseDto> generations,
         String number,
         Part part,
         String school,
