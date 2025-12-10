@@ -56,6 +56,7 @@ public enum ExceptionMessage {
     CREATOR_NOT_INIT("아이디어 게시자에 대한 정보가 초기화되지 않았습니다."),
     CHOICE_NOT_AVAILABLE("해당 지망을 사용할 수 없습니다."),
     PART_NOT_AVAILABLE("해당 프로젝트에서 모집하지 않는 파트입니다."),
+    IDEA_TOTAL_MEMBER_COUNT_EXCEEDED("아이디어의 총 멤버 구성 인원수가 프로젝트의 최대 인원수를 초과합니다."),
     MAX_MEMBER_COUNT_TOO_SMALL("최대 인원수는 현재 인원수(수락 + 수락 예정)보다 작을 수 없습니다."),
     IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
 
