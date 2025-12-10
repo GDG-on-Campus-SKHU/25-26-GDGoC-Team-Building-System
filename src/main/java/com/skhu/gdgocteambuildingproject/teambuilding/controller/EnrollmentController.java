@@ -154,7 +154,11 @@ public class EnrollmentController {
                     
                     choice: FIRST, SECOND, THIRD
                     
+                    enrollmentStatus: WAITING(수락 예정/거절 예정 상태도 WAITING으로 표시), EXPIRED, REJECTED, ACCEPTED
+                    
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
+                    scheduleEnded: 일정(파라미터로 전달한 일정)이 마감되었는지 여부
                     """
     )
     public ResponseEntity<List<SentEnrollmentResponseDto>> findSentEnrollments(
