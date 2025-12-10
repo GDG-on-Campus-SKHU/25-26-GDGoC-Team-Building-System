@@ -126,6 +126,14 @@ public class ProjectServiceImpl implements ProjectService {
         );
 
         updateParticipants(project, requestDto.participantUserIds());
+
+        for (ScheduleUpdateRequestDto schedule : requestDto.schedules()) {
+            project.updateSchedule(
+                    schedule.scheduleType(),
+                    schedule.startAt(),
+                    schedule.endAt()
+            );
+        }
     }
 
     @Override
@@ -136,18 +144,6 @@ public class ProjectServiceImpl implements ProjectService {
         return schools.stream()
                 .map(SchoolResponseDto::new)
                 .toList();
-    }
-
-    @Override
-    @Transactional
-    public void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto) {
-        TeamBuildingProject project = findProjectBy(projectId);
-
-        project.updateSchedule(
-                requestDto.scheduleType(),
-                requestDto.startAt(),
-                requestDto.endAt()
-        );
     }
 
     @Override

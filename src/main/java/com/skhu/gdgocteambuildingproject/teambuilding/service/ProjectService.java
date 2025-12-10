@@ -3,7 +3,6 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -30,8 +29,6 @@ public interface ProjectService {
     void updateProject(long projectId, ProjectUpdateRequestDto requestDto);
 
     List<SchoolResponseDto> findSchools();
-
-    void updateSchedule(long projectId, ScheduleUpdateRequestDto requestDto);
 
     void deleteProject(long projectId);
 }
