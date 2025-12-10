@@ -41,7 +41,7 @@ public class SignUpRequestDto {
     )
     private String number;
 
-    @Schema(example = "성공회대학교", description = "학교명 (자동 저장 또는 기본값 적용 가능)")
+    @Schema(example = "성공회대학교", description = "학교명")
     @NotBlank
     private String school;
 
@@ -51,7 +51,7 @@ public class SignUpRequestDto {
     @Schema(example = "WEB", description = "사용자 파트(Part)")
     private Part part;
 
-    @Schema(example = "MEMBER", description = "사용자 포지션(UserPosition): MEMBER / CORE / LEAD")
+    @Schema(example = "MEMBER", description = "사용자 포지션(UserPosition): MEMBER / CORE / ORGANIZER")
     private UserPosition position;
 
     @Schema(example = "OTHERS", description = "사용자 권한(UserRole)")
