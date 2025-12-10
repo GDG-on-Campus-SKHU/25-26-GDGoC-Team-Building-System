@@ -132,6 +132,12 @@ jobs:
             CORS_ALLOWED_METHODS=${{ secrets.CORS_ALLOWED_METHODS }}
             CORS_ALLOWED_HEADERS=${{ secrets.CORS_ALLOWED_HEADERS }}
             CORS_EXPOSED_HEADERS=${{ secrets.CORS_EXPOSED_HEADERS }}
+            
+            # 2-7 --- AWS S3 ---
+            AWS_S3_ACCESS_KEY_ID=${{ secrets.AWS_S3_ACCESS_KEY_ID }}
+            AWS_S3_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
+            AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
+            
             EOF
             
             chmod 600 "$ENV_FILE"
