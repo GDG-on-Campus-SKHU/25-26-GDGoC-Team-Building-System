@@ -40,15 +40,19 @@ public class ProjectSchedule extends BaseEntity {
     private TeamBuildingProject project;
 
     public boolean isScheduled() {
+        if (type.isAnnouncement()) {
+            return startDate != null;
+        }
+
         return startDate != null && endDate != null;
     }
 
     public boolean isUnscheduled() {
-        return startDate == null || endDate == null;
-    }
+        if (type.isAnnouncement()) {
+            return startDate == null;
+        }
 
-    public boolean isEnrollmentAvailable() {
-        return type.isEnrollmentAvailable();
+        return startDate == null || endDate == null;
     }
 
     public void updateDates(
@@ -65,15 +69,30 @@ public class ProjectSchedule extends BaseEntity {
         this.confirmed = true;
     }
 
-    private void validateDates(
-            LocalDateTime startDate,
-            LocalDateTime endDate
-    ) {
-        if (startDate == null || endDate == null) {
+    private void validateDates(LocalDateTime startDate, LocalDateTime endDate) {
+        if (startDate == null) {
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
         }
 
-        if (startDate.isAfter(endDate)) {
+        if (type.isAnnouncement()) {
+            validateAnnouncementEndDate(endDate);
+        } else {
+            validateNonAnnouncementEndDate(startDate, endDate);
+        }
+    }
+
+    private void validateAnnouncementEndDate(LocalDateTime endDate) {
+        if (endDate != null) {
+            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
+        }
+    }
+
+    private void validateNonAnnouncementEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+        if (endDate == null) {
+            throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
+        }
+
+        if (endDate.isBefore(startDate)) {
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
         }
     }

@@ -68,4 +68,16 @@ public enum ScheduleType {
     public ScheduleType getPrevScheduleType() {
         return prevScheduleType.get();
     }
+
+    public ScheduleType getNextScheduleType() {
+        return switch (this) {
+            case IDEA_REGISTRATION -> FIRST_TEAM_BUILDING;
+            case FIRST_TEAM_BUILDING -> FIRST_TEAM_BUILDING_ANNOUNCEMENT;
+            case FIRST_TEAM_BUILDING_ANNOUNCEMENT -> SECOND_TEAM_BUILDING;
+            case SECOND_TEAM_BUILDING -> SECOND_TEAM_BUILDING_ANNOUNCEMENT;
+            case SECOND_TEAM_BUILDING_ANNOUNCEMENT -> THIRD_TEAM_BUILDING;
+            case THIRD_TEAM_BUILDING -> FINAL_RESULT_ANNOUNCEMENT;
+            case FINAL_RESULT_ANNOUNCEMENT -> null;
+        };
+    }
 }
