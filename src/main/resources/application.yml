@@ -65,3 +65,13 @@ swagger:
   servers:
     - ${SWAGGER_SERVER_LOCAL}
     - ${SWAGGER_SERVER_PROD}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY_ID}
+      secret-key: ${AWS_S3_SECRET_ACCESS_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
