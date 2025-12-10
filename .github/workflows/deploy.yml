@@ -126,7 +126,6 @@ jobs:
             # 2-5) --- Redis ---
             SPRING_DATA_REDIS_HOST=redis
             SPRING_DATA_REDIS_PORT=6379
-            EOF
             
             # 2-6) --- CORS ---
             CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}
