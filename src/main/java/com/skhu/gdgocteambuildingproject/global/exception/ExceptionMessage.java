@@ -56,6 +56,7 @@ public enum ExceptionMessage {
     CREATOR_NOT_INIT("아이디어 게시자에 대한 정보가 초기화되지 않았습니다."),
     CHOICE_NOT_AVAILABLE("해당 지망을 사용할 수 없습니다."),
     PART_NOT_AVAILABLE("해당 프로젝트에서 모집하지 않는 파트입니다."),
+    MAX_MEMBER_COUNT_TOO_SMALL("최대 인원수는 현재 인원수(수락 + 수락 예정)보다 작을 수 없습니다."),
 
     // Admin
     USER_ALREADY_APPROVED("이미 승인된 회원입니다."),

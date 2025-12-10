@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.Idea.domain;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_FOR_OTHER_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.MAX_MEMBER_COUNT_TOO_SMALL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PART_NOT_AVAILABLE;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
@@ -50,7 +51,6 @@ public class Idea extends BaseEntity {
     private String title;
     private String introduction;
     private String description;
-    // TODO: 멤버를 제거할 때 마다 true로 상태 전이
     @Builder.Default
     private boolean recruiting = true;
     @Builder.Default
@@ -110,6 +110,7 @@ public class Idea extends BaseEntity {
     public void acceptAsMember(IdeaEnrollment enrollment) {
         IdeaMember member = createMember(enrollment);
         members.add(member);
+        updateRecruitingStatus();
     }
 
     /**
@@ -121,6 +122,7 @@ public class Idea extends BaseEntity {
         validateMemberCount(enrollment.getPart());
 
         enrollment.scheduleToAccept();
+        updateRecruitingStatus();
     }
 
     /**
@@ -131,6 +133,7 @@ public class Idea extends BaseEntity {
         validateEnrollmentStatus(enrollment);
 
         enrollment.scheduleToReject();
+        updateRecruitingStatus();
     }
 
     public void updateTexts(
@@ -147,6 +150,7 @@ public class Idea extends BaseEntity {
 
     public void updateComposition(Part part, int count) {
         validatePartAvailable(part);
+        validateMaxMemberCount(part, count);
 
         memberCompositions.stream()
                 .filter(composition -> composition.getPart() == part)
@@ -155,6 +159,8 @@ public class Idea extends BaseEntity {
                         composition -> composition.setCount(count),
                         () -> createComposition(part, count)
                 );
+
+        updateRecruitingStatus();
     }
 
     public void register() {
@@ -170,7 +176,7 @@ public class Idea extends BaseEntity {
 
     public void restore() {
         deleted = false;
-        recruiting = true;
+        updateRecruitingStatus();
 
         initCreatorToMember(creatorPart);
     }
@@ -280,6 +286,7 @@ public class Idea extends BaseEntity {
 
     public void removeEnrollment(IdeaEnrollment enrollment) {
         enrollments.remove(enrollment);
+        updateRecruitingStatus();
     }
 
     private Map<Part, Integer> initCurrentCounts() {
@@ -319,6 +326,20 @@ public class Idea extends BaseEntity {
                 .findAny();
     }
 
+    private void updateRecruitingStatus() {
+        boolean allPartsFull = getAvailableParts().stream()
+                .allMatch(this::isPartFull);
+
+        recruiting = !allPartsFull;
+    }
+
+    private boolean isPartFull(Part part) {
+        int maxCount = getMaxMemberCountOf(part);
+        int currentCount = getCurrentMemberCountIncludeNotConfirm(part);
+
+        return currentCount >= maxCount;
+    }
+
     private void validateContains(IdeaEnrollment enrollment) {
         if (enrollment.getIdea().equals(this)) {
             return;
@@ -348,6 +369,14 @@ public class Idea extends BaseEntity {
 
         if (!isAvailable) {
             throw new IllegalArgumentException(PART_NOT_AVAILABLE.getMessage());
+        }
+    }
+
+    private void validateMaxMemberCount(Part part, int maxCount) {
+        int currentMemberCount = getCurrentMemberCountIncludeNotConfirm(part);
+
+        if (maxCount < currentMemberCount) {
+            throw new IllegalStateException(MAX_MEMBER_COUNT_TOO_SMALL.getMessage());
         }
     }
 }
