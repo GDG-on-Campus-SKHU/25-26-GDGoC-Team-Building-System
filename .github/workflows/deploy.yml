@@ -128,6 +128,13 @@ jobs:
             SPRING_DATA_REDIS_PORT=6379
             EOF
             
+            # 2-6) --- CORS ---
+            CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}
+            CORS_ALLOWED_METHODS=${{ secrets.CORS_ALLOWED_METHODS }}
+            CORS_ALLOWED_HEADERS=${{ secrets.CORS_ALLOWED_HEADERS }}
+            CORS_EXPOSED_HEADERS=${{ secrets.CORS_EXPOSED_HEADERS }}
+            EOF
+            
             chmod 600 "$ENV_FILE"
             
             # 3) 기존 컨테이너 내려주고 삭제
@@ -141,7 +148,7 @@ jobs:
             if [ -z "$(docker ps -a --filter 'name=^redis$' --format '{{.Names}}')" ]; then
               echo "redis 컨테이너를 찾을 수 없습니다. tbs-redis 컨테이너를 생성합니다."
               docker run -d \
-                --name redis \
+                --name tbs-redis \
                 --restart unless-stopped \
                 --network tbs-network \
                 -v redis-data:/data \
