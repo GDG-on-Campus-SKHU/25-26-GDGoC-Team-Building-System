@@ -63,6 +63,6 @@ public class EmailController {
             @RequestParam String newPassword
     ) {
         resetPasswordService.resetPassword(email, code, newPassword);
-        return ResponseEntity.ok("비밀번호가 성공적으로 재설정되었습니다.");
+        return ResponseEntity.noContent().build();
     }
 }
