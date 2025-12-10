@@ -26,7 +26,7 @@ jobs:
           echo "${{ secrets.APPLICATION_YML }}" > src/main/resources/application.yml
 
       - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
+        run: chmod +x ./gradlewgit
 
       - name: Build with Gradle
         run: ./gradlew build -x test
@@ -102,12 +102,12 @@ jobs:
             TZ=Asia/Seoul
             SPRING_PROFILES_ACTIVE=local
 
-            # --- DB ---
+            # 2-1) --- DB ---
             SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}
             SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}
             SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
             
-            # --- Mail ---
+            # 2-2) --- Mail ---
             SPRING_MAIL_HOST=smtp.gmail.com
             SPRING_MAIL_PORT=587
             SPRING_MAIL_USERNAME=${{ secrets.GOOGLE_EMAIL }}
@@ -115,19 +115,17 @@ jobs:
             SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
             SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
             
-            # --- JWT ---
+            # 2-3) --- JWT ---
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_ACCESS_EXPIRATION=${{ secrets.JWT_ACCESS_EXPIRATION }}
             
-            # --- Swagger ---
+            # 2-4) --- Swagger ---
             SWAGGER_SERVER_LOCAL=${{ secrets.SWAGGER_SERVER_LOCAL }}
             SWAGGER_SERVER_PROD=${{ secrets.SWAGGER_SERVER_PROD }}
             
-            # --- AWS S3 ---
-            AWS_S3_ACCESS_KEY_ID=${{ secrets.AWS_S3_ACCESS_KEY_ID }}
-            AWS_S3_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
-            AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
-            
+            # 2-5) --- Redis ---
+            SPRING_DATA_REDIS_HOST=redis
+            SPRING_DATA_REDIS_PORT=6379
             EOF
             
             chmod 600 "$ENV_FILE"
@@ -136,17 +134,32 @@ jobs:
             docker stop teamBuildingSystem-app || true
             docker rm   teamBuildingSystem-app || true
             
-            # 3-1) Docker 네트워크 없으면 생성
+            # 4) Docker 네트워크 없으면 생성
             docker network create tbs-network || true
             
-            # 4) 새 컨테이너 실행 (env-file 기반, mysql 컨테이너와 네트워크 연결)
+            # 5) Redis 컨테이너 없으면 생성, 있으면 기동
+            if [ -z "$(docker ps -a --filter 'name=^redis$' --format '{{.Names}}')" ]; then
+              echo "redis 컨테이너를 찾을 수 없습니다. tbs-redis 컨테이너를 생성합니다."
+              docker run -d \
+                --name redis \
+                --restart unless-stopped \
+                --network tbs-network \
+                -v redis-data:/data \
+                redis:7-alpine \
+                redis-server --appendonly yes
+            else
+              echo "redis 컨테이너가 이미 있습니다."
+              docker start redis || true
+            fi
+            
+            # 6) 새 컨테이너 실행 (env-file 기반, Mysql 컨테이너, Redis 컨테이너와 네트워크 연결)
             docker run -d --name teamBuildingSystem-app --restart unless-stopped \
             --env-file "$ENV_FILE" \
             --network tbs-network \
             -p 8080:8080 \
             "$IMAGE"
             
-            # 5) 컨테이너 상태/로그 한 번 확인(로그 전체는 안 찍음, 구동 확인만)
+            # 7) 컨테이너 상태/로그 한 번 확인(로그 전체는 안 찍음, 구동 확인만)
             sleep 2
             docker ps --filter name=teamBuildingSystem-app
-            docker logs --tail=20 teamBuildingSystem-app || true
+            docker logs --tail=100 teamBuildingSystem-app || true
