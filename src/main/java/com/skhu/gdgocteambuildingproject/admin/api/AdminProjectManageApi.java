@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageRespon
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -78,6 +79,14 @@ public interface AdminProjectManageApi {
     );
 
     @Operation(
+            summary = "학교 목록 조회",
+            description = """
+                    회원이 존재하는 모든 학교 목록을 조회합니다.
+                    """
+    )
+    ResponseEntity<List<SchoolResponseDto>> getSchools();
+
+    @Operation(
             summary = "프로젝트 일정 등록 및 수정",
             description = """
                     프로젝트의 일정 기간을 등록 혹은 수정합니다.
@@ -88,5 +97,17 @@ public interface AdminProjectManageApi {
     ResponseEntity<Void> updateSchedule(
             long projectId,
             ScheduleUpdateRequestDto requestDto
+    );
+
+    @Operation(
+            summary = "프로젝트 삭제",
+            description = """
+                    프로젝트를 삭제합니다.
+                    
+                    별도 검증 로직을 수행하지 않고 바로 삭제하니 주의해서 호출해야 합니다.
+                    """
+    )
+    ResponseEntity<Void> deleteProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId
     );
 }

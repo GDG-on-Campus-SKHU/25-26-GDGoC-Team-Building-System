@@ -1,9 +1,12 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CONTENTS_EMPTY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_PROJECT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
@@ -13,12 +16,13 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -27,6 +31,8 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaMemberCompositionRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
@@ -143,6 +149,20 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional(readOnly = true)
+    public AdminIdeaDetailResponseDto findIdeaDetailByAdmin(
+            long projectId,
+            long ideaId
+    ) {
+        Idea idea = ideaRepository.findByIdIncludeDeleted(ideaId)
+                .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
+
+        validateIdeaInProject(idea, projectId);
+
+        return ideaDetailInfoMapper.mapForAdmin(idea);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public IdeaDetailInfoResponseDto findTemporaryIdea(
             long projectId,
             long userId
@@ -246,6 +266,25 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
+    public void removeMemberByAdmin(long ideaId, long memberId) {
+        Idea idea = findIdeaIncludeDeleted(ideaId);
+        User member = findUserBy(memberId);
+
+        // 이미 수락된 멤버면 제거
+        boolean isConfirmedMember = idea.containsAsMember(member);
+        if (isConfirmedMember) {
+            idea.removeMember(member);
+            return;
+        }
+
+        // 수락 예정인 멤버면 스케줄러가 무시하도록 상태 변경
+        IdeaEnrollment enrollment = idea.findScheduleToAcceptEnrollmentOf(member)
+                .orElseThrow(() -> new IllegalStateException(NOT_MEMBER_OF_IDEA.getMessage()));
+        enrollment.accept();
+    }
+
+    @Override
+    @Transactional
     public void restoreIdea(long ideaId) {
         Idea deletedIdea = findDeletedIdea(ideaId);
         User creator = deletedIdea.getCreator();
@@ -253,6 +292,25 @@ public class IdeaServiceImpl implements IdeaService {
 
         deleteTemporaryIdeaIfExist(creator, deletedIdea.getProject());
         deletedIdea.restore();
+    }
+
+    @Override
+    @Transactional
+    public void removeMember(
+            long creatorId,
+            long ideaId,
+            long memberId
+    ) {
+        Idea idea = findIdeaBy(ideaId);
+        validateIdeaOwnership(idea, creatorId);
+
+        User member = findUserBy(memberId);
+        IdeaEnrollment enrollment = findEnrollmentOf(idea, member);
+
+        validateMemberDeletable(enrollment);
+
+        // '수락' 상태로 강제해서 스케줄러가 무시하도록 한다.
+        enrollment.accept();
     }
 
     private ProjectSchedule getCurrentSchedule() {
@@ -361,6 +419,12 @@ public class IdeaServiceImpl implements IdeaService {
         }
     }
 
+    private void validateMemberDeletable(IdeaEnrollment enrollment) {
+        if (enrollment.getStatus() != EnrollmentStatus.SCHEDULED_TO_ACCEPT) {
+            throw new IllegalStateException(ILLEGAL_ENROLLMENT_STATUS.getMessage());
+        }
+    }
+
     private Idea buildIdea(
             IdeaCreateRequestDto ideaDto,
             TeamBuildingProject project,
@@ -415,6 +479,11 @@ public class IdeaServiceImpl implements IdeaService {
         }
     }
 
+    private Idea findIdeaBy(long ideaId) {
+        return ideaRepository.findById(ideaId)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
     private TeamBuildingProject findProjectBy(long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
@@ -438,6 +507,13 @@ public class IdeaServiceImpl implements IdeaService {
     private Idea findIdeaIncludeDeleted(long ideaId) {
         return ideaRepository.findByIdIncludeDeleted(ideaId)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
+    private IdeaEnrollment findEnrollmentOf(Idea idea, User member) {
+        return idea.getEnrollments().stream()
+                .filter(enrollment -> enrollment.getApplicant().equals(member))
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException(ENROLLMENT_NOT_EXIST.getMessage()));
     }
 
     private Pageable setupPagination(

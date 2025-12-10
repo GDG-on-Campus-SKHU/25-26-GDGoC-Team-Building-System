@@ -9,16 +9,23 @@ import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
-import jakarta.persistence.*;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+
 import java.util.*;
 
 @Entity
@@ -116,10 +123,10 @@ public class User extends BaseEntity {
         this.approvalStatus = ApprovalStatus.WAITING;
     }
 
-    public boolean hasRegisteredIdeaIn(TeamBuildingProject project) {
-        return ideas.stream()
-                .filter(Idea::isRegistered)
-                .anyMatch(idea -> idea.getProject().equals(project));
+    public boolean isMemberOf(TeamBuildingProject project) {
+        return members.stream()
+                .map(IdeaMember::getIdea)
+                .anyMatch(idea -> project.equals(idea.getProject()));
     }
 
     public boolean isChoiceAvailable(ProjectSchedule schedule, Choice choice) {

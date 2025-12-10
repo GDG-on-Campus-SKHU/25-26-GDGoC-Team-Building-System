@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 Generation: 22-23, 23-24, 24-25, 25-26
 Part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
 UserPosition: MEMBER, CORE, ORGANIZER
-UserRole: OTHERS, SKHU_MEMBER, SKHU_ADMIN
+UserRole: OTHERS, SKHU_MEMBER
 """)
 @RestController
 @RequiredArgsConstructor

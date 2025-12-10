@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.UserInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserSearchResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -9,6 +10,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
+
+import java.util.List;
 
 @Tag(name = "관리자 멤버관리 API", description = "관리자용 멤버관리 API입니다")
 public interface AdminUserManageApi {
@@ -51,5 +54,20 @@ public interface AdminUserManageApi {
             @Parameter(description = "페이지 당 항목 수") int size,
             @Parameter(description = "정렬 기준 필드명") String sortBy,
             @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
+    );
+
+    @Operation(
+            summary = "회원 검색(기수, 학교)",
+            description = """
+                    기수와 학교명을 기반으로 회원을 검색합니다.
+                    학교명(schools 파라미터)는 여러 개 전달할 수 있습니다.
+                    
+                    승인되지 않은 회원, 밴 된 회원, 소프트 딜리트된 회원은 조회되지 않습니다.
+                    """
+    )
+    @ApiResponse(responseCode = "200", description = "조회 성공")
+    ResponseEntity<List<UserSearchResponseDto>> searchUsers(
+            @Parameter(description = "기수 (22-23, 23-24 등)") String generation,
+            @Parameter(description = "학교명 (여러 개 가능)") List<String> schools
     );
 }

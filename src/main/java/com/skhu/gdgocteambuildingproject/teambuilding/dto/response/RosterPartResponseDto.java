@@ -5,10 +5,10 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record CompositionPartResponseDto(
+public record RosterPartResponseDto(
         Part part,
         int currentMemberCount,
         int maxMemberCount,
-        List<CompositionMemberResponseDto> members
+        List<RosterMemberResponseDto> members
 ) {
 }
