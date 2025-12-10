@@ -124,9 +124,8 @@ jobs:
             SWAGGER_SERVER_PROD=${{ secrets.SWAGGER_SERVER_PROD }}
             
             # 2-5) --- Redis ---
-            SPRING_DATA_REDIS_HOST=redis
-            SPRING_DATA_REDIS_PORT=6379
-            EOF
+            SPRING_DATA_REDIS_HOST=${{ secrets.SPRING_DATA_REDIS_HOST }}
+            SPRING_DATA_REDIS_PORT=${{ secrets.SPRING_DATA_REDIS_PORT }}
             
             # 2-6) --- CORS ---
             CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}
@@ -145,7 +144,7 @@ jobs:
             docker network create tbs-network || true
             
             # 5) Redis 컨테이너 없으면 생성, 있으면 기동
-            if [ -z "$(docker ps -a --filter 'name=^redis$' --format '{{.Names}}')" ]; then
+            if [ -z "$(docker ps -a --filter 'name=^tbs-redis$' --format '{{.Names}}')" ]; then
               echo "redis 컨테이너를 찾을 수 없습니다. tbs-redis 컨테이너를 생성합니다."
               docker run -d \
                 --name tbs-redis \
@@ -156,7 +155,7 @@ jobs:
                 redis-server --appendonly yes
             else
               echo "redis 컨테이너가 이미 있습니다."
-              docker start redis || true
+              docker start tbs-redis || true
             fi
             
             # 6) 새 컨테이너 실행 (env-file 기반, Mysql 컨테이너, Redis 컨테이너와 네트워크 연결)
