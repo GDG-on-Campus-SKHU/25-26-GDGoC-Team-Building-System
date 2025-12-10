@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaEnrollmentRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.ProjectScheduleRepository;
@@ -33,26 +34,32 @@ public class EnrollmentConfirmationScheduler {
     @Scheduled(fixedDelay = CONFIRMATION_INTERVAL_MS)
     @Transactional
     public void confirm() {
-        List<ProjectSchedule> schedules = findShouldConfirmSchedules();
+        LocalDateTime now = LocalDateTime.now();
+        List<ProjectSchedule> announcementSchedules = findUnconfirmedSchedules(now);
 
-        for (ProjectSchedule schedule : schedules) {
-            try {
-                confirmEnrollmentsOf(schedule);
-                schedule.markAsConfirm();
-            } catch (Exception e) {
-                log.error("일정(ID: {})에 대한 지원 처리 중 오류 발생", schedule.getId(), e);
-                throw new RuntimeException(ExceptionMessage.SCHEDULE_CONFIRM_FAILED.getMessage(), e);
-            }
+        for (ProjectSchedule announcementSchedule : announcementSchedules) {
+            TeamBuildingProject project = announcementSchedule.getProject();
+            project.getPreviousScheduleOf(announcementSchedule.getType())
+                    .ifPresent(prevSchedule -> confirmSchedule(announcementSchedule, prevSchedule));
         }
     }
 
-    private List<ProjectSchedule> findShouldConfirmSchedules() {
-        LocalDateTime now = LocalDateTime.now();
-        List<ProjectSchedule> unconfirmedSchedules = scheduleRepository.findUnconfirmedSchedulesEndedBefore(now);
-
-        return unconfirmedSchedules.stream()
+    private List<ProjectSchedule> findUnconfirmedSchedules(LocalDateTime now) {
+        return scheduleRepository.findUnconfirmedSchedulesStartedBefore(now)
+                .stream()
                 .filter(ProjectSchedule::isScheduled)
+                .filter(schedule -> schedule.getType().isAnnouncement())
                 .toList();
+    }
+
+    private void confirmSchedule(ProjectSchedule announcementSchedule, ProjectSchedule previousSchedule) {
+        try {
+            confirmEnrollmentsOf(previousSchedule);
+            announcementSchedule.markAsConfirm();
+        } catch (Exception e) {
+            log.error("일정(ID: {})에 대한 지원 처리 중 오류 발생", previousSchedule.getId(), e);
+            throw new RuntimeException(ExceptionMessage.SCHEDULE_CONFIRM_FAILED.getMessage(), e);
+        }
     }
 
     private void confirmEnrollmentsOf(ProjectSchedule schedule) {

@@ -106,6 +106,8 @@ public class TeamBuildingProject extends BaseEntity {
             ProjectSchedule schedule = ProjectSchedule.builder()
                     .type(type)
                     .project(this)
+                    // 발표 일정이 아니라면 confirm할 일이 없어서 true로 초기화
+                    .confirmed(!type.isAnnouncement())
                     .build();
 
             schedules.add(schedule);
@@ -120,6 +122,18 @@ public class TeamBuildingProject extends BaseEntity {
                 .filter(schedule -> now.isAfter(schedule.getStartDate()))
                 .filter(schedule -> now.isBefore(schedule.getEndDate()))
                 .findFirst();
+    }
+
+    public Optional<ProjectSchedule> getPreviousScheduleOf(ScheduleType scheduleType) {
+        if (scheduleType == null) {
+            return Optional.empty();
+        }
+
+        ScheduleType prevScheduleType = scheduleType.getPrevScheduleType();
+
+        return getSchedules().stream()
+                .filter(schedule -> schedule.getType() == prevScheduleType)
+                .findAny();
     }
 
     public ProjectSchedule getScheduleFrom(ScheduleType scheduleType) {

@@ -8,12 +8,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ProjectScheduleRepository extends JpaRepository<ProjectSchedule, Long> {
+
     @Query("""
         SELECT s
         FROM ProjectSchedule s
         WHERE s.confirmed = false
-          AND s.endDate < :now
+          AND s.startDate < :now
         """)
-    List<ProjectSchedule> findUnconfirmedSchedulesEndedBefore(@Param("now") LocalDateTime now);
+    List<ProjectSchedule> findUnconfirmedSchedulesStartedBefore(@Param("now") LocalDateTime now);
 }
 
