@@ -16,6 +16,8 @@ public record SentEnrollmentResponseDto(
 
         Part enrollmentPart,
         int maxMemberCountOfPart,
-        int applicantCount
+        int applicantCount,
+
+        boolean scheduleEnded
 ) {
 }

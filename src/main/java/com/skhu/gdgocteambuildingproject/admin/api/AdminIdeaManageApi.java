@@ -72,6 +72,9 @@ public interface AdminIdeaManageApi {
             summary = "아이디어 수정",
             description = """
                     아이디어를 수정합니다.
+                    관리자용 기능의 경우, 멤버가 추가된 이후에도 파트별 최대 인원수를 수정할 수 있습니다.
+                    
+                    최대 인원수는 현재 인원수보다 작을 수 없습니다.
                     
                     creatorPart, part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
@@ -92,5 +95,19 @@ public interface AdminIdeaManageApi {
     )
     ResponseEntity<Void> restoreIdea(
             @Parameter(description = "아이디어 ID") long ideaId
+    );
+
+    @Operation(
+            summary = "팀원 제거",
+            description = """
+                    아이디어에 소속한 팀원을 제거합니다.
+                    팀장(CREATOR)은 제거할 수 없습니다.
+                    
+                    memberId: 팀원의 userId
+                    """
+    )
+    ResponseEntity<Void> deleteMember(
+            @Parameter(description = "아이디어 ID") long ideaId,
+            @Parameter(description = "제거할 팀원의 userId") long memberId
     );
 }
