@@ -1,25 +1,71 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype;
 
+import java.util.function.Supplier;
 import lombok.Getter;
 
 @Getter
 public enum ScheduleType {
-    IDEA_REGISTRATION(false, true),
-    FIRST_TEAM_BUILDING(true, true),
-    FIRST_TEAM_BUILDING_ANNOUNCEMENT(false, false),
-    SECOND_TEAM_BUILDING(true, false),
-    SECOND_TEAM_BUILDING_ANNOUNCEMENT(false, false),
-    THIRD_TEAM_BUILDING(false, false),
-    FINAL_RESULT_ANNOUNCEMENT(false, false);
+    IDEA_REGISTRATION(
+            false,
+            true,
+            false,
+            () -> null
+    ),
+    FIRST_TEAM_BUILDING(
+            true,
+            true,
+            false,
+            () -> IDEA_REGISTRATION
+    ),
+    FIRST_TEAM_BUILDING_ANNOUNCEMENT(
+            false,
+            false,
+            true,
+            () -> FIRST_TEAM_BUILDING
+    ),
+    SECOND_TEAM_BUILDING(
+            true,
+            false,
+            false,
+            () -> FIRST_TEAM_BUILDING_ANNOUNCEMENT
+    ),
+    SECOND_TEAM_BUILDING_ANNOUNCEMENT(
+            false,
+            false,
+            true,
+            () -> SECOND_TEAM_BUILDING
+    ),
+    THIRD_TEAM_BUILDING(
+            false,
+            false,
+            false,
+            () -> SECOND_TEAM_BUILDING_ANNOUNCEMENT
+    ),
+    FINAL_RESULT_ANNOUNCEMENT(
+            false,
+            false,
+            true,
+            () -> THIRD_TEAM_BUILDING
+    );
 
     private final boolean enrollmentAvailable;
     private final boolean ideaDeletable;
+    private final boolean announcement;
+    private final Supplier<ScheduleType> prevScheduleType;
 
     ScheduleType(
             boolean enrollmentAvailable,
-            boolean ideaDeletable
+            boolean ideaDeletable,
+            boolean announcement,
+            Supplier<ScheduleType> prevScheduleType
     ) {
         this.enrollmentAvailable = enrollmentAvailable;
         this.ideaDeletable = ideaDeletable;
+        this.announcement = announcement;
+        this.prevScheduleType = prevScheduleType;
+    }
+
+    public ScheduleType getPrevScheduleType() {
+        return prevScheduleType.get();
     }
 }
