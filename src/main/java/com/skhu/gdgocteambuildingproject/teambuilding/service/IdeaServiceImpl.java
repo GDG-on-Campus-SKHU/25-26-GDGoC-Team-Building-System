@@ -1,7 +1,9 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CONTENTS_EMPTY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_PROJECT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
@@ -13,6 +15,8 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
@@ -270,6 +274,25 @@ public class IdeaServiceImpl implements IdeaService {
         deletedIdea.restore();
     }
 
+    @Override
+    @Transactional
+    public void removeMember(
+            long creatorId,
+            long ideaId,
+            long memberId
+    ) {
+        Idea idea = findIdeaBy(ideaId);
+        validateIdeaOwnership(idea, creatorId);
+
+        User member = findUserBy(memberId);
+        IdeaEnrollment enrollment = findEnrollmentOf(idea, member);
+
+        validateMemberDeletable(enrollment);
+
+        // '수락' 상태로 강제해서 스케줄러가 무시하도록 한다.
+        enrollment.accept();
+    }
+
     private ProjectSchedule getCurrentSchedule() {
         return projectUtil.findCurrentSchedule()
                 .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_EXIST.getMessage()));
@@ -376,6 +399,12 @@ public class IdeaServiceImpl implements IdeaService {
         }
     }
 
+    private void validateMemberDeletable(IdeaEnrollment enrollment) {
+        if (enrollment.getStatus() != EnrollmentStatus.SCHEDULED_TO_ACCEPT) {
+            throw new IllegalStateException(ILLEGAL_ENROLLMENT_STATUS.getMessage());
+        }
+    }
+
     private Idea buildIdea(
             IdeaCreateRequestDto ideaDto,
             TeamBuildingProject project,
@@ -430,6 +459,11 @@ public class IdeaServiceImpl implements IdeaService {
         }
     }
 
+    private Idea findIdeaBy(long ideaId) {
+        return ideaRepository.findById(ideaId)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
     private TeamBuildingProject findProjectBy(long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
@@ -453,6 +487,13 @@ public class IdeaServiceImpl implements IdeaService {
     private Idea findIdeaIncludeDeleted(long ideaId) {
         return ideaRepository.findByIdIncludeDeleted(ideaId)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+    }
+
+    private IdeaEnrollment findEnrollmentOf(Idea idea, User member) {
+        return idea.getEnrollments().stream()
+                .filter(enrollment -> enrollment.getApplicant().equals(member))
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException(ENROLLMENT_NOT_EXIST.getMessage()));
     }
 
     private Pageable setupPagination(
