@@ -72,6 +72,9 @@ public interface AdminIdeaManageApi {
             summary = "아이디어 수정",
             description = """
                     아이디어를 수정합니다.
+                    관리자용 기능의 경우, 멤버가 추가된 이후에도 파트별 최대 인원수를 수정할 수 있습니다.
+                    
+                    최대 인원수는 현재 인원수보다 작을 수 없습니다.
                     
                     creatorPart, part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
