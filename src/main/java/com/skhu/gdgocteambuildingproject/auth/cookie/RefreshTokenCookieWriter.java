@@ -15,7 +15,7 @@ public class RefreshTokenCookieWriter {
 
     public void write(HttpServletResponse response, String refreshToken) {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
-                .httpOnly(false)
+                .httpOnly(true)
                 .secure(false)
                 .sameSite("Lax")
                 .path("/")
@@ -27,7 +27,7 @@ public class RefreshTokenCookieWriter {
 
     public void clear(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
-                .httpOnly(false)
+                .httpOnly(true)
                 .secure(false)
                 .sameSite("Lax")
                 .path("/")

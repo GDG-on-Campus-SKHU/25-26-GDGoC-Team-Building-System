@@ -4,7 +4,7 @@ import com.skhu.gdgocteambuildingproject.auth.cookie.RefreshTokenCookieWriter;
 import com.skhu.gdgocteambuildingproject.auth.domain.RefreshToken;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
-import com.skhu.gdgocteambuildingproject.auth.dto.token.AuthTokenBundle;
+import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.TokenService;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -34,7 +34,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthTokenBundle signUp(SignUpRequestDto dto, HttpServletResponse response) {
+    public LoginResponseDto signUp(SignUpRequestDto dto, HttpServletResponse response) {
         validateSignUp(dto);
         User user = createUser(dto);
         createMainGeneration(user, dto);
@@ -43,7 +43,7 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthTokenBundle login(LoginRequestDto dto, HttpServletResponse response) {
+    public LoginResponseDto login(LoginRequestDto dto, HttpServletResponse response) {
         User user = getUser(dto.getEmail());
         validatePassword(dto.getPassword(), user.getPassword());
         validateUserStatus(user);
@@ -52,14 +52,30 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public AuthTokenBundle refresh(String refreshToken, HttpServletResponse response) {
+    public LoginResponseDto refresh(String refreshToken, HttpServletResponse response) {
         RefreshToken stored = validateRefreshToken(refreshToken);
         User user = stored.getUser();
         validateUserStatus(user);
 
+        String newRefresh = rotateRefreshToken(user, refreshToken);
         String newAccess = tokenService.createAccessToken(user);
 
-        return AuthTokenBundle.of(newAccess, refreshToken, user);
+        cookieWriter.write(response, newRefresh);
+
+        return LoginResponseDto.builder()
+                .accessToken(newAccess)
+                .refreshToken(newRefresh)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
+    }
+
+    private String rotateRefreshToken(User user, String oldToken) {
+        tokenService.deleteByToken(oldToken);
+        String newToken = tokenService.createRefreshToken(user);
+        tokenService.store(user, newToken);
+        return newToken;
     }
 
     @Override
@@ -80,17 +96,20 @@ public class AuthServiceImpl implements AuthService {
         cookieWriter.clear(response);
     }
 
-    private AuthTokenBundle issueTokens(User user, HttpServletResponse response) {
-        AuthTokenBundle bundle = generateTokens(user);
-        cookieWriter.write(response, bundle.getRefreshToken());
-        return bundle;
-    }
-
-    private AuthTokenBundle generateTokens(User user) {
+    private LoginResponseDto issueTokens(User user, HttpServletResponse response) {
         String access = tokenService.createAccessToken(user);
         String refresh = tokenService.createRefreshToken(user);
+
         tokenService.store(user, refresh);
-        return AuthTokenBundle.of(access, refresh, user);
+        cookieWriter.write(response, refresh);
+
+        return LoginResponseDto.builder()
+                .accessToken(access)
+                .refreshToken(refresh)
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
     }
 
     private void validateSignUp(SignUpRequestDto dto) {
@@ -116,15 +135,15 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void createMainGeneration(User user, SignUpRequestDto dto) {
-        UserGeneration ug = UserGeneration.builder()
+        UserGeneration userGeneration = UserGeneration.builder()
                 .user(user)
                 .position(dto.getPosition())
                 .generation(Generation.fromLabel(dto.getGeneration()))
                 .isMain(true)
                 .build();
 
-        user.addGeneration(ug);
-        userGenerationRepository.save(ug);
+        user.addGeneration(userGeneration);
+        userGenerationRepository.save(userGeneration);
     }
 
     private User getUser(String email) {
@@ -132,15 +151,14 @@ public class AuthServiceImpl implements AuthService {
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage()));
     }
 
-    private void validatePassword(String input, String encoded) {
-        if (!passwordEncoder.matches(input, encoded))
+    private void validatePassword(String raw, String encoded) {
+        if (!passwordEncoder.matches(raw, encoded))
             throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
     }
 
     private RefreshToken validateRefreshToken(String token) {
         if (token == null)
             throw new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage());
-
         return tokenService.validate(token);
     }
 

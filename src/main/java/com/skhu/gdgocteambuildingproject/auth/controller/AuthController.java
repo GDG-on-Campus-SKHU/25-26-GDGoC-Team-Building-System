@@ -23,7 +23,7 @@ import org.springframework.web.bind.annotation.*;
 Generation: 22-23, 23-24, 24-25, 25-26
 Part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
 UserPosition: MEMBER, CORE, ORGANIZER
-UserRole: OTHERS, SKHU_MEMBER, SKHU_ADMIN
+UserRole: OTHERS, SKHU_MEMBER
 """)
 @RestController
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class AuthController {
             @RequestBody SignUpRequestDto dto,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.signUp(dto, response).toLoginResponse());
+        return ResponseEntity.ok(authService.signUp(dto, response));
     }
 
     @Operation(summary = "로그인", responses = {
@@ -51,10 +51,10 @@ public class AuthController {
             @RequestBody LoginRequestDto dto,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.login(dto, response).toLoginResponse());
+        return ResponseEntity.ok(authService.login(dto, response));
     }
 
-    @Operation(summary = "토큰 재발급(RefreshToken 재사용)", responses = {
+    @Operation(summary = "토큰 재발급 (RefreshToken rotate)", responses = {
             @ApiResponse(responseCode = "200", description = "재발급 성공")
     })
     @PostMapping("/refresh")
@@ -62,7 +62,7 @@ public class AuthController {
             @CookieValue(name = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.refresh(refreshToken, response).toLoginResponse());
+        return ResponseEntity.ok(authService.refresh(refreshToken, response));
     }
 
     @Operation(summary = "로그아웃", responses = {
