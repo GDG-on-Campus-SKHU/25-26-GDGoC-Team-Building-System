@@ -4,6 +4,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.MAX_MEMBER_COUNT_TOO_SMALL;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PART_NOT_AVAILABLE;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
@@ -191,6 +192,13 @@ public class Idea extends BaseEntity {
                 .toList();
     }
 
+    public Optional<IdeaEnrollment> findScheduleToAcceptEnrollmentOf(User member) {
+        return getEnrollments().stream()
+                .filter(IdeaEnrollment::isScheduledToAccept)
+                .filter(enrollment -> enrollment.getApplicant().equals(member))
+                .findAny();
+    }
+
     public List<IdeaMember> getMembersOf(Part part) {
         return members.stream()
                 .filter(member -> part.equals(member.getPart()))
@@ -262,6 +270,10 @@ public class Idea extends BaseEntity {
                 .anyMatch(IdeaMember::isMember);
     }
 
+    public boolean containsAsMember(User user) {
+        return findMemberBy(user).isPresent();
+    }
+
     public boolean isRegistered() {
         return registerStatus == IdeaStatus.REGISTERED;
     }
@@ -286,6 +298,14 @@ public class Idea extends BaseEntity {
 
     public void removeEnrollment(IdeaEnrollment enrollment) {
         enrollments.remove(enrollment);
+        updateRecruitingStatus();
+    }
+
+    public void removeMember(User user) {
+        IdeaMember member = findMemberBy(user)
+                .orElseThrow(() -> new IllegalStateException(NOT_MEMBER_OF_IDEA.getMessage()));
+
+        members.remove(member);
         updateRecruitingStatus();
     }
 
@@ -323,6 +343,13 @@ public class Idea extends BaseEntity {
     private Optional<IdeaMember> getCreatorInMembers() {
         return members.stream()
                 .filter(IdeaMember::isCreator)
+                .findAny();
+    }
+
+    private Optional<IdeaMember> findMemberBy(User user) {
+        return members.stream()
+                .filter(member -> member.getUser().equals(user))
+                .filter(IdeaMember::isMember)
                 .findAny();
     }
 

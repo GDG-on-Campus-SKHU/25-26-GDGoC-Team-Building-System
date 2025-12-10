@@ -96,4 +96,18 @@ public interface AdminIdeaManageApi {
     ResponseEntity<Void> restoreIdea(
             @Parameter(description = "아이디어 ID") long ideaId
     );
+
+    @Operation(
+            summary = "팀원 제거",
+            description = """
+                    아이디어에 소속한 팀원을 제거합니다.
+                    팀장(CREATOR)은 제거할 수 없습니다.
+                    
+                    memberId: 팀원의 userId
+                    """
+    )
+    ResponseEntity<Void> deleteMember(
+            @Parameter(description = "아이디어 ID") long ideaId,
+            @Parameter(description = "제거할 팀원의 userId") long memberId
+    );
 }

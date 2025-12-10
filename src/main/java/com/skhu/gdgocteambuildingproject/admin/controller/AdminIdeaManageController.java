@@ -92,4 +92,15 @@ public class AdminIdeaManageController implements AdminIdeaManageApi {
 
         return NO_CONTENT;
     }
+
+    @Override
+    @DeleteMapping("/ideas/{ideaId}/members/{memberId}")
+    public ResponseEntity<Void> deleteMember(
+            @PathVariable long ideaId,
+            @PathVariable long memberId
+    ) {
+        ideaService.removeMemberByAdmin(ideaId, memberId);
+
+        return NO_CONTENT;
+    }
 }

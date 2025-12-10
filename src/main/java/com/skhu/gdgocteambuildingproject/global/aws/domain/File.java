@@ -3,14 +3,14 @@ package com.skhu.gdgocteambuildingproject.global.aws.domain;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import jakarta.persistence.Entity;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class File extends BaseEntity {
 
     private String originalName;
@@ -19,5 +19,20 @@ public class File extends BaseEntity {
     private String url;
     private String mimeType;
     private long size;
-    private LocalDateTime uploadedAt;
+
+    public static File ofUploadResult(String originalName,
+                                      String s3FileName,
+                                      String bucketPath,
+                                      String url,
+                                      String mimeType,
+                                      long size) {
+        return new File(
+                originalName,
+                s3FileName,
+                bucketPath,
+                url,
+                mimeType,
+                size
+        );
+    }
 }
