@@ -275,7 +275,7 @@ public class IdeaServiceImpl implements IdeaService {
         }
 
         // 수락 예정인 멤버면 스케줄러가 무시하도록 상태 변경
-        IdeaEnrollment enrollment = idea.getScheduleToAcceptEnrollmentOf(member)
+        IdeaEnrollment enrollment = idea.findScheduleToAcceptEnrollmentOf(member)
                 .orElseThrow(() -> new IllegalStateException(NOT_MEMBER_OF_IDEA.getMessage()));
         enrollment.accept();
     }

@@ -186,7 +186,7 @@ public class Idea extends BaseEntity {
                 .toList();
     }
 
-    public Optional<IdeaEnrollment> getScheduleToAcceptEnrollmentOf(User member) {
+    public Optional<IdeaEnrollment> findScheduleToAcceptEnrollmentOf(User member) {
         return getEnrollments().stream()
                 .filter(IdeaEnrollment::isScheduledToAccept)
                 .filter(enrollment -> enrollment.getApplicant().equals(member))
