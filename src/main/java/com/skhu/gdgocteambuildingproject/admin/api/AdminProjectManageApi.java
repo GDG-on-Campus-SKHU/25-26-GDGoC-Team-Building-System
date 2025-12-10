@@ -4,7 +4,6 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestD
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -68,9 +67,11 @@ public interface AdminProjectManageApi {
     @Operation(
             summary = "프로젝트 정보 수정",
             description = """
-                    프로젝트의 일정을 제외한 나머지 정보를 수정합니다.
+                    프로젝트를 수정합니다.
                     
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
                     """
     )
     ResponseEntity<Void> updateProject(
@@ -85,19 +86,6 @@ public interface AdminProjectManageApi {
                     """
     )
     ResponseEntity<List<SchoolResponseDto>> getSchools();
-
-    @Operation(
-            summary = "프로젝트 일정 등록 및 수정",
-            description = """
-                    프로젝트의 일정 기간을 등록 혹은 수정합니다.
-                    
-                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
-                    """
-    )
-    ResponseEntity<Void> updateSchedule(
-            long projectId,
-            ScheduleUpdateRequestDto requestDto
-    );
 
     @Operation(
             summary = "프로젝트 삭제",

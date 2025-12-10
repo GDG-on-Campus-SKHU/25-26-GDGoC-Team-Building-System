@@ -5,7 +5,6 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestD
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
@@ -90,17 +89,6 @@ public class AdminProjectManageController implements AdminProjectManageApi {
             @Valid @RequestBody ProjectUpdateRequestDto requestDto
     ) {
         projectService.updateProject(projectId, requestDto);
-
-        return NO_CONTENT;
-    }
-
-    @Override
-    @PutMapping("/{projectId}/schedule")
-    public ResponseEntity<Void> updateSchedule(
-            @PathVariable long projectId,
-            @Valid @RequestBody ScheduleUpdateRequestDto requestDto
-    ) {
-        projectService.updateSchedule(projectId, requestDto);
 
         return NO_CONTENT;
     }

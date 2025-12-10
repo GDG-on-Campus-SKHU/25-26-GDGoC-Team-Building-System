@@ -119,9 +119,44 @@ public class TeamBuildingProject extends BaseEntity {
 
         return schedules.stream()
                 .filter(ProjectSchedule::isScheduled)
-                .filter(schedule -> now.isAfter(schedule.getStartDate()))
-                .filter(schedule -> now.isBefore(schedule.getEndDate()))
+                .filter(schedule -> isCurrentSchedule(now, schedule))
                 .findFirst();
+    }
+
+    private boolean isCurrentSchedule(LocalDateTime now, ProjectSchedule schedule) {
+        if (schedule.getType().isAnnouncement()) {
+            return isCurrentAnnouncementSchedule(now, schedule);
+        }
+
+        return isCurrentNonAnnouncementSchedule(now, schedule);
+    }
+
+    private boolean isCurrentAnnouncementSchedule(LocalDateTime now, ProjectSchedule schedule) {
+        if (!now.isAfter(schedule.getStartDate())) {
+            return false;
+        }
+
+        // 발표 일정의 endDate는, 그 다음 일정의 startDate로 간주함
+        LocalDateTime endDate = getNextScheduleStartDate(schedule.getType());
+
+        return endDate != null && now.isBefore(endDate);
+    }
+
+    private boolean isCurrentNonAnnouncementSchedule(LocalDateTime now, ProjectSchedule schedule) {
+        return now.isAfter(schedule.getStartDate()) && now.isBefore(schedule.getEndDate());
+    }
+
+    private LocalDateTime getNextScheduleStartDate(ScheduleType scheduleType) {
+        ScheduleType nextScheduleType = scheduleType.getNextScheduleType();
+        if (nextScheduleType == null) {
+            return null;
+        }
+
+        return schedules.stream()
+                .filter(schedule -> schedule.getType() == nextScheduleType)
+                .map(ProjectSchedule::getStartDate)
+                .findAny()
+                .orElse(null);
     }
 
     public Optional<ProjectSchedule> getPreviousScheduleOf(ScheduleType scheduleType) {
