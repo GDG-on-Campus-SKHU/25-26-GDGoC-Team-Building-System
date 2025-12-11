@@ -4,13 +4,15 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
 import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoUpdateMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.LinkType;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.TechStackType;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -62,9 +64,15 @@ public class MypageServiceImpl implements MypageService {
         return profileInfoMapper.toDto(ideaMember.getUser());
     }
 
-    public List<TechStackOptionResponseDto> getAllTechStackOptions() {
+    public List<TechStackOptionsResponseDto> getAllTechStackOptions() {
         return Arrays.stream(TechStackType.values())
-                .map(TechStackOptionResponseDto::from)
+                .map(TechStackOptionsResponseDto::from)
+                .toList();
+    }
+
+    public List<UserLinkOptionsResponseDto> getAllUserLinkOptions() {
+        return Arrays.stream(LinkType.values())
+                .map(UserLinkOptionsResponseDto::from)
                 .toList();
     }
 
@@ -72,5 +80,7 @@ public class MypageServiceImpl implements MypageService {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
     }
+
+
 
 }

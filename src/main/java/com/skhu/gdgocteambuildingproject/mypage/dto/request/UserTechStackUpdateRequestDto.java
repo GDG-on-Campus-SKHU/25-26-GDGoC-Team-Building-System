@@ -5,11 +5,11 @@ import com.skhu.gdgocteambuildingproject.user.domain.enumtype.TechStackType;
 import lombok.Builder;
 
 @Builder
-public record TechStackUpdateRequestDto(
+public record UserTechStackUpdateRequestDto(
         TechStackType techStackType
 ) {
-    public static TechStackUpdateRequestDto from(TechStack entity) {
-        return TechStackUpdateRequestDto.builder()
+    public static UserTechStackUpdateRequestDto from(TechStack entity) {
+        return UserTechStackUpdateRequestDto.builder()
                 .techStackType(entity.getTechStackType())
                 .build();
     }

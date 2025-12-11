@@ -3,8 +3,9 @@ package com.skhu.gdgocteambuildingproject.mypage.controller;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.mypage.api.MypageControllerApi;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -45,8 +46,13 @@ public class MypageController implements MypageControllerApi {
     }
 
     @Override
-    @GetMapping("/tech-stacks")
-    public ResponseEntity<List<TechStackOptionResponseDto>> getAllTechStacks() {
+    @GetMapping("/techStackOptions")
+    public ResponseEntity<List<TechStackOptionsResponseDto>> getAllTechStacks() {
         return ResponseEntity.ok(mypageService.getAllTechStackOptions());
+    }
+
+    @GetMapping("/userLinkOptions")
+    public ResponseEntity<List<UserLinkOptionsResponseDto>> getLinkTypeOptions() {
+        return ResponseEntity.ok(mypageService.getAllUserLinkOptions());
     }
 }

@@ -3,7 +3,8 @@ package com.skhu.gdgocteambuildingproject.mypage.api;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -63,6 +64,12 @@ public interface MypageControllerApi {
             description = "프로필 수정 시 사용자가 선택할 수 있는 모든 기술스택 옵션을 조회합니다."
     )
     @ApiResponse(responseCode = "200")
-    @GetMapping("/tech-stacks")
-    ResponseEntity<List<TechStackOptionResponseDto>> getAllTechStacks();
+    ResponseEntity<List<TechStackOptionsResponseDto>> getAllTechStacks();
+
+    @Operation(
+            summary = "모든 유저링크 옵션 조회",
+            description = "프로필 수정 시 사용자가 선택할 수 있는 모든 유저링크 옵션을 조회합니다."
+    )
+    @ApiResponse(responseCode = "200")
+    ResponseEntity<List<UserLinkOptionsResponseDto>> getLinkTypeOptions();
 }

@@ -2,7 +2,8 @@ package com.skhu.gdgocteambuildingproject.mypage.service;
 
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
 
 import java.util.List;
 
@@ -13,5 +14,8 @@ public interface MypageService {
 
     ProfileInfoResponseDto getProfileByIdeaMemberId(Long ideaMemberId);
 
-    List<TechStackOptionResponseDto> getAllTechStackOptions();
+    List<TechStackOptionsResponseDto> getAllTechStackOptions();
+
+    List<UserLinkOptionsResponseDto> getAllUserLinkOptions();
+
 }

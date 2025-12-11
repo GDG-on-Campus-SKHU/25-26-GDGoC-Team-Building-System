@@ -40,17 +40,19 @@ public enum LinkType {
     }
 
     public boolean matchesHost(String host) {
+        String lowerCaseHost = host.toLowerCase();
+
         return switch (this) {
-            case GITHUB     -> host.endsWith("github.com");
-            case VELOG      -> host.endsWith("velog.io");
-            case LINKEDIN   -> host.endsWith("linkedin.com");
-            case TISTORY    -> host.endsWith("tistory.com");
-            case NOTION     -> host.endsWith("notion.so") || host.endsWith("notion.site");
-            case BAEKJOON   -> host.endsWith("acmicpc.net");
-            case INSTAGRAM  -> host.endsWith("instagram.com");
-            case TWITTER, X -> host.endsWith("twitter.com") || host.endsWith("x.com");
-            case FACEBOOK   -> host.endsWith("facebook.com");
-            case YOUTUBE    -> host.endsWith("youtube.com") || host.endsWith("youtu.be");
+            case GITHUB     -> lowerCaseHost.endsWith("github.com");
+            case VELOG      -> lowerCaseHost.endsWith("velog.io");
+            case LINKEDIN   -> lowerCaseHost.endsWith("linkedin.com");
+            case TISTORY    -> lowerCaseHost.endsWith("tistory.com");
+            case NOTION     -> lowerCaseHost.endsWith("notion.so") || lowerCaseHost.endsWith("notion.site");
+            case BAEKJOON   -> lowerCaseHost.endsWith("acmicpc.net");
+            case INSTAGRAM  -> lowerCaseHost.endsWith("instagram.com");
+            case TWITTER, X -> lowerCaseHost.endsWith("twitter.com") || lowerCaseHost.endsWith("x.com");
+            case FACEBOOK   -> lowerCaseHost.endsWith("facebook.com");
+            case YOUTUBE    -> lowerCaseHost.endsWith("youtube.com") || lowerCaseHost.endsWith("youtu.be");
             case BLOG       -> true;
             case OTHER      -> true;
         };

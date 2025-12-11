@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.mypage.model;
 
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.UserGenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserTechStackResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;
@@ -25,9 +25,9 @@ public class ProfileInfoMapper {
                 .build();
     }
 
-    private List<TechStackResponseDto> convertTechStacks(User user) {
+    private List<UserTechStackResponseDto> convertTechStacks(User user) {
         return user.getTechStacks().stream()
-                .map(TechStackResponseDto::from)
+                .map(UserTechStackResponseDto::from)
                 .toList();
     }
 
