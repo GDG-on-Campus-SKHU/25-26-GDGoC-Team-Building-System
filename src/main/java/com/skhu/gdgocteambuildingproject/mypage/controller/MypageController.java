@@ -4,12 +4,15 @@ import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.mypage.api.MypageControllerApi;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/mypage")
@@ -41,4 +44,9 @@ public class MypageController implements MypageControllerApi {
         return ResponseEntity.ok(mypageService.getProfileByIdeaMemberId(ideaMemberId));
     }
 
+    @Override
+    @GetMapping("/tech-stacks")
+    public ResponseEntity<List<TechStackOptionResponseDto>> getAllTechStacks() {
+        return ResponseEntity.ok(mypageService.getAllTechStackOptions());
+    }
 }
