@@ -77,7 +77,7 @@ public enum TechStackType {
     HEROKU("Heroku", "heroku"),
     HTML("HTML", "html5"),
 
-    JAVA("Java", "oracle"),                             // 미작동
+    JAVA("Java", "oracle"),
     JAVASCRIPT("JavaScript", "javascript"),
     JENKINS("Jenkins", "jenkins"),
     JEST("Jest", "jest"),
@@ -136,7 +136,7 @@ public enum TechStackType {
     VERCEL("Vercel", "vercel"),
     VIM("Vim", "vim"),
     VITE("Vite", "vite"),
-    VS_CODE("VS Code", "visualstudiocode"),             // 미작동
+    VS_CODE("VS Code", "visualstudiocode"),
     VUE_JS("Vue.js", "vuedotjs"),                       // override
 
     WEBPACK("Webpack", "webpack"),
@@ -152,6 +152,23 @@ public enum TechStackType {
     private static final String SIMPLE_ICONS_BASE_URL = "https://cdn.simpleicons.org/";
 
     public String getTechStackIconUrl() {
-        return SIMPLE_ICONS_BASE_URL + iconSlug;
+        return switch (this) {
+            case ABLETON_LIVE -> "/icons/techstackicons/ableton_icon.png";
+            case ADOBE_AFTER_EFFECTS -> "/icons/techstackicons/aftereffects_icon.png";
+            case ATOM -> "/icons/techstackicons/atom_icon.png";
+            case AWS -> "/icons/techstackicons/aws_icon.png";
+            case AZURE -> "/icons/techstackicons/azure_icon.png";
+            case CODEPEN -> "/icons/techstackicons/codepen_icon.png";
+            case CSHARP -> "/icons/techstackicons/csharp_icon.png";
+            case CSS -> "/icons/techstackicons/css_icon.png";
+            case DYNAMODB -> "/icons/techstackicons/dynamodb_icon.png";
+            case HEROKU -> "/icons/techstackicons/heroku_icon.png";
+            case JAVA -> "/icons/techstackicons/java_icon.png";
+            case NUXT_JS -> "/icons/techstackicons/nuxtjs_icon.png";
+            case UNITY -> "/icons/techstackicons/unity_icon.png";
+            case VS_CODE -> "/icons/techstackicons/vscode_icon.png";
+
+            default -> SIMPLE_ICONS_BASE_URL + getIconSlug();
+        };
     }
 }

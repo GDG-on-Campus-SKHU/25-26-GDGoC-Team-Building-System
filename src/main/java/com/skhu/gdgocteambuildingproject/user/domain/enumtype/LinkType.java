@@ -26,11 +26,11 @@ public enum LinkType {
 
     public String getLinkIconUrl() {
         return switch (this) {
-            case BLOG -> "/icons/blog.png";
-            case LINKEDIN -> "/icons/linkedin.png";
-            case BAEKJOON -> "/icons/baekjoon.png";
-            case TWITTER -> "/icons/twitter.png";
-            case OTHER -> "/icons/other_guitar.png";
+            case BLOG -> "/icons/userlinkicons/blog_icon.svg";
+            case LINKEDIN -> "/icons/userlinkicons/linkedin_icon.svg";
+            case BAEKJOON -> "/icons/userlinkicons/baekjoon_icon.svg";
+            case TWITTER -> "/icons/userlinkicons/twitter_icon.svg";
+            case OTHER -> "/icons/userlinkicons/other_icon.svg";
             default -> SIMPLE_ICONS_BASE_URL + getIconSlug();
         };
     }
