@@ -9,6 +9,8 @@ public record IdeaDetailInfoResponseDto(
         String title,
         String introduction,
         String description,
+        Long topicId,
+        String topic,
         IdeaCreatorInfoResponseDto creator,
         List<IdeaMemberCompositionResponseDto> compositions
 ) {

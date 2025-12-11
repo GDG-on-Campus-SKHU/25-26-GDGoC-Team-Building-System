@@ -6,6 +6,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.MAX_MEMBER_COUNT_TOO_SMALL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PART_NOT_AVAILABLE;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TOPIC_FOR_OTHER_PROJECT;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
@@ -13,6 +14,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectTopic;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.CascadeType;
@@ -24,6 +26,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -48,7 +51,6 @@ public class Idea extends BaseEntity {
 
     private static final BiFunction<Part, Integer, Integer> INCREASE_COUNT = (part, prevCount) -> prevCount + 1;
 
-    private String topic;
     private String title;
     private String introduction;
     private String description;
@@ -68,6 +70,10 @@ public class Idea extends BaseEntity {
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private User creator;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(nullable = false)
+    private ProjectTopic topic;
 
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
@@ -138,11 +144,13 @@ public class Idea extends BaseEntity {
     }
 
     public void updateTexts(
-            String topic,
+            ProjectTopic topic,
             String title,
             String introduction,
             String description
     ) {
+        validateTopic(topic);
+
         this.topic = topic;
         this.title = title;
         this.introduction = introduction;
@@ -365,6 +373,12 @@ public class Idea extends BaseEntity {
         int currentCount = getCurrentMemberCountIncludeNotConfirm(part);
 
         return currentCount >= maxCount;
+    }
+
+    private void validateTopic(ProjectTopic topic) {
+        if (!project.equals(topic.getProject())) {
+            throw new IllegalArgumentException(TOPIC_FOR_OTHER_PROJECT.getMessage());
+        }
     }
 
     private void validateContains(IdeaEnrollment enrollment) {

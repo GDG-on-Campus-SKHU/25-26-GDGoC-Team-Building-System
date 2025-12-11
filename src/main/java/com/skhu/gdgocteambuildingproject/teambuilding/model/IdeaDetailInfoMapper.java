@@ -25,6 +25,8 @@ public class IdeaDetailInfoMapper {
                 .title(idea.getTitle())
                 .introduction(idea.getIntroduction())
                 .description(idea.getDescription())
+                .topicId(idea.getTopic().getId())
+                .topic(idea.getTopic().getTopic())
                 .creator(creator)
                 .compositions(compositions)
                 .build();
@@ -39,6 +41,8 @@ public class IdeaDetailInfoMapper {
                 .title(idea.getTitle())
                 .introduction(idea.getIntroduction())
                 .description(idea.getDescription())
+                .topicId(idea.getTopic().getId())
+                .topic(idea.getTopic().getTopic())
                 .creator(creator)
                 .compositions(compositions)
                 .deleted(idea.isDeleted())

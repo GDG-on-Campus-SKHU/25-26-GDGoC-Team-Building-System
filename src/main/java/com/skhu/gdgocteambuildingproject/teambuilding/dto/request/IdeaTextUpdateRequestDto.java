@@ -7,10 +7,10 @@ public record IdeaTextUpdateRequestDto(
         String title,
         String introduction,
         String description,
-        String topic
+        Long topicId
 ) {
     @JsonIgnore
     public List<String> getTexts() {
-        return List.of(title, introduction, description, topic);
+        return List.of(title, introduction, description);
     }
 }

@@ -8,12 +8,12 @@ public record IdeaUpdateRequestDto(
         String title,
         String introduction,
         String description,
-        String topic,
+        Long topicId,
         Part creatorPart,
         List<IdeaMemberCompositionRequestDto> compositions
 ) {
     @JsonIgnore
     public List<String> getTexts() {
-        return List.of(title, introduction, description, topic);
+        return List.of(title, introduction, description);
     }
 }

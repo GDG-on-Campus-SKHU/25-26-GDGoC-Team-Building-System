@@ -100,7 +100,7 @@ public class TeamBuildingController {
             description = """
                     프로젝트에 게시된 아이디어 목록을 조회합니다.
                     
-                    sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
+                    sortBy(정렬 기준): id(순번), title(제목), introduction(한줄 소개), description(설명)
                     
                     order: ASC 또는 DESC
                     
