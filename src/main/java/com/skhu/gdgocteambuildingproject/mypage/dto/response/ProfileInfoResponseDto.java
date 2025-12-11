@@ -13,7 +13,7 @@ public record ProfileInfoResponseDto(
         String school,
         List<UserGenerationResponseDto> generations,
         Part part,
-        List<TechStackResponseDto> techStacks,
+        List<UserTechStackResponseDto> techStacks,
         List<UserLinkResponseDto> userLinks,
         String introduction
 ) {

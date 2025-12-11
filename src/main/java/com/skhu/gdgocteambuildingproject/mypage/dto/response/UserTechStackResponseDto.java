@@ -5,12 +5,12 @@ import com.skhu.gdgocteambuildingproject.user.domain.enumtype.TechStackType;
 import lombok.Builder;
 
 @Builder
-public record TechStackResponseDto(
+public record UserTechStackResponseDto(
         TechStackType techStackType,
         String iconUrl
 ) {
-    public static TechStackResponseDto from(TechStack entity) {
-        return TechStackResponseDto.builder()
+    public static UserTechStackResponseDto from(TechStack entity) {
+        return UserTechStackResponseDto.builder()
                 .techStackType(entity.getTechStackType())
                 .iconUrl(entity.getTechStackType().getTechStackIconUrl())
                 .build();
