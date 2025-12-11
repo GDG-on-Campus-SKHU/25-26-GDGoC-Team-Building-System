@@ -16,6 +16,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleTy
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectParticipationAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
@@ -28,6 +29,7 @@ import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -88,9 +90,29 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject currentProject = projectUtil.findCurrentProject()
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
 
+        projectUtil.validateParticipation(userId, currentProject.getId());
+
         validateProjectScheduled(currentProject);
 
         return teamBuildingInfoMapper.map(currentProject, user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProjectParticipationAvailabilityResponseDto checkParticipationAvailability(long userId) {
+        Optional<TeamBuildingProject> currentProject = projectUtil.findCurrentProject();
+
+        if (currentProject.isEmpty()) {
+            return ProjectParticipationAvailabilityResponseDto.builder()
+                    .available(false)
+                    .build();
+        }
+
+        boolean participated = projectUtil.isParticipated(userId, currentProject.get().getId());
+
+        return ProjectParticipationAvailabilityResponseDto.builder()
+                .available(participated)
+                .build();
     }
 
     @Override
