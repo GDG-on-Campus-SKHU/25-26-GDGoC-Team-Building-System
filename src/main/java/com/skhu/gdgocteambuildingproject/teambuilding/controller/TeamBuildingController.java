@@ -52,7 +52,9 @@ public class TeamBuildingController {
                     
                     예정된 프로젝트가 없을 경우 404 응답을 반환합니다.
                     
-                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, ECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
                     """
     )
     public ResponseEntity<TeamBuildingInfoResponseDto> findCurrentProjectInfo(
