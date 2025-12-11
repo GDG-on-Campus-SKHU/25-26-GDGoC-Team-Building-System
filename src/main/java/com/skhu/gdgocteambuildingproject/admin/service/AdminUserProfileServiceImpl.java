@@ -5,7 +5,6 @@ import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequ
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserDetailMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.UserProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.UserProfileUpdateMapper;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
