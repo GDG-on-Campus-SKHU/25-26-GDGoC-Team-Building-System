@@ -27,17 +27,14 @@ public class UserProfileInfoMapper {
     }
 
     private List<TechStackDto> convertTechStacks(User user) {
-        return Optional.ofNullable(user.getTechStacks())
-                .map(list -> list.stream().map(TechStackDto::from)
-                        .toList())
-                .orElse(List.of());
+        return user.getTechStacks().stream()
+                .map(TechStackDto::from)
+                .toList();
     }
-
     private List<UserLinkDto> convertUserLinks(User user) {
-        return Optional.ofNullable(user.getUserLinks())
-                .map(list -> list.stream().map(UserLinkDto::from)
-                        .toList())
-                .orElse(List.of());
+        return user.getUserLinks().stream()
+                .map(UserLinkDto::from)
+                .toList();
     }
 
     private List<ApprovedUserGenerationResponseDto> mapGenerations(User user) {
