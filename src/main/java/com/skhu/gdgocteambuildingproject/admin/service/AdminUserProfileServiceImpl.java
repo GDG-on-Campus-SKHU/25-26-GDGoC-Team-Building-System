@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserDetailMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.UserSelectOptionsMapper;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -33,6 +34,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     private final ApproveUserInfoMapper approveUserInfoMapper;
     private final ApprovedUserDetailMapper approvedUserDetailMapper;
+    private final UserSelectOptionsMapper userSelectOptionsMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -132,6 +134,12 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
         }
         user.updateSchool(dto.school());
         user.updatePart(dto.part());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserSelectOptionsDto getUserSelectOptions() {
+        return userSelectOptionsMapper.fromEnums();
     }
 
     private void processUpdateGeneration(User user, UserGenerationUpdateDto generationItem) {

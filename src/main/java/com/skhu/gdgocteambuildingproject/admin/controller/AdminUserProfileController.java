@@ -1,11 +1,9 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminUserProfileApi;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
+import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileServiceImpl;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
@@ -118,5 +116,12 @@ public class AdminUserProfileController implements AdminUserProfileApi {
                                                   @RequestBody ApproveUserUpdateRequestDto dto) {
         adminUserProfileService.updateApproveUser(userId, dto);
         return ResponseEntity.ok().build();
+    }
+
+    @Override
+    @GetMapping("/select-options")
+    public ResponseEntity<UserSelectOptionsDto> getUserSelectOptions() {
+        UserSelectOptionsDto response = adminUserProfileService.getUserSelectOptions();
+        return ResponseEntity.ok(response);
     }
 }
