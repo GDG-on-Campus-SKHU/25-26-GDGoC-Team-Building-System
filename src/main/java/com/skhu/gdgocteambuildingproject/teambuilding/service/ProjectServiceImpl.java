@@ -4,30 +4,33 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ModifiableProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ModifiableProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.PastProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -44,6 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
 
     private final ProjectUtil projectUtil;
+    private final ParticipationUtil participationUtil;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
     private final ProjectInfoMapper projectInfoMapper;
@@ -88,9 +92,29 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject currentProject = projectUtil.findCurrentProject()
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
 
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
         validateProjectScheduled(currentProject);
 
         return teamBuildingInfoMapper.map(currentProject, user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProjectParticipationAvailabilityResponseDto checkParticipationAvailability(long userId) {
+        Optional<TeamBuildingProject> currentProject = projectUtil.findCurrentProject();
+
+        if (currentProject.isEmpty()) {
+            return ProjectParticipationAvailabilityResponseDto.builder()
+                    .available(false)
+                    .build();
+        }
+
+        boolean participated = participationUtil.isParticipated(userId, currentProject.get().getId());
+
+        return ProjectParticipationAvailabilityResponseDto.builder()
+                .available(participated)
+                .build();
     }
 
     @Override
@@ -119,13 +143,15 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProject(long projectId, ProjectUpdateRequestDto requestDto) {
         TeamBuildingProject project = findProjectBy(projectId);
 
+        List<User> participants = findParticipatingUsers(requestDto.participantUserIds());
+
         project.update(
                 requestDto.projectName(),
                 requestDto.maxMemberCount(),
-                requestDto.availableParts()
+                requestDto.availableParts(),
+                requestDto.topics(),
+                participants
         );
-
-        updateParticipants(project, requestDto.participantUserIds());
 
         for (ScheduleUpdateRequestDto schedule : requestDto.schedules()) {
             project.updateSchedule(
@@ -184,15 +210,10 @@ public class ProjectServiceImpl implements ProjectService {
         );
     }
 
-    private void updateParticipants(TeamBuildingProject project, List<Long> participantUserIds) {
-        project.clearParticipants();
-
-        if (participantUserIds != null) {
-            for (Long userId : participantUserIds) {
-                User user = findUserBy(userId);
-                project.participate(user);
-            }
-        }
+    private List<User> findParticipatingUsers(List<Long> participantUserIds) {
+        return participantUserIds.stream()
+                .map(this::findUserBy)
+                .toList();
     }
 
     private void validateProjectScheduled(TeamBuildingProject currentProject) {

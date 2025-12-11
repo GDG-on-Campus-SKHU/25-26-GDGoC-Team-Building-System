@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.mypage.service;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
-import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaMemberRepository;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
