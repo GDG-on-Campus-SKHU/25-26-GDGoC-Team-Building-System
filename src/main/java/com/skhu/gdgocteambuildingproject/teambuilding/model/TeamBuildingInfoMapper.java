@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -25,12 +26,32 @@ public class TeamBuildingInfoMapper {
     }
 
     private boolean isRegistrable(TeamBuildingProject project, User user) {
+        return isRegistrableSchedule(project) && isRegistrableUser(user, project);
+    }
+
+    private boolean isRegistrableSchedule(TeamBuildingProject project) {
+        return project.getCurrentSchedule()
+                .map(ProjectSchedule::isIdeaRegistrable)
+                .orElse(false);
+    }
+
+    private boolean isRegistrableUser(User user, TeamBuildingProject project) {
         return user.getIdeas().stream()
                 .filter(idea -> idea.getProject() == project)
                 .noneMatch(Idea::isRegistered);
     }
 
     private boolean isCanEnroll(TeamBuildingProject project, User user) {
+        return isCanEnrollSchedule(project) && isCanEnrollUser(user, project);
+    }
+
+    private boolean isCanEnrollSchedule(TeamBuildingProject project) {
+        return project.getCurrentSchedule()
+                .map(ProjectSchedule::isEnrollmentAvailable)
+                .orElse(false);
+    }
+
+    private boolean isCanEnrollUser(User user, TeamBuildingProject project) {
         return !user.isMemberOf(project);
     }
 }
