@@ -59,4 +59,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
             @Param("approvalStatus") ApprovalStatus approvalStatus,
             @Param("userStatus") UserStatus userStatus
     );
+
+    long countByApprovalStatus(ApprovalStatus approvalStatus);
 }
