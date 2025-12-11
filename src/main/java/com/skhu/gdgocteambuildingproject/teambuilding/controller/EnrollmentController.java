@@ -1,12 +1,13 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
+import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUserIdFrom;
+
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -54,7 +55,7 @@ public class EnrollmentController {
             @PathVariable long ideaId,
             @RequestBody EnrollmentRequestDto requestDto
     ) {
-        long userId = findUserIdBy(principal);
+        long userId = getUserIdFrom(principal);
 
         enrollmentService.enroll(userId, ideaId, requestDto);
 
@@ -75,7 +76,7 @@ public class EnrollmentController {
             @PathVariable long enrollmentId,
             @RequestBody EnrollmentDetermineRequestDto requestDto
     ) {
-        long userId = findUserIdBy(principal);
+        long userId = getUserIdFrom(principal);
 
         enrollmentService.determineEnrollment(userId, enrollmentId, requestDto);
 
@@ -104,41 +105,9 @@ public class EnrollmentController {
             Principal principal,
             @PathVariable long ideaId
     ) {
-        long userId = findUserIdBy(principal);
+        long userId = getUserIdFrom(principal);
 
         EnrollmentAvailabilityResponseDto response = enrollmentService.getAvailabilityInfo(ideaId, userId);
-
-        return ResponseEntity.ok(response);
-    }
-
-    @GetMapping("/roster")
-    @Operation(
-            summary = "팀원 구성 조회",
-            description = """
-                    본인이 소속한 아이디어(팀)에 대한 정보와 팀원 구성 정보를 조회합니다.
-                    
-                    또한, 본인의 역할도 같이 반환합니다.
-                    
-                    소속한 아이디어가 없을 경우 404를 응답합니다.
-                    
-                    아이디어에 지원 가능한 파트와 별개로, 항상 모든 파트에 대한 정보를 조회합니다.
-                    (지원 불가능한 파트의 경우, 현재 인원수와 최대 인원수가 0으로 설정됩니다)
-                    
-                    userId: 회원 정보에 대한 ID(프로필 조회 등에 사용 가능)
-                    
-                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
-                    
-                    myRole, memberRole: CREATOR, MEMBER
-                    
-                    confirmed: 해당 멤버의 참여가 확정되었는지 여부(확정된 멤버는 삭제할 수 없음)
-                    """
-    )
-    public ResponseEntity<RosterResponseDto> findMyIdeaComposition(
-            Principal principal
-    ) {
-        long userId = findUserIdBy(principal);
-
-        RosterResponseDto response = enrollmentService.getComposition(userId);
 
         return ResponseEntity.ok(response);
     }
@@ -165,7 +134,7 @@ public class EnrollmentController {
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
-        long userId = findUserIdBy(principal);
+        long userId = getUserIdFrom(principal);
 
         List<SentEnrollmentResponseDto> response = enrollmentService.getSentEnrollments(userId, scheduleType);
 
@@ -194,7 +163,7 @@ public class EnrollmentController {
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
-        long userId = findUserIdBy(principal);
+        long userId = getUserIdFrom(principal);
 
         List<ReceivedEnrollmentResponseDto> response = enrollmentService.getReceivedEnrollments(userId, scheduleType);
 
@@ -214,14 +183,10 @@ public class EnrollmentController {
             Principal principal,
             @PathVariable long enrollmentId
     ) {
-        long userId = findUserIdBy(principal);
+        long userId = getUserIdFrom(principal);
 
         enrollmentService.cancelEnrollment(userId, enrollmentId);
 
         return NO_CONTENT;
-    }
-
-    private long findUserIdBy(Principal principal) {
-        return Long.parseLong(principal.getName());
     }
 }

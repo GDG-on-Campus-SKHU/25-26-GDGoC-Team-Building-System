@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.repository;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import jakarta.persistence.LockModeType;
 import java.util.List;

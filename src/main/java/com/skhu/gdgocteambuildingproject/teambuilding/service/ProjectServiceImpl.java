@@ -4,25 +4,26 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectParticipationAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ModifiableProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ModifiableProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.PastProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -46,6 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
 
     private final ProjectUtil projectUtil;
+    private final ParticipationUtil participationUtil;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
     private final ProjectInfoMapper projectInfoMapper;
@@ -90,7 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject currentProject = projectUtil.findCurrentProject()
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
 
-        projectUtil.validateParticipation(userId, currentProject.getId());
+        participationUtil.validateParticipation(userId, currentProject.getId());
 
         validateProjectScheduled(currentProject);
 
@@ -108,7 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
         }
 
-        boolean participated = projectUtil.isParticipated(userId, currentProject.get().getId());
+        boolean participated = participationUtil.isParticipated(userId, currentProject.get().getId());
 
         return ProjectParticipationAvailabilityResponseDto.builder()
                 .available(participated)
