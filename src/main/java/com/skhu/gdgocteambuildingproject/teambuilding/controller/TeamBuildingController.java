@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectParticipationAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
@@ -40,6 +41,23 @@ public class TeamBuildingController {
 
     private final ProjectService projectService;
     private final IdeaService ideaService;
+
+    @GetMapping("/availability")
+    @Operation(
+            summary = "팀빌딩 참여 가능 여부 조회",
+            description = """
+                    본인이 현재 진행중/예정된 프로젝트의 팀빌딩에 참여할 수 있는지 여부를 조회합니다.
+                    """
+    )
+    public ResponseEntity<ProjectParticipationAvailabilityResponseDto> checkParticipationAvailability(
+            Principal principal
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        ProjectParticipationAvailabilityResponseDto response = projectService.checkParticipationAvailability(userId);
+
+        return ResponseEntity.ok(response);
+    }
 
     @GetMapping("/projects")
     @Operation(
@@ -108,6 +126,7 @@ public class TeamBuildingController {
                     """
     )
     public ResponseEntity<IdeaTitleInfoPageResponseDto> findIdeas(
+            Principal principal,
             @PathVariable long projectId,
             @RequestParam int page,
             @RequestParam int size,
@@ -115,7 +134,9 @@ public class TeamBuildingController {
             @RequestParam SortOrder order,
             @RequestParam boolean recruitingOnly
     ) {
-        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, page, size, sortBy, order, recruitingOnly);
+        long userId = getUserIdFrom(principal);
+
+        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, userId, page, size, sortBy, order, recruitingOnly);
 
         return ResponseEntity.ok(response);
     }
@@ -130,10 +151,13 @@ public class TeamBuildingController {
                     """
     )
     public ResponseEntity<IdeaDetailInfoResponseDto> findIdeaDetails(
+            Principal principal,
             @PathVariable long projectId,
             @PathVariable long ideaId
     ) {
-        IdeaDetailInfoResponseDto response = ideaService.findIdeaDetail(projectId, ideaId);
+        long userId = getUserIdFrom(principal);
+
+        IdeaDetailInfoResponseDto response = ideaService.findIdeaDetail(projectId, ideaId, userId);
 
         return ResponseEntity.ok(response);
     }

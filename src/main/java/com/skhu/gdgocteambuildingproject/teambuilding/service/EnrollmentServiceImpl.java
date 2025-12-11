@@ -63,10 +63,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             long ideaId,
             EnrollmentRequestDto requestDto
     ) {
+        TeamBuildingProject currentProject = findCurrentProject();
+        projectUtil.validateParticipation(applicantId, currentProject.getId());
+
         User applicant = findUserBy(applicantId);
         Idea idea = findIdeaBy(ideaId);
 
-        TeamBuildingProject currentProject = findCurrentProject();
         ProjectSchedule currentSchedule = findCurrentScheduleOf(currentProject);
 
         validateEnrollmentAvailable(currentSchedule.getType());
@@ -86,11 +88,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             long enrollmentId,
             EnrollmentDetermineRequestDto requestDto
     ) {
+        TeamBuildingProject currentProject = findCurrentProject();
+        projectUtil.validateParticipation(userId, currentProject.getId());
+
         User creator = findUserBy(userId);
         IdeaEnrollment enrollment = findEnrollmentWithLock(enrollmentId);
         Idea idea = enrollment.getIdea();
 
-        TeamBuildingProject currentProject = findCurrentProject();
         ProjectSchedule currentSchedule = findCurrentScheduleOf(currentProject);
 
         validateIdeaOwnership(creator, idea);
@@ -108,6 +112,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public RosterResponseDto getComposition(long userId) {
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
+        projectUtil.validateParticipation(userId, currentProject.getId());
+
         Idea idea = user.getIdeaFrom(currentProject)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
 
@@ -122,6 +128,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     ) {
         Idea idea = findIdeaBy(ideaId);
         TeamBuildingProject project = idea.getProject();
+        projectUtil.validateParticipation(applicantId, project.getId());
+
         ProjectSchedule currentSchedule = findCurrentScheduleOf(project);
         User applicant = findUserBy(applicantId);
 
@@ -140,6 +148,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
+        projectUtil.validateParticipation(userId, currentProject.getId());
+
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
 
         List<IdeaEnrollment> enrollments = user.getEnrollmentFrom(schedule);
@@ -159,6 +169,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
+        projectUtil.validateParticipation(userId, currentProject.getId());
+
         Idea idea = findRegisteredIdeaOf(user, currentProject);
 
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
@@ -174,6 +186,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void cancelEnrollment(long userId, long enrollmentId) {
         User user = findUserBy(userId);
         IdeaEnrollment enrollment = findEnrollmentBy(enrollmentId);
+        Idea idea = enrollment.getIdea();
+        TeamBuildingProject project = idea.getProject();
+
+        projectUtil.validateParticipation(userId, project.getId());
 
         validateEnrollmentOwnership(enrollment, user);
         validateEnrollmentCancelable(enrollment);

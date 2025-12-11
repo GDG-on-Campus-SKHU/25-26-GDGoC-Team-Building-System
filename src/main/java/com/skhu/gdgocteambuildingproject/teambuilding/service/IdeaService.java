@@ -19,6 +19,7 @@ public interface IdeaService {
 
     IdeaTitleInfoPageResponseDto findIdeas(
             long projectId,
+            long userId,
             int page,
             int size,
             String sortBy,
@@ -36,7 +37,8 @@ public interface IdeaService {
 
     IdeaDetailInfoResponseDto findIdeaDetail(
             long projectId,
-            long ideaId
+            long ideaId,
+            long userId
     );
 
     AdminIdeaDetailResponseDto findIdeaDetailByAdmin(

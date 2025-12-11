@@ -31,6 +31,10 @@ public class ProjectUtil {
         }
     }
 
+    public boolean isParticipated(long userId, long projectId) {
+        return participantRepository.existsByUserIdAndProjectId(userId, projectId);
+    }
+
     public Optional<TeamBuildingProject> findCurrentProject() {
         List<TeamBuildingProject> unfinishedProjects = findUnfinishedProjects();
 
