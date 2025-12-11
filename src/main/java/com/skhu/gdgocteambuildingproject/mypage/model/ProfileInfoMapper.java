@@ -1,12 +1,10 @@
 package com.skhu.gdgocteambuildingproject.mypage.model;
 
-import com.skhu.gdgocteambuildingproject.mypage.dto.TechStackDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.UserLinkDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.request.UserGenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
-import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -14,53 +12,39 @@ import java.util.List;
 @Component
 public class ProfileInfoMapper {
 
-    public ProfileInfoResponseDto map(User user) {
+    public ProfileInfoResponseDto toDto(User user) {
         return ProfileInfoResponseDto.builder()
                 .userId(user.getId())
                 .name(user.getName())
                 .school(user.getSchool())
-                .role(user.getRole())
+                .generations(mapGenerations(user))
                 .part(user.getPart())
                 .introduction(user.getIntroduction())
-                .techStacks(user.getTechStacks().stream()
-                        .map(TechStackDto::from)
-                        .toList())
-                .userLinks(user.getUserLinks().stream()
-                        .map(UserLinkDto::from)
-                        .toList())
+                .techStacks(convertTechStacks(user))
+                .userLinks(convertUserLinks(user))
                 .build();
     }
 
-    public List<TechStack> toTechStacks(User user, ProfileInfoUpdateRequestDto requestDto) {
-        List<TechStackDto> techStackDtos = getTechStackDtosOrEmpty(requestDto);
-
-        return techStackDtos.stream()
-                .map(dto -> TechStack.builder()
-                        .techStackType(dto.techStackType())
-                        .user(user)
-                        .build())
+    private List<TechStackResponseDto> convertTechStacks(User user) {
+        return user.getTechStacks().stream()
+                .map(TechStackResponseDto::from)
                 .toList();
     }
 
-    public List<UserLink> toUserLinks(User user, ProfileInfoUpdateRequestDto requestDto) {
-        List<UserLinkDto> userLinkDtos = getUserLinkDtosOrEmpty(requestDto);
-
-        return userLinkDtos.stream()
-                .map(dto -> UserLink.builder()
-                        .linkType(dto.linkType())
-                        .url(dto.url())
-                        .user(user)
-                        .build())
+    private List<UserLinkResponseDto> convertUserLinks(User user) {
+        return user.getUserLinks().stream()
+                .map(UserLinkResponseDto::from)
                 .toList();
     }
 
-    private List<TechStackDto> getTechStackDtosOrEmpty(ProfileInfoUpdateRequestDto requestDto) {
-        List<TechStackDto> techStackDtos = requestDto.techStacks();
-        return techStackDtos == null ? List.of() : techStackDtos;
-    }
-
-    private List<UserLinkDto> getUserLinkDtosOrEmpty(ProfileInfoUpdateRequestDto requestDto) {
-        List<UserLinkDto> userLinkDtos = requestDto.userLinks();
-        return userLinkDtos == null ? List.of() : userLinkDtos;
+    private List<UserGenerationResponseDto> mapGenerations(User user) {
+        return user.getGeneration().stream()
+                .map(gen -> new UserGenerationResponseDto(
+                        gen.getId(),
+                        gen.getGeneration().getLabel(),
+                        gen.getPosition().name(),
+                        gen.isMain()
+                ))
+                .toList();
     }
 }

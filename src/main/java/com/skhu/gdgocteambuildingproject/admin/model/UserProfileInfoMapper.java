@@ -2,14 +2,12 @@ package com.skhu.gdgocteambuildingproject.admin.model;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserGenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.TechStackDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.UserLinkDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Component
 public class UserProfileInfoMapper {
@@ -26,14 +24,14 @@ public class UserProfileInfoMapper {
                 .build();
     }
 
-    private List<TechStackDto> convertTechStacks(User user) {
+    private List<TechStackResponseDto> convertTechStacks(User user) {
         return user.getTechStacks().stream()
-                .map(TechStackDto::from)
+                .map(TechStackResponseDto::from)
                 .toList();
     }
-    private List<UserLinkDto> convertUserLinks(User user) {
+    private List<UserLinkResponseDto> convertUserLinks(User user) {
         return user.getUserLinks().stream()
-                .map(UserLinkDto::from)
+                .map(UserLinkResponseDto::from)
                 .toList();
     }
 
