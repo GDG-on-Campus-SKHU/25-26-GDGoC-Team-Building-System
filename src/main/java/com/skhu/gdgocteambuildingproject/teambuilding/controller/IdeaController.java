@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.Idea.controller;
+package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUserIdFrom;
 
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 

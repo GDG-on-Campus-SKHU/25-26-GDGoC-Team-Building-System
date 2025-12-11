@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;

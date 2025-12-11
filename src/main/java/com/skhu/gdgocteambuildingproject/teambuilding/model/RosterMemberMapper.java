@@ -1,11 +1,11 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import static com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
+import static com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaMemberRole;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;

@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
 import static org.mockito.Mockito.when;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;

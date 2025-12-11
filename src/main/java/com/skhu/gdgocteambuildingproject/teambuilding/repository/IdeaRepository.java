@@ -1,7 +1,7 @@
-package com.skhu.gdgocteambuildingproject.Idea.repository;
+package com.skhu.gdgocteambuildingproject.teambuilding.repository;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.List;

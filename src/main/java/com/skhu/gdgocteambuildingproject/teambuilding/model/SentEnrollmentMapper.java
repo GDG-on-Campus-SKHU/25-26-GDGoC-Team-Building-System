@@ -1,8 +1,8 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;

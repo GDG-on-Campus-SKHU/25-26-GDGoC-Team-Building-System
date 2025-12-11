@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PartAvailabilityResponseDto;
 import java.util.Arrays;

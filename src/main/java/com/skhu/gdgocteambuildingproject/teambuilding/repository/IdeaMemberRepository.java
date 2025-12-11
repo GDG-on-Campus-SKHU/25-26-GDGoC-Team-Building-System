@@ -1,6 +1,6 @@
-package com.skhu.gdgocteambuildingproject.Idea.repository;
+package com.skhu.gdgocteambuildingproject.teambuilding.repository;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaMember;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

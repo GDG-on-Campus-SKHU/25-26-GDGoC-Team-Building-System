@@ -1,6 +1,6 @@
-package com.skhu.gdgocteambuildingproject.Idea.domain;
+package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaMemberRole;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.user.domain.User;

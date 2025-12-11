@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaMemberRole;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaMemberRole;
 import lombok.Builder;
 
 @Builder

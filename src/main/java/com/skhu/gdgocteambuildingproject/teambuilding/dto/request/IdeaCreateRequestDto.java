@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.request;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import java.util.List;
 

@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.Idea.domain.enumtype;
+package com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype;
 
 import lombok.Getter;
 
