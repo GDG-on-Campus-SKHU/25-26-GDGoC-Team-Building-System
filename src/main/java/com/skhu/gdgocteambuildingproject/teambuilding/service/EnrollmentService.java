@@ -23,8 +23,6 @@ public interface EnrollmentService {
             EnrollmentDetermineRequestDto requestDto
     );
 
-    RosterResponseDto getComposition(long userId);
-
     EnrollmentAvailabilityResponseDto getAvailabilityInfo(
             long ideaId,
             long applicantId

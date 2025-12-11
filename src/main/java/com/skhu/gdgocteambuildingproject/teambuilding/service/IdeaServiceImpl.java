@@ -39,9 +39,11 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequ
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.IdeaTitleInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.RosterMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -66,6 +68,7 @@ public class IdeaServiceImpl implements IdeaService {
     private final ProjectUtil projectUtil;
     private final IdeaTitleInfoMapper ideaTitleInfoMapper;
     private final IdeaDetailInfoMapper ideaDetailInfoMapper;
+    private final RosterMapper rosterMapper;
 
     @Override
     @Transactional
@@ -76,7 +79,7 @@ public class IdeaServiceImpl implements IdeaService {
     ) {
         projectUtil.validateParticipation(userId, projectId);
 
-        ProjectSchedule currentSchedule = getCurrentSchedule();
+        ProjectSchedule currentSchedule = findCurrentSchedule();
         validateRegistrationSchedule(currentSchedule);
 
         TeamBuildingProject project = findProjectBy(projectId);
@@ -187,6 +190,19 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new EntityNotFoundException(TEMPORARY_IDEA_NOT_EXIST.getMessage()));
 
         return ideaDetailInfoMapper.map(idea);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public RosterResponseDto getComposition(long userId) {
+        User user = findUserBy(userId);
+        TeamBuildingProject currentProject = findCurrentProject();
+        projectUtil.validateParticipation(userId, currentProject.getId());
+
+        Idea idea = user.getIdeaFrom(currentProject)
+                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
+
+        return rosterMapper.map(user, idea);
     }
 
     @Override
@@ -341,9 +357,14 @@ public class IdeaServiceImpl implements IdeaService {
         enrollment.accept();
     }
 
-    private ProjectSchedule getCurrentSchedule() {
+    private ProjectSchedule findCurrentSchedule() {
         return projectUtil.findCurrentSchedule()
                 .orElseThrow(() -> new EntityNotFoundException(SCHEDULE_NOT_EXIST.getMessage()));
+    }
+
+    private TeamBuildingProject findCurrentProject() {
+        return projectUtil.findCurrentProject()
+                .orElseThrow(() -> new IllegalStateException(PROJECT_NOT_EXIST.getMessage()));
     }
 
     private void validateIdeaDeletable(Idea idea) {
@@ -352,7 +373,7 @@ public class IdeaServiceImpl implements IdeaService {
             return;
         }
 
-        ProjectSchedule currentSchedule = getCurrentSchedule();
+        ProjectSchedule currentSchedule = findCurrentSchedule();
         TeamBuildingProject project = currentSchedule.getProject();
 
         if (!project.equals(idea.getProject())) {
@@ -435,7 +456,7 @@ public class IdeaServiceImpl implements IdeaService {
     }
 
     private void validateBeforeEnrollment(Idea idea) {
-        ProjectSchedule currentSchedule = getCurrentSchedule();
+        ProjectSchedule currentSchedule = findCurrentSchedule();
         TeamBuildingProject currentProject = currentSchedule.getProject();
 
         if (!currentProject.equals(idea.getProject())) {

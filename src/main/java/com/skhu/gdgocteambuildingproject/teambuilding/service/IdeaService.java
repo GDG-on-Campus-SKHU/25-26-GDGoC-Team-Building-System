@@ -8,6 +8,7 @@ import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
 
 public interface IdeaService {
 
@@ -50,6 +51,8 @@ public interface IdeaService {
             long projectId,
             long userId
     );
+
+    RosterResponseDto getComposition(long userId);
 
     void updateTexts(
             long projectId,
