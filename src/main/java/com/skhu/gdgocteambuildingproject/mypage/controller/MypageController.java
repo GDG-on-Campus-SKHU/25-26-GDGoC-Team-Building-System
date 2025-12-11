@@ -26,9 +26,9 @@ public class MypageController implements MypageControllerApi {
 
     @Override
     @GetMapping
-    public ResponseEntity<ProfileInfoResponseDto> getProfileByUserId(@AuthenticationPrincipal UserPrincipal userPrincipal) {
+    public ResponseEntity<ProfileInfoResponseDto> getProfileByUserPrincipal(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         Long currentUserId = userPrincipal.getUser().getId();
-        return ResponseEntity.ok(mypageService.getProfileByUserId(currentUserId));
+        return ResponseEntity.ok(mypageService.getProfileByUserPrincipal(currentUserId));
     }
 
     @Override

@@ -4,7 +4,7 @@ import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateReq
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 
 public interface MypageService {
-    ProfileInfoResponseDto getProfileByUserId(Long userId);
+    ProfileInfoResponseDto getProfileByUserPrincipal(Long userId);
 
     ProfileInfoResponseDto updateUserModifiableProfile(Long userId, ProfileInfoUpdateRequestDto requestDto);
 

@@ -41,6 +41,11 @@ spring:
           starttls:
             enable: true
 
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -65,3 +70,19 @@ swagger:
   servers:
     - ${SWAGGER_SERVER_LOCAL}
     - ${SWAGGER_SERVER_PROD}
+
+cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS}
+    allowed-methods: ${CORS_ALLOWED_METHODS}
+    allowed-headers: ${CORS_ALLOWED_HEADERS}
+    exposed-headers: ${CORS_EXPOSED_HEADERS}
+
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY_ID}
+      secret-key: ${AWS_S3_SECRET_ACCESS_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2

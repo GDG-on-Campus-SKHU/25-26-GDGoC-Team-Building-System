@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoMapper;
+import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoUpdateMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
@@ -23,13 +24,15 @@ public class MypageServiceImpl implements MypageService {
 
     private final UserRepository userRepository;
     private final ProfileInfoMapper profileInfoMapper;
+    private final ProfileInfoUpdateMapper profileInfoUpdateMapper;
     private final IdeaMemberRepository ideaMemberRepository;
 
     @Override
     @Transactional(readOnly = true)
-    public ProfileInfoResponseDto getProfileByUserId(Long userId) {
+    public ProfileInfoResponseDto getProfileByUserPrincipal(Long userId) {
         User user = findUserByIdOrThrow(userId);
-        return profileInfoMapper.map(user);
+
+        return profileInfoMapper.toDto(user);
     }
 
     @Override
@@ -38,13 +41,13 @@ public class MypageServiceImpl implements MypageService {
         User user = findUserByIdOrThrow(userId);
         user.updateUserIntroduction(requestDto.introduction());
 
-        List<TechStack> newTechStacks = profileInfoMapper.toTechStacks(user, requestDto);
+        List<TechStack> newTechStacks = profileInfoUpdateMapper.toTechStacks(user, requestDto);
         user.updateTechStacks(newTechStacks);
 
-        List<UserLink> newUserLinks = profileInfoMapper.toUserLinks(user, requestDto);
+        List<UserLink> newUserLinks = profileInfoUpdateMapper.toUserLinks(user, requestDto);
         user.updateUserLinks(newUserLinks);
 
-        return profileInfoMapper.map(user);
+        return profileInfoMapper.toDto(user);
     }
 
     @Override
@@ -53,7 +56,7 @@ public class MypageServiceImpl implements MypageService {
         IdeaMember ideaMember = ideaMemberRepository.findByIdWithUser(ideaMemberId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.IDEA_MEMBER_NOT_FOUND.getMessage()));
 
-        return profileInfoMapper.map(ideaMember.getUser());
+        return profileInfoMapper.toDto(ideaMember.getUser());
     }
 
     private User findUserByIdOrThrow(Long userId) {
