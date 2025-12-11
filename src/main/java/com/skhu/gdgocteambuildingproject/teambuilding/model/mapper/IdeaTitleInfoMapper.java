@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoResponseDto;
 import org.springframework.stereotype.Component;
 
 @Component

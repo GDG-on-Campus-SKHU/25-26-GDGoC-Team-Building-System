@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ChoiceAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ChoiceAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.Arrays;
 import java.util.List;

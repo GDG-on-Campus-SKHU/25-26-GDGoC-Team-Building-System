@@ -4,7 +4,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;

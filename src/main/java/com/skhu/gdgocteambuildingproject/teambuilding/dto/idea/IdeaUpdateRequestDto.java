@@ -1,13 +1,16 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.dto.request;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.idea;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import java.util.List;
 
-public record IdeaTextUpdateRequestDto(
+public record IdeaUpdateRequestDto(
         String title,
         String introduction,
         String description,
-        Long topicId
+        Long topicId,
+        Part creatorPart,
+        List<IdeaMemberCompositionRequestDto> compositions
 ) {
     @JsonIgnore
     public List<String> getTexts() {

@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectScheduleResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectScheduleResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectScheduleMapper;
 import java.time.LocalDateTime;
 import org.junit.jupiter.api.Test;

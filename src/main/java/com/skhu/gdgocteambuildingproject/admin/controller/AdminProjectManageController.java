@@ -7,7 +7,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResp
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import jakarta.validation.Valid;
 import java.util.List;

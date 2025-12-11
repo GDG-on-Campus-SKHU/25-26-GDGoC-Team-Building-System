@@ -3,7 +3,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

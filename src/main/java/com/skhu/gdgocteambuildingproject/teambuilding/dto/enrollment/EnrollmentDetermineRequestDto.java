@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.dto.request;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment;
 
 public record EnrollmentDetermineRequestDto(
         boolean accept

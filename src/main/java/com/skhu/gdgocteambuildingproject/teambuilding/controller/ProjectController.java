@@ -2,8 +2,8 @@ package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 
 import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUserIdFrom;
 
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectParticipationAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

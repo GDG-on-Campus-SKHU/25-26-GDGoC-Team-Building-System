@@ -3,12 +3,12 @@ package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUserIdFrom;
 
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaTextUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaDetailInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTextUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;

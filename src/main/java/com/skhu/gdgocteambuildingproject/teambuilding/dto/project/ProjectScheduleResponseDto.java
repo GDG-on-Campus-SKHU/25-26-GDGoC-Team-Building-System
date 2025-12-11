@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.dto.response;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.project;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import java.time.LocalDateTime;

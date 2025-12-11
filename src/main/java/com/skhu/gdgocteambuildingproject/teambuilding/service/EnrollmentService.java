@@ -1,11 +1,11 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
 import java.util.List;
 
 public interface EnrollmentService {

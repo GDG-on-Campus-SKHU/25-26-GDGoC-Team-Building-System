@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PartAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.PartAvailabilityResponseDto;
 import java.util.Arrays;
 import java.util.List;
 import org.springframework.stereotype.Component;

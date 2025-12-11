@@ -4,7 +4,7 @@ import static org.mockito.Mockito.when;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaCreatorInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaCreatorInfoMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.assertj.core.api.Assertions;

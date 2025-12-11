@@ -6,7 +6,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaMemberRole;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterMemberResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;
 

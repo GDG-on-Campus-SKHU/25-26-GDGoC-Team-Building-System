@@ -6,7 +6,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResp
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
