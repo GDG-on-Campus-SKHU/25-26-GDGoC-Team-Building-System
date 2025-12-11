@@ -3,10 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserDetailMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.UserProfileInfoMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.UserProfileUpdateMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.*;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -41,6 +38,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     private final UserProfileInfoMapper userProfileInfoMapper;
     private final UserProfileUpdateMapper userProfileUpdateMapper;
     private final ApprovedUserDetailMapper approvedUserDetailMapper;
+    private final UserSelectOptionsMapper userSelectOptionsMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -141,6 +139,12 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
         }
         user.updateSchool(dto.school());
         user.updatePart(dto.part());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserSelectOptionsDto getUserSelectOptions() {
+        return userSelectOptionsMapper.fromEnums();
     }
 
     @Override

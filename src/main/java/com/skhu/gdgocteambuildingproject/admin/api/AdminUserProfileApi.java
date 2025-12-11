@@ -1,9 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApproveUserUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.UserBanRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -148,6 +145,15 @@ public interface AdminUserProfileApi {
             )
             ApproveUserUpdateRequestDto dto
     );
+
+    @Operation(
+            summary = "관리자 페이지에서 선택지 옵션 조회",
+            description = "프론트에서 필요한 Part, UserPosition, Generation의 선택지 데이터를 조회합니다.",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200", description = "조회 성공")
+            })
+    ResponseEntity<UserSelectOptionsDto> getUserSelectOptions();
 
     @Operation(summary = "회원의 마이페이지 프로필 단건 조회", description = "관리자가 특정 회원의 마이페이지 프로필 정보를 조회합니다.")
     @ApiResponses(value = {
