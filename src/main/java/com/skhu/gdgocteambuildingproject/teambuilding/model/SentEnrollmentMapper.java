@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
+import java.time.LocalDateTime;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -19,6 +20,9 @@ public class SentEnrollmentMapper {
         Part enrollmentPart = enrollment.getPart();
         int applicantCount = getApplicantCount(idea, schedule, enrollmentPart);
 
+        LocalDateTime now = LocalDateTime.now();
+        boolean scheduleEnded = isScheduleEnded(schedule, now);
+
         return SentEnrollmentResponseDto.builder()
                 .enrollmentId(enrollment.getId())
                 .choice(enrollment.getChoice())
@@ -28,7 +32,16 @@ public class SentEnrollmentMapper {
                 .enrollmentPart(enrollmentPart)
                 .maxMemberCountOfPart(idea.getMaxMemberCountOf(enrollmentPart))
                 .applicantCount(applicantCount)
+                .scheduleEnded(scheduleEnded)
                 .build();
+    }
+
+    private boolean isScheduleEnded(ProjectSchedule schedule, LocalDateTime now) {
+        if (!schedule.isScheduled()) {
+            return false;
+        }
+
+        return schedule.getEndDate().isBefore(now);
     }
 
     private int getApplicantCount(Idea idea, ProjectSchedule schedule, Part part) {

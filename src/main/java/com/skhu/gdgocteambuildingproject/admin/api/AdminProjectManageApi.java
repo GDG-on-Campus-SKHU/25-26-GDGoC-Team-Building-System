@@ -2,8 +2,9 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ScheduleUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -52,25 +53,51 @@ public interface AdminProjectManageApi {
     @Operation(
             summary = "수정 가능한 프로젝트 조회",
             description = """
-                    아직 시작하지 않은 프로젝트 중 시작 일자가 가장 빠른 프로젝트를 조회합니다.
+                    아직 끝나지 않은 프로젝트 중 시작 일자가 가장 빠른 프로젝트를 조회합니다.
+                    
+                    이미 시작한 프로젝트더라도 아직 끝나지 않았으면 조회 대상에 포함됩니다.
                     
                     일정이 모두 결정된 프로젝트가 없다면, 아직 일정이 정해지지 않은 프로젝트를 조회합니다.
                     
                     해당하는 프로젝트가 존재하지 않는다면 404를 응답합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    ResponseEntity<ProjectTotalResponseDto> getModifiableProject();
+    ResponseEntity<ModifiableProjectResponseDto> getModifiableProject();
 
     @Operation(
-            summary = "프로젝트 일정 등록 및 수정",
+            summary = "프로젝트 정보 수정",
             description = """
-                    프로젝트의 일정 기간을 등록 혹은 수정합니다.
+                    프로젝트를 수정합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     
                     scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
                     """
     )
-    ResponseEntity<Void> updateSchedule(
-            long projectId,
-            ScheduleUpdateRequestDto requestDto
+    ResponseEntity<Void> updateProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId,
+            ProjectUpdateRequestDto requestDto
+    );
+
+    @Operation(
+            summary = "학교 목록 조회",
+            description = """
+                    회원이 존재하는 모든 학교 목록을 조회합니다.
+                    """
+    )
+    ResponseEntity<List<SchoolResponseDto>> getSchools();
+
+    @Operation(
+            summary = "프로젝트 삭제",
+            description = """
+                    프로젝트를 삭제합니다.
+                    
+                    별도 검증 로직을 수행하지 않고 바로 삭제하니 주의해서 호출해야 합니다.
+                    """
+    )
+    ResponseEntity<Void> deleteProject(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId
     );
 }

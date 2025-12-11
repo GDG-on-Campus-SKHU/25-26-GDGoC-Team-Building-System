@@ -39,10 +39,10 @@ public class ProjectUtil {
     }
 
     public Optional<TeamBuildingProject> findModifiableProject() {
-        List<TeamBuildingProject> unstartedProjects = findUnstartedProjects();
+        List<TeamBuildingProject> unfinishedProjects = findUnfinishedProjects();
 
-        return findEarliestScheduledProject(unstartedProjects)
-                .or(() -> findUnscheduledProject(unstartedProjects));
+        return findEarliestScheduledProject(unfinishedProjects)
+                .or(() -> findUnscheduledProject(unfinishedProjects));
     }
 
     public Optional<ProjectSchedule> findCurrentSchedule() {
@@ -56,14 +56,6 @@ public class ProjectUtil {
         // 아직 마지막 일정이 끝나지 않은 프로젝트들만 조회
         return projectRepository.findProjectsWithScheduleNotEndedBefore(
                 ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
-                LocalDateTime.now()
-        );
-    }
-
-    private List<TeamBuildingProject> findUnstartedProjects() {
-        // 아직 첫 일정이 시작하지 않은 프로젝트들만 조회
-        return projectRepository.findProjectsWithScheduleNotStarted(
-                ScheduleType.IDEA_REGISTRATION,
                 LocalDateTime.now()
         );
     }

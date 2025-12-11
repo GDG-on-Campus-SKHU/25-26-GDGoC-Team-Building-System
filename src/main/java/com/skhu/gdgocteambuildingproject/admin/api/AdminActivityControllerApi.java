@@ -63,4 +63,14 @@ public interface AdminActivityControllerApi {
     })
     ResponseEntity<Void> deleteCategory(
             @Parameter(description = "삭제할 카테고리의 ID", required = true) Long categoryId);
+
+    @Operation(summary = "카테고리 제목 및 게시 상태 수정", description = "특정 카테고리의 제목과 게시/미게시 상태를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "수정 성공, 응답 바디는 없습니다."),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리 ID")
+    })
+    ResponseEntity<Void> updateCategoryTitleAndStatus(
+            @Parameter(description = "수정할 카테고리 ID", required = true) Long categoryId,
+            @Parameter(description = "수정할 카테고리 정보", required = true) ActivityUpdateRequestDto dto
+    );
 }

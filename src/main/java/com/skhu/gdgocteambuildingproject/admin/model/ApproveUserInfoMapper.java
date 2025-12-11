@@ -1,35 +1,37 @@
 package com.skhu.gdgocteambuildingproject.admin.model;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserGenerationResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.ApprovedUserResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.util.GenerationMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
+@RequiredArgsConstructor
 public class ApproveUserInfoMapper {
+
+    private final GenerationMapper generationMapper;
+
     public ApprovedUserResponseDto toApprovedUserResponseDto(User user) {
+
+        if (user.isDeleted()) {
+            return buildDeletedUserDto(user);
+        }
+
         return ApprovedUserResponseDto.builder()
                 .id(user.getId())
-                .userPosition(mapPositions(user))
                 .userName(user.getName())
                 .part(user.getPart())
                 .school(user.getSchool())
-                .generation(mapGenerations(user))
+                .generations(generationMapper.toMainGenerationDtos(user))
                 .build();
     }
 
-    private List<String> mapPositions(User user) {
-        return user.getGeneration()
-                .stream()
-                .map(gen -> gen.getPosition().name())
-                .toList();
-    }
-
-    private List<String> mapGenerations(User user) {
-        return user.getGeneration()
-                .stream()
-                .map(gen -> gen.getGeneration().getLabel())
-                .toList();
+    private ApprovedUserResponseDto buildDeletedUserDto(User user) {
+        return ApprovedUserResponseDto.builder()
+                .id(user.getId())
+                .userName(user.getName())
+                .build();
     }
 }

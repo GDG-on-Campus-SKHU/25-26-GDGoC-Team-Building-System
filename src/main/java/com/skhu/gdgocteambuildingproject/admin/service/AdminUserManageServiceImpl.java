@@ -3,12 +3,16 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 import com.skhu.gdgocteambuildingproject.admin.dto.PageInfo;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.UserResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.UserSearchResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.exception.AdminUserManageNotExistException;
 import com.skhu.gdgocteambuildingproject.admin.model.UserInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.UserSearchMapper;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +30,7 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
 
     private final UserRepository userRepository;
     private final UserInfoMapper userInfoMapper;
+    private final UserSearchMapper userSearchMapper;
 
     @Override
     @Transactional
@@ -70,6 +75,26 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<UserSearchResponseDto> searchUsers(
+            String generationLabel,
+            List<String> schools
+    ) {
+        Generation generation = getGenerationFromLabel(generationLabel);
+
+        List<User> users = userRepository.searchUsers(
+                generation,
+                schools,
+                ApprovalStatus.APPROVED,
+                UserStatus.ACTIVE
+        );
+
+        return users.stream()
+                .map(user -> userSearchMapper.map(user, generationLabel))
+                .toList();
+    }
+
+    @Override
     @Transactional
     public void resetRejectedUser(Long userId) {
         User user = findUserByIdOrThrow(userId);
@@ -84,5 +109,13 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
     private User findUserByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new AdminUserManageNotExistException(ExceptionMessage.USER_NOT_FOUND));
+    }
+
+    private Generation getGenerationFromLabel(String label) {
+        if (label == null) {
+            return null;
+        }
+
+        return Generation.fromLabel(label);
     }
 }

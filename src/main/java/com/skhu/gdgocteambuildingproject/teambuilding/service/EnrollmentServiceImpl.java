@@ -5,7 +5,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_BY_OTHER_USER;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ENROLLMENT_NOT_EXIST;
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_CREATOR_CANNOT_ENROLL;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_MEMBER_CANNOT_ENROLL;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
@@ -24,11 +24,11 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.CompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.CompositionMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.RosterMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.EnrollmentAvailabilityMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ReceivedEnrollmentMapper;
@@ -53,7 +53,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentAvailabilityMapper availabilityMapper;
     private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ReceivedEnrollmentMapper receivedEnrollmentMapper;
-    private final CompositionMapper compositionMapper;
+    private final RosterMapper rosterMapper;
     private final ProjectUtil projectUtil;
 
     @Override
@@ -105,13 +105,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public CompositionResponseDto getComposition(long userId) {
+    public RosterResponseDto getComposition(long userId) {
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
         Idea idea = user.getIdeaFrom(currentProject)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
 
-        return compositionMapper.map(user, idea);
+        return rosterMapper.map(user, idea);
     }
 
     @Override
@@ -256,8 +256,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             User applicant,
             TeamBuildingProject project
     ) {
-        if (applicant.hasRegisteredIdeaIn(project)) {
-            throw new IllegalStateException(IDEA_CREATOR_CANNOT_ENROLL.getMessage());
+        if (applicant.isMemberOf(project)) {
+            throw new IllegalStateException(IDEA_MEMBER_CANNOT_ENROLL.getMessage());
         }
     }
 

@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
 import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -58,6 +59,23 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
     Optional<Idea> findIdeaOf(
             @Param("creatorId") long creatorId,
             @Param("projectId") long projectId,
+            @Param("status") IdeaStatus status
+    );
+
+    @Query("""
+        SELECT DISTINCT i
+        FROM Idea i
+        LEFT JOIN FETCH i.enrollments e
+        WHERE EXISTS (
+            SELECT 1
+            FROM IdeaEnrollment enrollment
+            WHERE enrollment.idea = i
+              AND enrollment.schedule.id = :scheduleId
+        )
+          AND i.registerStatus = :status
+        """)
+    List<Idea> findByScheduleIdAndRegisterStatus(
+            @Param("scheduleId") long scheduleId,
             @Param("status") IdeaStatus status
     );
 }
