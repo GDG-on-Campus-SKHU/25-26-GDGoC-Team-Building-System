@@ -5,6 +5,7 @@ import static org.mockito.Mockito.when;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.IdeaTitleInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaTitleInfoMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

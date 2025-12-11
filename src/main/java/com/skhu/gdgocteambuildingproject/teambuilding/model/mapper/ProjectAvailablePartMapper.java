@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.model;
+package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectAvailablePartResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;

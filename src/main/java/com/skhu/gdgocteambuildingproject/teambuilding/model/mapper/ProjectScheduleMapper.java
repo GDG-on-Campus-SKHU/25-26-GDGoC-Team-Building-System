@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.model;
+package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectScheduleResponseDto;

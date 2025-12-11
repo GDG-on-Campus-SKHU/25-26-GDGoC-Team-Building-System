@@ -8,6 +8,8 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseD
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectTotalMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import java.util.List;
 import java.util.Optional;

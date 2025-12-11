@@ -18,11 +18,11 @@ import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestD
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ProjectParticipationAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.TeamBuildingInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.PastProjectMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectInfoMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ModifiableProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.TeamBuildingInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ModifiableProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.PastProjectMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;

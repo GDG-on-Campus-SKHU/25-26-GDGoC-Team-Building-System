@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.teambuilding.model;
+package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
 import static com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus.SCHEDULED_TO_ACCEPT;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
