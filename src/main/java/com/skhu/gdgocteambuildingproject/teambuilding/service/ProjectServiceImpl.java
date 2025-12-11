@@ -18,6 +18,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateR
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ModifiableProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.PastProjectMapper;
@@ -46,6 +47,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final UserRepository userRepository;
 
     private final ProjectUtil projectUtil;
+    private final ParticipationUtil participationUtil;
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
     private final ProjectInfoMapper projectInfoMapper;
@@ -90,7 +92,7 @@ public class ProjectServiceImpl implements ProjectService {
         TeamBuildingProject currentProject = projectUtil.findCurrentProject()
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
 
-        projectUtil.validateParticipation(userId, currentProject.getId());
+        participationUtil.validateParticipation(userId, currentProject.getId());
 
         validateProjectScheduled(currentProject);
 
@@ -108,7 +110,7 @@ public class ProjectServiceImpl implements ProjectService {
                     .build();
         }
 
-        boolean participated = projectUtil.isParticipated(userId, currentProject.get().getId());
+        boolean participated = participationUtil.isParticipated(userId, currentProject.get().getId());
 
         return ProjectParticipationAvailabilityResponseDto.builder()
                 .available(participated)

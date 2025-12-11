@@ -43,6 +43,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoRes
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -66,6 +67,7 @@ public class IdeaServiceImpl implements IdeaService {
     private final UserRepository userRepository;
 
     private final ProjectUtil projectUtil;
+    private final ParticipationUtil participationUtil;
     private final IdeaTitleInfoMapper ideaTitleInfoMapper;
     private final IdeaDetailInfoMapper ideaDetailInfoMapper;
     private final RosterMapper rosterMapper;
@@ -77,7 +79,7 @@ public class IdeaServiceImpl implements IdeaService {
             long userId,
             IdeaCreateRequestDto requestDto
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         ProjectSchedule currentSchedule = findCurrentSchedule();
         validateRegistrationSchedule(currentSchedule);
@@ -109,7 +111,7 @@ public class IdeaServiceImpl implements IdeaService {
             SortOrder order,
             boolean recruitingOnly
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         Pageable pagination = setupPagination(page, size, sortBy, order);
 
@@ -155,7 +157,7 @@ public class IdeaServiceImpl implements IdeaService {
             long ideaId,
             long userId
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         Idea idea = ideaRepository.findByIdAndProjectId(ideaId, projectId)
                 .orElseThrow(() -> new IllegalArgumentException(IDEA_NOT_EXIST.getMessage()));
@@ -183,7 +185,7 @@ public class IdeaServiceImpl implements IdeaService {
             long projectId,
             long userId
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         Idea idea = ideaRepository.findByCreatorIdAndProjectId(userId, projectId)
                 .filter(Idea::isTemporary)
@@ -197,7 +199,7 @@ public class IdeaServiceImpl implements IdeaService {
     public RosterResponseDto getComposition(long userId) {
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
-        projectUtil.validateParticipation(userId, currentProject.getId());
+        participationUtil.validateParticipation(userId, currentProject.getId());
 
         Idea idea = user.getIdeaFrom(currentProject)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
@@ -213,7 +215,7 @@ public class IdeaServiceImpl implements IdeaService {
             long userId,
             IdeaTextUpdateRequestDto requestDto
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         validateIdeaTexts(requestDto.getTexts());
 
@@ -239,7 +241,7 @@ public class IdeaServiceImpl implements IdeaService {
             long userId,
             IdeaUpdateRequestDto requestDto
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         validateIdeaTexts(requestDto.getTexts());
 
@@ -289,7 +291,7 @@ public class IdeaServiceImpl implements IdeaService {
             long ideaId,
             long userId
     ) {
-        projectUtil.validateParticipation(userId, projectId);
+        participationUtil.validateParticipation(userId, projectId);
 
         Idea idea = ideaRepository.findByIdAndCreatorIdAndProjectId(ideaId, userId, projectId)
                 .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
@@ -344,7 +346,7 @@ public class IdeaServiceImpl implements IdeaService {
     ) {
         Idea idea = findIdeaBy(ideaId);
         TeamBuildingProject project = idea.getProject();
-        projectUtil.validateParticipation(creatorId, project.getId());
+        participationUtil.validateParticipation(creatorId, project.getId());
 
         validateIdeaOwnership(idea, creatorId);
 

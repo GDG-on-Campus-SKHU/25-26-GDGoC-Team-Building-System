@@ -26,6 +26,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentR
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.EnrollmentAvailabilityMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ReceivedEnrollmentMapper;
@@ -52,6 +53,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ReceivedEnrollmentMapper receivedEnrollmentMapper;
     private final ProjectUtil projectUtil;
+    private final ParticipationUtil participationUtil;
 
     @Override
     @Transactional
@@ -61,7 +63,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             EnrollmentRequestDto requestDto
     ) {
         TeamBuildingProject currentProject = findCurrentProject();
-        projectUtil.validateParticipation(applicantId, currentProject.getId());
+        participationUtil.validateParticipation(applicantId, currentProject.getId());
 
         User applicant = findUserBy(applicantId);
         Idea idea = findIdeaBy(ideaId);
@@ -86,7 +88,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             EnrollmentDetermineRequestDto requestDto
     ) {
         TeamBuildingProject currentProject = findCurrentProject();
-        projectUtil.validateParticipation(userId, currentProject.getId());
+        participationUtil.validateParticipation(userId, currentProject.getId());
 
         User creator = findUserBy(userId);
         IdeaEnrollment enrollment = findEnrollmentWithLock(enrollmentId);
@@ -112,7 +114,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     ) {
         Idea idea = findIdeaBy(ideaId);
         TeamBuildingProject project = idea.getProject();
-        projectUtil.validateParticipation(applicantId, project.getId());
+        participationUtil.validateParticipation(applicantId, project.getId());
 
         ProjectSchedule currentSchedule = findCurrentScheduleOf(project);
         User applicant = findUserBy(applicantId);
@@ -132,7 +134,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
-        projectUtil.validateParticipation(userId, currentProject.getId());
+        participationUtil.validateParticipation(userId, currentProject.getId());
 
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
 
@@ -153,7 +155,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
-        projectUtil.validateParticipation(userId, currentProject.getId());
+        participationUtil.validateParticipation(userId, currentProject.getId());
 
         Idea idea = findRegisteredIdeaOf(user, currentProject);
 
@@ -173,7 +175,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         Idea idea = enrollment.getIdea();
         TeamBuildingProject project = idea.getProject();
 
-        projectUtil.validateParticipation(userId, project.getId());
+        participationUtil.validateParticipation(userId, project.getId());
 
         validateEnrollmentOwnership(enrollment, user);
         validateEnrollmentCancelable(enrollment);
