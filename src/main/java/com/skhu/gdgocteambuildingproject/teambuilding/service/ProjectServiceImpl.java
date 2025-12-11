@@ -122,7 +122,8 @@ public class ProjectServiceImpl implements ProjectService {
         project.update(
                 requestDto.projectName(),
                 requestDto.maxMemberCount(),
-                requestDto.availableParts()
+                requestDto.availableParts(),
+                requestDto.topics()
         );
 
         updateParticipants(project, requestDto.participantUserIds());

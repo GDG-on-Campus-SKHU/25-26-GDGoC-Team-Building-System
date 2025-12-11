@@ -14,6 +14,8 @@ public record ProjectUpdateRequestDto(
 
         List<Part> availableParts,
 
+        List<String> topics,
+
         List<Long> participantUserIds,
 
         List<ScheduleUpdateRequestDto> schedules

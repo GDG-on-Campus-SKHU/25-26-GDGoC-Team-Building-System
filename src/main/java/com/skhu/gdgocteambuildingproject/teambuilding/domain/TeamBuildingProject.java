@@ -37,6 +37,10 @@ public class TeamBuildingProject extends BaseEntity {
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
+    private final List<ProjectTopic> topics = new ArrayList<>();
+
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
     private final List<ProjectAvailablePart> availableParts = new ArrayList<>();
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -191,22 +195,12 @@ public class TeamBuildingProject extends BaseEntity {
         projectSchedule.updateDates(startDate, endDate);
     }
 
-    public void update(String name, int maxMemberCount, List<Part> availableParts) {
+    public void update(String name, int maxMemberCount, List<Part> availableParts, List<String> topics) {
         this.name = name;
         this.maxMemberCount = maxMemberCount;
 
-        this.availableParts.clear();
-
-        if (availableParts != null) {
-            for (Part part : availableParts) {
-                ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
-                        .part(part)
-                        .project(this)
-                        .build();
-
-                this.availableParts.add(projectAvailablePart);
-            }
-        }
+        updateAvailableParts(availableParts);
+        updateTopics(topics);
     }
 
     public void participate(User user) {
@@ -222,6 +216,36 @@ public class TeamBuildingProject extends BaseEntity {
 
     public void clearParticipants() {
         participants.clear();
+    }
+
+    private void updateAvailableParts(List<Part> availableParts) {
+        this.availableParts.clear();
+
+        if (availableParts != null) {
+            for (Part part : availableParts) {
+                ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
+                        .part(part)
+                        .project(this)
+                        .build();
+
+                this.availableParts.add(projectAvailablePart);
+            }
+        }
+    }
+
+    private void updateTopics(List<String> topics) {
+        this.topics.clear();
+
+        if (topics != null) {
+            for (String topic : topics) {
+                ProjectTopic projectTopic = ProjectTopic.builder()
+                        .topic(topic)
+                        .project(this)
+                        .build();
+
+                this.topics.add(projectTopic);
+            }
+        }
     }
 
     private void validateParticipate(User user) {
