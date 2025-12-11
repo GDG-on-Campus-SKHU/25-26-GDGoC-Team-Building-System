@@ -13,27 +13,26 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_PASSED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
-import com.skhu.gdgocteambuildingproject.Idea.domain.Idea;
-import com.skhu.gdgocteambuildingproject.Idea.domain.IdeaEnrollment;
-import com.skhu.gdgocteambuildingproject.Idea.domain.enumtype.IdeaStatus;
-import com.skhu.gdgocteambuildingproject.Idea.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentDetermineRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.RosterResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.EnrollmentAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.ReceivedEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.SentEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.RosterMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.EnrollmentAvailabilityMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.ReceivedEnrollmentMapper;
-import com.skhu.gdgocteambuildingproject.teambuilding.model.SentEnrollmentMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.EnrollmentAvailabilityMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ReceivedEnrollmentMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.SentEnrollmentMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaEnrollmentRepository;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -53,8 +52,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentAvailabilityMapper availabilityMapper;
     private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ReceivedEnrollmentMapper receivedEnrollmentMapper;
-    private final RosterMapper rosterMapper;
     private final ProjectUtil projectUtil;
+    private final ParticipationUtil participationUtil;
 
     @Override
     @Transactional
@@ -63,10 +62,12 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             long ideaId,
             EnrollmentRequestDto requestDto
     ) {
+        TeamBuildingProject currentProject = findCurrentProject();
+        participationUtil.validateParticipation(applicantId, currentProject.getId());
+
         User applicant = findUserBy(applicantId);
         Idea idea = findIdeaBy(ideaId);
 
-        TeamBuildingProject currentProject = findCurrentProject();
         ProjectSchedule currentSchedule = findCurrentScheduleOf(currentProject);
 
         validateEnrollmentAvailable(currentSchedule.getType());
@@ -86,11 +87,13 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             long enrollmentId,
             EnrollmentDetermineRequestDto requestDto
     ) {
+        TeamBuildingProject currentProject = findCurrentProject();
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
         User creator = findUserBy(userId);
         IdeaEnrollment enrollment = findEnrollmentWithLock(enrollmentId);
         Idea idea = enrollment.getIdea();
 
-        TeamBuildingProject currentProject = findCurrentProject();
         ProjectSchedule currentSchedule = findCurrentScheduleOf(currentProject);
 
         validateIdeaOwnership(creator, idea);
@@ -105,23 +108,14 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public RosterResponseDto getComposition(long userId) {
-        User user = findUserBy(userId);
-        TeamBuildingProject currentProject = findCurrentProject();
-        Idea idea = user.getIdeaFrom(currentProject)
-                .orElseThrow(() -> new EntityNotFoundException(IDEA_NOT_EXIST.getMessage()));
-
-        return rosterMapper.map(user, idea);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public EnrollmentAvailabilityResponseDto getAvailabilityInfo(
             long ideaId,
             long applicantId
     ) {
         Idea idea = findIdeaBy(ideaId);
         TeamBuildingProject project = idea.getProject();
+        participationUtil.validateParticipation(applicantId, project.getId());
+
         ProjectSchedule currentSchedule = findCurrentScheduleOf(project);
         User applicant = findUserBy(applicantId);
 
@@ -140,6 +134,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
 
         List<IdeaEnrollment> enrollments = user.getEnrollmentFrom(schedule);
@@ -159,6 +155,8 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         User user = findUserBy(userId);
         TeamBuildingProject currentProject = findCurrentProject();
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
         Idea idea = findRegisteredIdeaOf(user, currentProject);
 
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
@@ -174,6 +172,10 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public void cancelEnrollment(long userId, long enrollmentId) {
         User user = findUserBy(userId);
         IdeaEnrollment enrollment = findEnrollmentBy(enrollmentId);
+        Idea idea = enrollment.getIdea();
+        TeamBuildingProject project = idea.getProject();
+
+        participationUtil.validateParticipation(userId, project.getId());
 
         validateEnrollmentOwnership(enrollment, user);
         validateEnrollmentCancelable(enrollment);

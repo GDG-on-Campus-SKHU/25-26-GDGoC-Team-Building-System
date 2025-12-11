@@ -1,12 +1,12 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectCreateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectInfoPageResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ModifiableProjectResponseDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.admin.dto.project.SchoolResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.response.PastProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -74,6 +74,8 @@ public interface AdminProjectManageApi {
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     
                     scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    
+                    topics: 프로젝트 토픽 목록 (문자열 리스트)
                     """
     )
     ResponseEntity<Void> updateProject(
