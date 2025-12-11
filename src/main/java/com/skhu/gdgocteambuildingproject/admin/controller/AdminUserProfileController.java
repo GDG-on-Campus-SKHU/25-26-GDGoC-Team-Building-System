@@ -2,8 +2,9 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminUserProfileApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.*;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileService;
-import com.skhu.gdgocteambuildingproject.admin.service.AdminUserProfileServiceImpl;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
@@ -123,5 +124,20 @@ public class AdminUserProfileController implements AdminUserProfileApi {
     public ResponseEntity<UserSelectOptionsDto> getUserSelectOptions() {
         UserSelectOptionsDto response = adminUserProfileService.getUserSelectOptions();
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/{userId}/profile")
+    public ResponseEntity<UserProfileResponseDto> getProfileByUser(@PathVariable Long userId) {
+        UserProfileResponseDto response = adminUserProfileService.getProfileByUserid(userId);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @PatchMapping("/{userId}/profile")
+    public ResponseEntity<UserProfileResponseDto> updateProfileByUser(@PathVariable Long userId,
+                                                                      @RequestBody UpdateUserProfileRequestDto dto) {
+        adminUserProfileService.updateProfileByUser(userId, dto);
+        return ResponseEntity.ok().build();
     }
 }

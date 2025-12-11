@@ -1,14 +1,16 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.*;
-import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserDetailMapper;
-import com.skhu.gdgocteambuildingproject.admin.model.UserSelectOptionsMapper;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.model.*;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
+import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
+import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
@@ -33,6 +35,8 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     private final UserGenerationRepository userGenerationRepository;
 
     private final ApproveUserInfoMapper approveUserInfoMapper;
+    private final UserProfileInfoMapper userProfileInfoMapper;
+    private final UserProfileUpdateMapper userProfileUpdateMapper;
     private final ApprovedUserDetailMapper approvedUserDetailMapper;
     private final UserSelectOptionsMapper userSelectOptionsMapper;
 
@@ -117,6 +121,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
         userGenerationRepository.delete(userGeneration);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public ApprovedUserInfoResponseDto getApproveUser(Long userId) {
         User user = getUserOrThrow(userId);
@@ -140,6 +145,27 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     @Transactional(readOnly = true)
     public UserSelectOptionsDto getUserSelectOptions() {
         return userSelectOptionsMapper.fromEnums();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserProfileResponseDto getProfileByUserid(Long userId) {
+        User user = getUserOrThrow(userId);
+
+        return userProfileInfoMapper.toDto(user);
+    }
+
+    @Override
+    @Transactional
+    public void updateProfileByUser(Long userId, UpdateUserProfileRequestDto dto) {
+        User user = getUserOrThrow(userId);
+        user.updateUserIntroduction(dto.introduction());
+
+        List<TechStack> techStacks = userProfileUpdateMapper.toTechStacks(user, dto);
+        user.updateTechStacks(techStacks);
+
+        List<UserLink> userLinks = userProfileUpdateMapper.toUserLinks(user, dto);
+        user.updateUserLinks(userLinks);
     }
 
     private void processUpdateGeneration(User user, UserGenerationUpdateDto generationItem) {

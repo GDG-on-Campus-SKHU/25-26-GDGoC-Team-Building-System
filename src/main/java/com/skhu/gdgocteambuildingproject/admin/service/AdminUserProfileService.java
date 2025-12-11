@@ -1,6 +1,8 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.*;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 
@@ -48,4 +50,8 @@ public interface AdminUserProfileService {
     void updateApproveUser(Long userId, ApproveUserUpdateRequestDto dto);
 
     UserSelectOptionsDto getUserSelectOptions();
+
+    UserProfileResponseDto getProfileByUserid(Long userId);
+
+    void updateProfileByUser(Long userId, UpdateUserProfileRequestDto dto);
 }
