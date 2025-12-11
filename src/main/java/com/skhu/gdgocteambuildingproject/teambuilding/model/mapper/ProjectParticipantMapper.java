@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectParticipantResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipantResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectParticipant;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;

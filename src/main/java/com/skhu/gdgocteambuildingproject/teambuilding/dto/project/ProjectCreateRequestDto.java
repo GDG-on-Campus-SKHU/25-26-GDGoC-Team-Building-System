@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.admin.dto.project;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.project;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;

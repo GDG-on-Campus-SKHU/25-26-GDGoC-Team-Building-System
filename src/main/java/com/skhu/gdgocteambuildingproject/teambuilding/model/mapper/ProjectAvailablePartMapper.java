@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectAvailablePartResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectAvailablePartResponseDto;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import java.util.ArrayList;

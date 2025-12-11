@@ -1,4 +1,4 @@
-package com.skhu.gdgocteambuildingproject.admin.dto.idea;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.idea;
 
 import lombok.Builder;
 

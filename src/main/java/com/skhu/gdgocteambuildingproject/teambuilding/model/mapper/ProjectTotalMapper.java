@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

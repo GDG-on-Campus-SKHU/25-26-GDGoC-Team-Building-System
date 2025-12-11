@@ -1,7 +1,5 @@
-package com.skhu.gdgocteambuildingproject.admin.dto.idea;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.idea;
 
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreatorInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaMemberCompositionResponseDto;
 import java.util.List;
 import lombok.Builder;
 

@@ -1,6 +1,5 @@
-package com.skhu.gdgocteambuildingproject.admin.dto.project;
+package com.skhu.gdgocteambuildingproject.teambuilding.dto.project;
 
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectScheduleResponseDto;
 import java.util.List;
 import lombok.Builder;
 

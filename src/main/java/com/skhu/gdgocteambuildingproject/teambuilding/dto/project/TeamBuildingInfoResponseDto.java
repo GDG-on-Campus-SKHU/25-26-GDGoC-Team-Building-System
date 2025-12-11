@@ -1,6 +1,5 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.dto.project;
 
-import com.skhu.gdgocteambuildingproject.admin.dto.project.ProjectTotalResponseDto;
 import lombok.Builder;
 
 @Builder
