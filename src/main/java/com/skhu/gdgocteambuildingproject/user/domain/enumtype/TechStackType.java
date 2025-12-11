@@ -163,7 +163,7 @@ public enum TechStackType {
             case CSS -> "/icons/techstackicons/css_icon.png";
             case DYNAMODB -> "/icons/techstackicons/dynamodb_icon.png";
             case HEROKU -> "/icons/techstackicons/heroku_icon.png";
-            case JAVA ->
+            case JAVA -> "/icons/techstackicons/java_icon.png";
             case NUXT_JS -> "/icons/techstackicons/nuxtjs_icon.png";
             case UNITY -> "/icons/techstackicons/unity_icon.png";
             case VS_CODE -> "/icons/techstackicons/vscode_icon.png";
