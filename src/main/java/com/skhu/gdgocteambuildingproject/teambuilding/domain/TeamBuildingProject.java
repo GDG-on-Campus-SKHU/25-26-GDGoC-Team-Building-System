@@ -195,56 +195,59 @@ public class TeamBuildingProject extends BaseEntity {
         projectSchedule.updateDates(startDate, endDate);
     }
 
-    public void update(String name, int maxMemberCount, List<Part> availableParts, List<String> topics) {
+    public void update(
+            String name,
+            int maxMemberCount,
+            List<Part> availableParts,
+            List<String> topics,
+            List<User> participants
+    ) {
         this.name = name;
         this.maxMemberCount = maxMemberCount;
 
         updateAvailableParts(availableParts);
         updateTopics(topics);
+        updateParticipants(participants);
     }
 
-    public void participate(User user) {
-        validateParticipate(user);
+    private void updateParticipants(List<User> participants) {
+        this.participants.clear();
 
-        ProjectParticipant participant = ProjectParticipant.builder()
-                .project(this)
-                .user(user)
-                .build();
+        for (User user : participants) {
+            validateParticipate(user);
 
-        participants.add(participant);
-    }
+            ProjectParticipant participant = ProjectParticipant.builder()
+                    .project(this)
+                    .user(user)
+                    .build();
 
-    public void clearParticipants() {
-        participants.clear();
+            this.participants.add(participant);
+        }
     }
 
     private void updateAvailableParts(List<Part> availableParts) {
         this.availableParts.clear();
 
-        if (availableParts != null) {
-            for (Part part : availableParts) {
-                ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
-                        .part(part)
-                        .project(this)
-                        .build();
+        for (Part part : availableParts) {
+            ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
+                    .part(part)
+                    .project(this)
+                    .build();
 
-                this.availableParts.add(projectAvailablePart);
-            }
+            this.availableParts.add(projectAvailablePart);
         }
     }
 
     private void updateTopics(List<String> topics) {
         this.topics.clear();
 
-        if (topics != null) {
-            for (String topic : topics) {
-                ProjectTopic projectTopic = ProjectTopic.builder()
-                        .topic(topic)
-                        .project(this)
-                        .build();
+        for (String topic : topics) {
+            ProjectTopic projectTopic = ProjectTopic.builder()
+                    .topic(topic)
+                    .project(this)
+                    .build();
 
-                this.topics.add(projectTopic);
-            }
+            this.topics.add(projectTopic);
         }
     }
 
