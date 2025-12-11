@@ -53,6 +53,7 @@ public class SecurityConfig {
                 .sessionManagement(AbstractHttpConfigurer::disable)
                 .cors(cors -> cors.configurationSource(configurationSource()))
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/**").permitAll()
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/**", "/swagger-ui/**","/v3/api-docs/**", "/email/**").permitAll()
                         .requestMatchers("/constants/**").permitAll() // 상수 조회용 엔드포인트
