@@ -158,6 +158,7 @@ public class User extends BaseEntity {
     }
 
     public void updateUserLinks(List<UserLink> newUserLinks) {
+        newUserLinks.forEach(UserLink::validateLink);
         this.userLinks.clear();
         this.userLinks.addAll(newUserLinks);
     }

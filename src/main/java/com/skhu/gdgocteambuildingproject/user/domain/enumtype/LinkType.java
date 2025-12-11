@@ -39,4 +39,20 @@ public enum LinkType {
         return displayName.toLowerCase().replace(" ", "");
     }
 
+    public boolean matchesHost(String host) {
+        return switch (this) {
+            case GITHUB     -> host.endsWith("github.com");
+            case VELOG      -> host.endsWith("velog.io");
+            case LINKEDIN   -> host.endsWith("linkedin.com");
+            case TISTORY    -> host.endsWith("tistory.com");
+            case NOTION     -> host.endsWith("notion.so") || host.endsWith("notion.site");
+            case BAEKJOON   -> host.endsWith("acmicpc.net");
+            case INSTAGRAM  -> host.endsWith("instagram.com");
+            case TWITTER, X -> host.endsWith("twitter.com") || host.endsWith("x.com");
+            case FACEBOOK   -> host.endsWith("facebook.com");
+            case YOUTUBE    -> host.endsWith("youtube.com") || host.endsWith("youtu.be");
+            case BLOG       -> true;
+            case OTHER      -> true;
+        };
+    }
 }

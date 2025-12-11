@@ -162,6 +162,11 @@ public class S3ImageServiceImpl implements S3ImageService {
                                      String mimeType,
                                      long size) {
         try (InputStream is = imageFile.getInputStream()) {
+
+            // 업로드 시도 로그
+            log.info("[S3 UPLOAD START] bucket={}, key={}, mimeType={}, size={}",
+                    bucketName, bucketPath, mimeType, size);
+
             PutObjectRequest putObjectRequest = PutObjectRequest.builder()
                     .bucket(bucketName)
                     .key(bucketPath)
@@ -170,18 +175,37 @@ public class S3ImageServiceImpl implements S3ImageService {
                     .build();
 
             s3Client.putObject(putObjectRequest, RequestBody.fromInputStream(is, size));
+
+            // 성공 로그
+            log.info("[S3 UPLOAD SUCCESS] bucket={}, key={}", bucketName, bucketPath);
+
         } catch (IOException e) {
+            // IO 쪽 문제 (파일 읽기 등)
+            log.error("[S3 UPLOAD IO ERROR] bucket={}, key={}", bucketName, bucketPath, e);
+
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    ExceptionMessage.IO_EXCEPTION_ON_IMAGE_UPLOAD.getMessage()
+                    ExceptionMessage.IO_EXCEPTION_ON_IMAGE_UPLOAD.getMessage(),
+                    e // 원인 같이 달아주면 추적 쉬워짐
             );
         } catch (S3Exception e) {
+            // S3 쪽 문제 (권한, 버킷, 리전, 네트워크 등)
+            log.error("[S3 PUT_OBJECT ERROR] bucket={}, key={}, awsErrorCode={}, awsMessage={}",
+                    bucketName,
+                    bucketPath,
+                    e.awsErrorDetails() != null ? e.awsErrorDetails().errorCode() : "null",
+                    e.awsErrorDetails() != null ? e.awsErrorDetails().errorMessage() : "null",
+                    e
+            );
+
             throw new ResponseStatusException(
                     HttpStatus.INTERNAL_SERVER_ERROR,
-                    ExceptionMessage.PUT_OBJECT_EXCEPTION.getMessage()
+                    ExceptionMessage.PUT_OBJECT_EXCEPTION.getMessage(),
+                    e // 이것도 같이
             );
         }
     }
+
 
     private String generateFileUrl(String bucketPath) {
         return s3Client.utilities().getUrl(

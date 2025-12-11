@@ -1,13 +1,13 @@
 package com.skhu.gdgocteambuildingproject.admin.dto.profile;
 
-import com.skhu.gdgocteambuildingproject.mypage.dto.TechStackDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.UserLinkDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkResponseDto;
 
 import java.util.List;
 
 public record UpdateUserProfileRequestDto(
-        List<TechStackDto> techStacks,
-        List<UserLinkDto> userLinks,
+        List<TechStackResponseDto> techStacks,
+        List<UserLinkResponseDto> userLinks,
         String introduction
 ) {
 }

@@ -59,8 +59,10 @@ public class MypageServiceImpl implements MypageService {
         return profileInfoMapper.toDto(ideaMember.getUser());
     }
 
+
     private User findUserByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
     }
+
 }
