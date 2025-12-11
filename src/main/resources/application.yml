@@ -4,16 +4,19 @@ server:
 spring:
   application:
     name: gdgocTeambuildingProject
+
   profiles:
     active: local
+
+  # .env 파일 로딩 설정
+  config:
+    import: optional:file:.env[.properties]
+
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
     password: ${SPRING_DATASOURCE_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-  # 로컬 테스트가 가능하도록 루트 디렉토리의 .env 파일을 인식하도록 설정
-  config:
-    import: optional:file:.env[.properties]
 
   jpa:
     hibernate:
@@ -41,6 +44,29 @@ spring:
           starttls:
             enable: true
 
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST}
+      port: ${SPRING_DATA_REDIS_PORT}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access:
+    expiration: ${JWT_ACCESS_EXPIRATION}
+  refresh:
+    expiration: ${JWT_REFRESH_EXPIRATION}
+
+cors:
+  allowed-origins: ${CORS_ALLOWED_ORIGINS}
+  allowed-methods: ${CORS_ALLOWED_METHODS}
+  allowed-headers: ${CORS_ALLOWED_HEADERS}
+  exposed-headers: ${CORS_EXPOSED_HEADERS}
+
+swagger:
+  servers:
+    - ${SWAGGER_SERVER_LOCAL}
+    - ${SWAGGER_SERVER_PROD}
+
 springdoc:
   api-docs:
     path: /v3/api-docs
@@ -54,14 +80,12 @@ springdoc:
     # 메서드를 'DELETE - GET - PATCH - POST - PUT' 순서로 정렬
     operations-sorter: method
 
-jwt:
-  secret: ${JWT_SECRET}
-  access:
-    expiration: ${JWT_ACCESS_EXPIRATION}
-  refresh:
-    expiration: ${JWT_REFRESH_EXPIRATION}
-
-swagger:
-  servers:
-    - ${SWAGGER_SERVER_LOCAL}
-    - ${SWAGGER_SERVER_PROD}
+cloud:
+  aws:
+    credentials:
+      access-key: ${AWS_S3_ACCESS_KEY_ID}
+      secret-key: ${AWS_S3_SECRET_ACCESS_KEY}
+    s3:
+      bucket: ${AWS_S3_BUCKET}
+    region:
+      static: ap-northeast-2
