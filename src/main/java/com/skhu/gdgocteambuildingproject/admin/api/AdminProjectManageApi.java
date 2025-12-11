@@ -74,6 +74,8 @@ public interface AdminProjectManageApi {
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     
                     scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    
+                    topics: 프로젝트 토픽 목록 (문자열 리스트)
                     """
     )
     ResponseEntity<Void> updateProject(

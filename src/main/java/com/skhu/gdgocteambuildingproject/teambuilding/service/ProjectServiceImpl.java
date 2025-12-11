@@ -119,13 +119,15 @@ public class ProjectServiceImpl implements ProjectService {
     public void updateProject(long projectId, ProjectUpdateRequestDto requestDto) {
         TeamBuildingProject project = findProjectBy(projectId);
 
+        List<User> participants = findParticipatingUsers(requestDto.participantUserIds());
+
         project.update(
                 requestDto.projectName(),
                 requestDto.maxMemberCount(),
-                requestDto.availableParts()
+                requestDto.availableParts(),
+                requestDto.topics(),
+                participants
         );
-
-        updateParticipants(project, requestDto.participantUserIds());
 
         for (ScheduleUpdateRequestDto schedule : requestDto.schedules()) {
             project.updateSchedule(
@@ -184,15 +186,10 @@ public class ProjectServiceImpl implements ProjectService {
         );
     }
 
-    private void updateParticipants(TeamBuildingProject project, List<Long> participantUserIds) {
-        project.clearParticipants();
-
-        if (participantUserIds != null) {
-            for (Long userId : participantUserIds) {
-                User user = findUserBy(userId);
-                project.participate(user);
-            }
-        }
+    private List<User> findParticipatingUsers(List<Long> participantUserIds) {
+        return participantUserIds.stream()
+                .map(this::findUserBy)
+                .toList();
     }
 
     private void validateProjectScheduled(TeamBuildingProject currentProject) {

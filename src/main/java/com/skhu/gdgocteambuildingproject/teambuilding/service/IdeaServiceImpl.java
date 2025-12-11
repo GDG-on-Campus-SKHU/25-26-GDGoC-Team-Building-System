@@ -10,6 +10,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TOPIC_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.REGISTERED_IDEA_ALREADY_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_PASSED;
@@ -28,6 +29,7 @@ import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectSchedule;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectTopic;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaCreateRequestDto;
@@ -192,8 +194,9 @@ public class IdeaServiceImpl implements IdeaService {
         validateIdeaInProject(idea, projectId);
         validateIdeaOwnership(idea, userId);
 
+        ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
         idea.updateTexts(
-                requestDto.topic(),
+                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -217,8 +220,9 @@ public class IdeaServiceImpl implements IdeaService {
         validateBeforeEnrollment(idea);
         validateTotalMemberCount(requestDto.compositions(), idea.getProject());
 
+        ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
         idea.updateTexts(
-                requestDto.topic(),
+                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -237,8 +241,9 @@ public class IdeaServiceImpl implements IdeaService {
 
         Idea idea = findIdeaIncludeDeleted(ideaId);
 
+        ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
         idea.updateTexts(
-                requestDto.topic(),
+                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -434,8 +439,10 @@ public class IdeaServiceImpl implements IdeaService {
             TeamBuildingProject project,
             User creator
     ) {
+        ProjectTopic topic = findTopicBy(project, ideaDto.topicId());
+
         Idea idea = Idea.builder()
-                .topic(ideaDto.topic())
+                .topic(topic)
                 .title(ideaDto.title())
                 .introduction(ideaDto.introduction())
                 .description(ideaDto.description())
@@ -459,8 +466,9 @@ public class IdeaServiceImpl implements IdeaService {
             validateTotalMemberCount(requestDto.compositions(), idea.getProject());
         }
 
+        ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
         idea.updateTexts(
-                requestDto.topic(),
+                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -558,5 +566,12 @@ public class IdeaServiceImpl implements IdeaService {
         if (totalMemberCount > projectMaxMemberCount) {
             throw new IllegalStateException(IDEA_TOTAL_MEMBER_COUNT_EXCEEDED.getMessage());
         }
+    }
+
+    private ProjectTopic findTopicBy(TeamBuildingProject project, Long topicId) {
+        return project.getTopics().stream()
+                .filter(topic -> topic.getId().equals(topicId))
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException(TOPIC_NOT_EXIST.getMessage()));
     }
 }

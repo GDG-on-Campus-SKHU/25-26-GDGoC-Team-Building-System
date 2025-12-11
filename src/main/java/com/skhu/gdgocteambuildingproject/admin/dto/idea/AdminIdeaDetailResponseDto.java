@@ -11,6 +11,8 @@ public record AdminIdeaDetailResponseDto(
         String title,
         String introduction,
         String description,
+        Long topicId,
+        String topic,
         IdeaCreatorInfoResponseDto creator,
         boolean deleted,
         List<IdeaMemberCompositionResponseDto> compositions

@@ -39,7 +39,7 @@ public interface AdminIdeaManageApi {
                     
                     아이디어의 소프트 딜리트 여부도 같이 반환합니다.
                     
-                    sortBy(정렬 기준): id(순번), topic(주제), title(제목), introduction(한줄 소개), description(설명)
+                    sortBy(정렬 기준): id(순번), title(제목), introduction(한줄 소개), description(설명)
                     
                     order: ASC 또는 DESC
                     """
@@ -48,7 +48,7 @@ public interface AdminIdeaManageApi {
             @Parameter(description = "프로젝트 ID") long projectId,
             @Parameter(description = "페이지 번호 (0부터 시작)", example = "0") int page,
             @Parameter(description = "페이지 당 항목 수", example = "20") int size,
-            @Parameter(description = "정렬 기준 필드명 (id, topic, title, introduction, description)", example = "id") String sortBy,
+            @Parameter(description = "정렬 기준 필드명 (id, title, introduction, description)", example = "id") String sortBy,
             @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
     );
 
