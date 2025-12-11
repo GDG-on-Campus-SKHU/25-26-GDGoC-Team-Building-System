@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.request.IdeaUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -52,9 +53,28 @@ public interface AdminIdeaManageApi {
     );
 
     @Operation(
+            summary = "아이디어 상세 조회",
+            description = """
+                    프로젝트에 게시된 아이디어 하나의 상세 정보를 조회합니다.
+                    소프트 딜리트된 아이디어도 조회할 수 있습니다.
+                    
+                    아이디어의 소프트 딜리트 여부도 같이 반환합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    ResponseEntity<AdminIdeaDetailResponseDto> findIdeaDetail(
+            @Parameter(description = "프로젝트 ID") long projectId,
+            @Parameter(description = "아이디어 ID") long ideaId
+    );
+
+    @Operation(
             summary = "아이디어 수정",
             description = """
                     아이디어를 수정합니다.
+                    관리자용 기능의 경우, 멤버가 추가된 이후에도 파트별 최대 인원수를 수정할 수 있습니다.
+                    
+                    최대 인원수는 현재 인원수보다 작을 수 없습니다.
                     
                     creatorPart, part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
@@ -75,5 +95,19 @@ public interface AdminIdeaManageApi {
     )
     ResponseEntity<Void> restoreIdea(
             @Parameter(description = "아이디어 ID") long ideaId
+    );
+
+    @Operation(
+            summary = "팀원 제거",
+            description = """
+                    아이디어에 소속한 팀원을 제거합니다.
+                    팀장(CREATOR)은 제거할 수 없습니다.
+                    
+                    memberId: 팀원의 userId
+                    """
+    )
+    ResponseEntity<Void> deleteMember(
+            @Parameter(description = "아이디어 ID") long ideaId,
+            @Parameter(description = "제거할 팀원의 userId") long memberId
     );
 }

@@ -22,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class AdminUserProfileController implements AdminUserProfileApi {
 
+    private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
+
     private final AdminUserProfileService adminUserProfileService;
 
     @Override
@@ -96,6 +98,13 @@ public class AdminUserProfileController implements AdminUserProfileApi {
                 adminUserProfileService.searchUsersBySchool(school, page, size, sortBy, order);
 
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @DeleteMapping("/{generationId}")
+    public ResponseEntity<Void> deleteUserGeneration(@PathVariable Long generationId) {
+        adminUserProfileService.deleteUserGeneration(generationId);
+        return NO_CONTENT;
     }
 
     @Override

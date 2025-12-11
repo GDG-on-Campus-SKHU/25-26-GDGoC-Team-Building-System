@@ -97,4 +97,8 @@ public class TokenProvider {
             return false;
         }
     }
+
+    public long getRefreshTokenExpirySeconds() {
+        return (accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER) / 1000;
+    }
 }

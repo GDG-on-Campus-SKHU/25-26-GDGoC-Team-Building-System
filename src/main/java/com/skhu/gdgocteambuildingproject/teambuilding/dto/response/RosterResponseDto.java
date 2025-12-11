@@ -5,11 +5,11 @@ import java.util.List;
 import lombok.Builder;
 
 @Builder
-public record CompositionResponseDto(
+public record RosterResponseDto(
         long ideaId,
         String ideaTitle,
         String ideaIntroduction,
         IdeaMemberRole myRole,
-        List<CompositionPartResponseDto> compositions
+        List<RosterPartResponseDto> rosters
 ) {
 }

@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.*;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UpdateUserProfileRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.profile.UserProfileResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.model.ApproveUserInfoMapper;
+import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserDetailMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.ApprovedUserInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.UserProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.UserProfileUpdateMapper;
@@ -17,6 +18,7 @@ import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
+import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
@@ -34,11 +36,12 @@ import java.util.List;
 public class AdminUserProfileServiceImpl implements AdminUserProfileService {
 
     private final UserRepository userRepository;
+    private final UserGenerationRepository userGenerationRepository;
 
     private final ApproveUserInfoMapper approveUserInfoMapper;
-    private final ApprovedUserInfoMapper approvedUserInfoMapper;
     private final UserProfileInfoMapper userProfileInfoMapper;
     private final UserProfileUpdateMapper userProfileUpdateMapper;
+    private final ApprovedUserDetailMapper approvedUserDetailMapper;
 
     @Override
     @Transactional(readOnly = true)
@@ -113,11 +116,20 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
     }
 
     @Override
+    @Transactional
+    public void deleteUserGeneration(Long generationId) {
+        UserGeneration userGeneration = userGenerationRepository.findById(generationId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.GENERATION_NOT_FOUND.getMessage()));
+
+        userGenerationRepository.delete(userGeneration);
+    }
+
+    @Override
     @Transactional(readOnly = true)
     public ApprovedUserInfoResponseDto getApproveUser(Long userId) {
         User user = getUserOrThrow(userId);
 
-        return approvedUserInfoMapper.toDto(user);
+        return approvedUserDetailMapper.toDto(user);
     }
 
     @Override
