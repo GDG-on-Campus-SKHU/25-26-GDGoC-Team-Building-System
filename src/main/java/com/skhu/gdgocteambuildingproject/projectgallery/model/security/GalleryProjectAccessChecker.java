@@ -31,11 +31,11 @@ public class GalleryProjectAccessChecker {
     }
 
     private boolean isAdmin(UserRole userRole) {
-        return userRole == UserRole.SKHU_ADMIN;
+        return userRole == UserRole.ROLE_SKHU_ADMIN;
     }
 
     private boolean isMember(UserRole userRole) {
-        return userRole == UserRole.SKHU_MEMBER;
+        return userRole == UserRole.ROLE_SKHU_MEMBER;
     }
 
     private boolean isLeaderOfProject(
