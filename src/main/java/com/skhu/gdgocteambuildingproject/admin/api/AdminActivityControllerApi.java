@@ -55,7 +55,6 @@ public interface AdminActivityControllerApi {
     ResponseEntity<Void> deleteActivityPost(
             @Parameter(description = "삭제할 게시글의 ID", required = true) Long postId);
 
-
     @Operation(summary = "카테고리 삭제", description = "카테고리 ID를 통해 특정 카테고리를 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "삭제 성공"),
