@@ -15,6 +15,7 @@ import jakarta.persistence.OneToMany;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -88,6 +89,7 @@ public class TeamBuildingProject extends BaseEntity {
         return schedules.stream()
                 .filter(schedule -> schedule.getType() == ScheduleType.FINAL_RESULT_ANNOUNCEMENT)
                 .map(ProjectSchedule::getEndDate)
+                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
     }
@@ -96,6 +98,7 @@ public class TeamBuildingProject extends BaseEntity {
         return schedules.stream()
                 .filter(schedule -> schedule.getType() == ScheduleType.FIRST_TEAM_BUILDING)
                 .map(ProjectSchedule::getStartDate)
+                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
     }
@@ -158,6 +161,7 @@ public class TeamBuildingProject extends BaseEntity {
         return schedules.stream()
                 .filter(schedule -> schedule.getType() == nextScheduleType)
                 .map(ProjectSchedule::getStartDate)
+                .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
     }
