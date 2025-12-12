@@ -114,6 +114,12 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateSignUp(SignUpRequestDto dto) {
+        if (dto.getRole() == UserRole.SKHU_ADMIN) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.INVALID_SIGNUP_ROLE.getMessage()
+            );
+        }
+
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail()))
             throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
 
