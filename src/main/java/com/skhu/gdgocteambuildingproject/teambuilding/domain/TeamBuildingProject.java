@@ -1,8 +1,8 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ALREADY_PARTICIPATED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_ALREADY_INITIALIZED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
+import static java.util.stream.Collectors.*;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -173,7 +174,7 @@ public class TeamBuildingProject extends BaseEntity {
 
         ScheduleType prevScheduleType = scheduleType.getPrevScheduleType();
 
-        return getSchedules().stream()
+        return schedules.stream()
                 .filter(schedule -> schedule.getType() == prevScheduleType)
                 .findAny();
     }
@@ -214,24 +215,67 @@ public class TeamBuildingProject extends BaseEntity {
     }
 
     private void updateParticipants(List<User> participants) {
-        this.participants.clear();
+        Set<User> uniqueParticipants = participants.stream()
+                .collect(toUnmodifiableSet());
+        Set<ProjectParticipant> existingParticipants = this.participants.stream()
+                .collect(toUnmodifiableSet());
 
-        for (User user : participants) {
-            validateParticipate(user);
+        removeExcludedParticipants(existingParticipants, uniqueParticipants);
+        addNewParticipants(existingParticipants, uniqueParticipants);
+    }
 
-            ProjectParticipant participant = ProjectParticipant.builder()
-                    .project(this)
-                    .user(user)
-                    .build();
+    private void updateTopics(List<String> topics) {
+        // 중복 제거
+        Set<String> uniqueTopics = topics.stream()
+                .collect(toUnmodifiableSet());
 
-            this.participants.add(participant);
-        }
+        Set<ProjectTopic> existingTopics = this.topics.stream()
+                .collect(toUnmodifiableSet());
+
+        removeExcludedTopics(existingTopics, uniqueTopics);
+        addNewTopics(existingTopics, uniqueTopics);
     }
 
     private void updateAvailableParts(List<Part> availableParts) {
-        this.availableParts.clear();
+        Set<Part> uniqueParts = availableParts.stream()
+                .collect(toUnmodifiableSet());
+        Set<ProjectAvailablePart> existingAvailableParts = this.availableParts.stream()
+                .collect(toUnmodifiableSet());
 
-        for (Part part : availableParts) {
+        removeExcludedAvailableParts(existingAvailableParts, uniqueParts);
+        addNewAvailableParts(existingAvailableParts, uniqueParts);
+    }
+
+    /**
+     * 새로운 Part 목록에 없는 기존 AvailablePart를 삭제한다.
+     */
+    private void removeExcludedAvailableParts(
+            Set<ProjectAvailablePart> existingAvailableParts,
+            Set<Part> newParts
+    ) {
+        Set<ProjectAvailablePart> toRemoveAvailableParts = existingAvailableParts.stream()
+                .filter(availablePart -> !newParts.contains(availablePart.getPart()))
+                .collect(toUnmodifiableSet());
+
+        this.availableParts.removeAll(toRemoveAvailableParts);
+    }
+
+    /**
+     * 기존 AvailablePart 목록에 없는 새로운 Part를 생성한다.
+     */
+    private void addNewAvailableParts(
+            Set<ProjectAvailablePart> existingAvailableParts,
+            Set<Part> newParts
+    ) {
+        Set<Part> existingParts = existingAvailableParts.stream()
+                .map(ProjectAvailablePart::getPart)
+                .collect(toUnmodifiableSet());
+
+        Set<Part> toAddParts = newParts.stream()
+                .filter(part -> !existingParts.contains(part))
+                .collect(toUnmodifiableSet());
+
+        for (Part part : toAddParts) {
             ProjectAvailablePart projectAvailablePart = ProjectAvailablePart.builder()
                     .part(part)
                     .project(this)
@@ -241,10 +285,36 @@ public class TeamBuildingProject extends BaseEntity {
         }
     }
 
-    private void updateTopics(List<String> topics) {
-        this.topics.clear();
+    /**
+     * 새로운 Topic 목록에 없는 기존 Topic을 삭제한다.
+     */
+    private void removeExcludedTopics(
+            Set<ProjectTopic> existingTopics,
+            Set<String> newTopics
+    ) {
+        Set<ProjectTopic> toRemoveTopics = existingTopics.stream()
+                .filter(topic -> !newTopics.contains(topic.getTopic()))
+                .collect(toUnmodifiableSet());
 
-        for (String topic : topics) {
+        this.topics.removeAll(toRemoveTopics);
+    }
+
+    /**
+     * 기존 Topic 목록에 없는 새로운 Topic을 생성한다.
+     */
+    private void addNewTopics(
+            Set<ProjectTopic> existingTopics,
+            Set<String> newTopics
+    ) {
+        Set<String> existingTopicStrings = existingTopics.stream()
+                .map(ProjectTopic::getTopic)
+                .collect(toUnmodifiableSet());
+
+        Set<String> toAddTopics = newTopics.stream()
+                .filter(topic -> !existingTopicStrings.contains(topic))
+                .collect(toUnmodifiableSet());
+
+        for (String topic : toAddTopics) {
             ProjectTopic projectTopic = ProjectTopic.builder()
                     .topic(topic)
                     .project(this)
@@ -254,13 +324,39 @@ public class TeamBuildingProject extends BaseEntity {
         }
     }
 
-    private void validateParticipate(User user) {
-        boolean alreadyParticipated = participants.stream()
-                .map(ProjectParticipant::getUser)
-                .anyMatch(user::equals);
+    /**
+     * 새로운 참여자 목록에 없는 기존 참여자를 삭제한다.
+     */
+    private void removeExcludedParticipants(
+            Set<ProjectParticipant> existingParticipants,
+            Set<User> newParticipatedUsers
+    ) {
+        Set<ProjectParticipant> toRemoveParticipants = existingParticipants.stream()
+                .filter(participant -> !newParticipatedUsers.contains(participant.getUser()))
+                .collect(toUnmodifiableSet());
 
-        if (alreadyParticipated) {
-            throw new IllegalStateException(ALREADY_PARTICIPATED.getMessage());
+        this.participants.removeAll(toRemoveParticipants);
+    }
+
+    /**
+     * 기존 참여자 목록에 없는 새로운 참여자를 생성한다.
+     */
+    private void addNewParticipants(Set<ProjectParticipant> existingParticipants, Set<User> newParticipatedUsers) {
+        Set<User> existingParticipatedUsers = existingParticipants.stream()
+                .map(ProjectParticipant::getUser)
+                .collect(toUnmodifiableSet());
+
+        Set<User> toAddUsers = newParticipatedUsers.stream()
+                .filter(user -> !existingParticipatedUsers.contains(user))
+                .collect(toUnmodifiableSet());
+
+        for (User user : toAddUsers) {
+            ProjectParticipant participant = ProjectParticipant.builder()
+                    .project(this)
+                    .user(user)
+                    .build();
+
+            this.participants.add(participant);
         }
     }
 }

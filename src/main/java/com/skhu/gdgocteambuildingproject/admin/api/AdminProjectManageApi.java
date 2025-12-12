@@ -70,6 +70,7 @@ public interface AdminProjectManageApi {
             summary = "프로젝트 정보 수정",
             description = """
                     프로젝트를 수정합니다.
+                    발표 일정(`ANNOUNCEMENT`)의 endAt 값은 null이어야 합니다.
                     
                     part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     
