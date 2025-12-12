@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface TeamBuildingProjectRepository extends JpaRepository<TeamBuildingProject, Long> {
+
     @Query("""
     SELECT DISTINCT p
     FROM TeamBuildingProject p
@@ -35,27 +36,10 @@ public interface TeamBuildingProjectRepository extends JpaRepository<TeamBuildin
         FROM ProjectSchedule s
         WHERE s.project = p
           AND s.type = :type
-          AND s.endDate > :criteria
+          AND (s.endDate IS NULL OR s.endDate > :criteria)
     )
     """)
     List<TeamBuildingProject> findProjectsWithScheduleNotEndedBefore(
-            @Param("type") ScheduleType type,
-            @Param("criteria") LocalDateTime criteria
-    );
-
-    @Query("""
-    SELECT DISTINCT p
-    FROM TeamBuildingProject p
-    LEFT JOIN FETCH p.schedules
-    WHERE EXISTS (
-        SELECT 1
-        FROM ProjectSchedule s
-        WHERE s.project = p
-          AND s.type = :type
-          AND (s.startDate IS NULL OR s.startDate > :criteria)
-    )
-    """)
-    List<TeamBuildingProject> findProjectsWithScheduleNotStarted(
             @Param("type") ScheduleType type,
             @Param("criteria") LocalDateTime criteria
     );
