@@ -65,7 +65,6 @@ public class AuthServiceImpl implements AuthService {
 
         return LoginResponseDto.builder()
                 .accessToken(newAccess)
-                .refreshToken(newRefresh)
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())
@@ -106,7 +105,6 @@ public class AuthServiceImpl implements AuthService {
 
         return LoginResponseDto.builder()
                 .accessToken(access)
-                .refreshToken(refresh)
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())

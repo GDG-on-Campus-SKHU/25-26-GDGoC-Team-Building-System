@@ -4,7 +4,10 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.headers.Header;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -52,6 +55,19 @@ public interface AuthControllerApi {
                     @ApiResponse(responseCode = "200", description = "로그인 성공")
             }
     )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "로그인 성공",
+                    headers = {
+                            @Header(
+                                    name = "Set-Cookie",
+                                    description = "refreshToken=xxx; HttpOnly; Path=/; Max-Age=...",
+                                    schema = @Schema(type = "string")
+                            )
+                    }
+            )
+    })
     @PostMapping("/login")
     ResponseEntity<LoginResponseDto> login(
             @Valid @RequestBody LoginRequestDto dto,
@@ -60,7 +76,7 @@ public interface AuthControllerApi {
 
     @Operation(
             summary = "토큰 재발급",
-            description = "Refresh Token을 이용해 Access Token을 재발급합니다.",
+            description = "HttpOnly Cookie에 저장된 Refresh Token을 사용하여 Access Token을 재발급합니다.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "토큰 재발급 성공")
             }
