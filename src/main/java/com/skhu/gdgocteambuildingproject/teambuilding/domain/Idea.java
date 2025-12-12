@@ -174,9 +174,6 @@ public class Idea extends BaseEntity {
 
     public void delete() {
         deleted = true;
-
-        enrollments.clear();
-        members.clear();
     }
 
     public void restore() {
