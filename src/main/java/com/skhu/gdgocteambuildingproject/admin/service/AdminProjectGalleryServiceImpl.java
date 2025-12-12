@@ -2,10 +2,14 @@ package com.skhu.gdgocteambuildingproject.admin.service;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.model.ProjectGalleryInfoMapper;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectRepository;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,5 +34,21 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
         return galleryProjects.stream()
                 .map(projectGalleryInfoMapper::toDto)
                 .toList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ProjectGalleryResponseDto> getProjectGallerys(int page, int size, String sortBy, SortOrder order) {
+        Pageable pageable = createPageable(page, size, sortBy, order);
+
+        Page<GalleryProject> galleryPage = galleryProjectRepository.findAll(pageable);
+
+        return galleryPage.stream()
+                .map(projectGalleryInfoMapper::toDto)
+                .toList();
+    }
+
+    private Pageable createPageable(int page, int size, String sortBy, SortOrder order) {
+        return PageRequest.of(page, size, order.sort(sortBy));
     }
 }
