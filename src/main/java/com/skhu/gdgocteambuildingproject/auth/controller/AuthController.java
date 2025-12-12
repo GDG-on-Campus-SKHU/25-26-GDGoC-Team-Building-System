@@ -16,15 +16,34 @@ import org.springframework.web.bind.annotation.*;
 @Tag(
         name = "Auth API",
         description = """
-인증 관련 기능을 제공합니다.
+인증(Auth) 관련 API를 제공합니다.
 
-사용 가능한 ENUM 값:
+[ENUM 목록]
 
-Generation: 22-23, 23-24, 24-25, 25-26
-Part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
-UserPosition: MEMBER, CORE, ORGANIZER
-UserRole: OTHERS, SKHU_MEMBER
-""")
+• Generation
+  - 22-23
+  - 23-24
+  - 24-25
+  - 25-26
+
+• Part
+  - PM
+  - DESIGN
+  - WEB
+  - MOBILE
+  - BACKEND
+  - AI
+
+• UserPosition
+  - MEMBER
+  - CORE
+  - ORGANIZER
+
+• UserRole
+  - OTHERS
+  - SKHU_MEMBER
+"""
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
