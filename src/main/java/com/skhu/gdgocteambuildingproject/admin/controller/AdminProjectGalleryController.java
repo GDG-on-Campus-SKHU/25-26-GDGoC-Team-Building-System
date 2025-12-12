@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectGalleryApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminProjectGalleryService;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -22,9 +23,24 @@ public class AdminProjectGalleryController implements AdminProjectGalleryApi {
 
     private final AdminProjectGalleryService adminProjectGalleryService;
 
-    @GetMapping
+    @Override
+    @GetMapping("/search")
     public ResponseEntity<List<ProjectGalleryResponseDto>> searchProjectGallery(@RequestParam String keyword) {
         List<ProjectGalleryResponseDto> response = adminProjectGalleryService.searchProjectGallery(keyword);
         return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping
+    public ResponseEntity<List<ProjectGalleryResponseDto>> getProjectGallerys(
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        List<ProjectGalleryResponseDto> projectGallerys =
+                adminProjectGalleryService.getProjectGallerys(page, size, sortBy, order);
+
+        return ResponseEntity.ok(projectGallerys);
     }
 }
