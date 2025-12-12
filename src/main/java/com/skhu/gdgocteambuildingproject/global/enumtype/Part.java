@@ -1,6 +1,9 @@
 package com.skhu.gdgocteambuildingproject.global.enumtype;
 
+import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import lombok.Getter;
+
+import java.util.Arrays;
 
 @Getter
 public enum Part {
@@ -15,5 +18,16 @@ public enum Part {
 
     Part(String koreanName) {
         this.koreanName = koreanName;
+    }
+
+    public static Part from(String value) {
+        return Arrays.stream(values())
+                .filter(part -> part.name().equals(value))
+                .findFirst()
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                ExceptionMessage.INVALID_PART.getMessage()
+                        )
+                );
     }
 }
