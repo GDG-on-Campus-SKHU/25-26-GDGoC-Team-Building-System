@@ -78,4 +78,7 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
             @Param("scheduleId") long scheduleId,
             @Param("status") IdeaStatus status
     );
+
+    @Query(value = "SELECT * FROM idea WHERE project_id = :projectId", nativeQuery = true)
+    List<Idea> findAllByProjectIdIncludeDeleted(@Param("projectId") long projectId);
 }

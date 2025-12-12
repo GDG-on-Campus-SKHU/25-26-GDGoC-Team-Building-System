@@ -4,6 +4,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
@@ -24,6 +25,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ModifiablePro
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.PastProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TeamBuildingInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -33,6 +35,7 @@ import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +48,8 @@ public class ProjectServiceImpl implements ProjectService {
 
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final IdeaRepository ideaRepository;
+    private final EntityManager entityManager;
 
     private final ProjectUtil projectUtil;
     private final ParticipationUtil participationUtil;
@@ -177,6 +182,8 @@ public class ProjectServiceImpl implements ProjectService {
     public void deleteProject(long projectId) {
         TeamBuildingProject project = findProjectBy(projectId);
 
+        removeIdeasOf(project);
+
         projectRepository.delete(project);
     }
 
@@ -230,5 +237,15 @@ public class ProjectServiceImpl implements ProjectService {
         if (projectUtil.findCurrentProject().isPresent()) {
             throw new IllegalStateException(PROJECT_ALREADY_EXISTS.getMessage());
         }
+    }
+
+    /**
+     * 프로젝트에 등록된 모든 아이디어를 삭제한다.
+     * 프로젝트를 삭제할 때 발생하는 외래키 제약조건 문제를 회피하기 위해 사용.
+     */
+    private void removeIdeasOf(TeamBuildingProject project) {
+        List<Idea> ideas = ideaRepository.findAllByProjectIdIncludeDeleted(project.getId());
+        ideaRepository.deleteAll(ideas);
+        entityManager.flush();
     }
 }
