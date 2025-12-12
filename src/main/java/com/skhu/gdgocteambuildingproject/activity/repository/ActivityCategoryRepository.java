@@ -1,10 +1,13 @@
-package com.skhu.gdgocteambuildingproject.community.repository;
+package com.skhu.gdgocteambuildingproject.activity.repository;
 
-import com.skhu.gdgocteambuildingproject.community.domain.ActivityCategory;
+import com.skhu.gdgocteambuildingproject.activity.domain.ActivityCategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ActivityCategoryRepository extends JpaRepository<ActivityCategory, Long> {
     Optional<ActivityCategory> findByName(String name);
+
+    List<ActivityCategory> findAllByIsPublishedTrue();
 }

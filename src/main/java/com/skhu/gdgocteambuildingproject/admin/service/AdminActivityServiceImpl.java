@@ -5,10 +5,10 @@ import com.skhu.gdgocteambuildingproject.admin.exception.ActivityPostNotFoundExc
 import com.skhu.gdgocteambuildingproject.admin.model.ActivityCategoryInfoMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.ActivityMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.PostInfoMapper;
-import com.skhu.gdgocteambuildingproject.community.domain.Activity;
-import com.skhu.gdgocteambuildingproject.community.domain.ActivityCategory;
-import com.skhu.gdgocteambuildingproject.community.repository.ActivityCategoryRepository;
-import com.skhu.gdgocteambuildingproject.community.repository.ActivityRepository;
+import com.skhu.gdgocteambuildingproject.activity.domain.Activity;
+import com.skhu.gdgocteambuildingproject.activity.domain.ActivityCategory;
+import com.skhu.gdgocteambuildingproject.activity.repository.ActivityCategoryRepository;
+import com.skhu.gdgocteambuildingproject.activity.repository.ActivityRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;

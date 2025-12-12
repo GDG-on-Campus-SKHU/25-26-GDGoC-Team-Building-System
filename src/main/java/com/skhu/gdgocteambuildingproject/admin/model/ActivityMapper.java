@@ -1,7 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.model;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.activity.ActivityResponseDto;
-import com.skhu.gdgocteambuildingproject.community.domain.Activity;
+import com.skhu.gdgocteambuildingproject.activity.domain.Activity;
 import org.springframework.stereotype.Component;
 
 @Component
