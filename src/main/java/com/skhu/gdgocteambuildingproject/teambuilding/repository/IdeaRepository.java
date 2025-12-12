@@ -30,7 +30,8 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
     );
 
     @Query(
-            value = "SELECT i FROM Idea i JOIN FETCH i.project JOIN FETCH i.project.availableParts WHERE i.id = :ideaId"
+            value = "SELECT * FROM idea WHERE id = :ideaId",
+            nativeQuery = true
     )
     Optional<Idea> findByIdIncludeDeleted(@Param("ideaId") long ideaId);
 
@@ -59,23 +60,6 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
     Optional<Idea> findIdeaOf(
             @Param("creatorId") long creatorId,
             @Param("projectId") long projectId,
-            @Param("status") IdeaStatus status
-    );
-
-    @Query("""
-        SELECT DISTINCT i
-        FROM Idea i
-        LEFT JOIN FETCH i.enrollments e
-        WHERE EXISTS (
-            SELECT 1
-            FROM IdeaEnrollment enrollment
-            WHERE enrollment.idea = i
-              AND enrollment.schedule.id = :scheduleId
-        )
-          AND i.registerStatus = :status
-        """)
-    List<Idea> findByScheduleIdAndRegisterStatus(
-            @Param("scheduleId") long scheduleId,
             @Param("status") IdeaStatus status
     );
 
