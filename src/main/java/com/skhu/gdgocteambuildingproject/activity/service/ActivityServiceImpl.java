@@ -24,7 +24,7 @@ public class ActivityServiceImpl implements ActivityService {
     @Override
     @Transactional(readOnly = true)
     public List<ActivitySummaryResponseDto> getAllActivities() {
-        List<ActivityCategory> categories = activityCategoryRepository.findAllByIsPublishedTrue();
+        List<ActivityCategory> categories = activityCategoryRepository.findAllByPublishedTrue();
 
         return categories.stream()
                 .map(this::getSummary)
