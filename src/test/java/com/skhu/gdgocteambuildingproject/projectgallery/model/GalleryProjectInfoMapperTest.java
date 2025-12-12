@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.*;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -52,7 +53,7 @@ class GalleryProjectInfoMapperTest {
 
         GalleryProject project = GalleryProject.builder()
                 .projectName(PROJECT_NAME)
-                .generation(GENERATION)
+                .generation(Generation.fromLabel(GENERATION))
                 .shortDescription(SHORT_DESC)
                 .serviceStatus(STATUS)
                 .description(DESCRIPTION)
@@ -90,6 +91,7 @@ class GalleryProjectInfoMapperTest {
 
         when(project.getId()).thenReturn(PROJECT_ID);
         when(project.getProjectName()).thenReturn(PROJECT_NAME);
+        when(project.getGeneration()).thenReturn(Generation.fromLabel(GENERATION));
         when(project.getShortDescription()).thenReturn(SHORT_DESC);
         when(project.getServiceStatus()).thenReturn(STATUS);
         when(project.getThumbnailUrl()).thenReturn(FILE_URL);
@@ -100,6 +102,7 @@ class GalleryProjectInfoMapperTest {
         // then
         assertThat(dto.galleryProjectId()).isEqualTo(PROJECT_ID);
         assertThat(dto.projectName()).isEqualTo(PROJECT_NAME);
+        assertThat(dto.generation()).isEqualTo(GENERATION);
         assertThat(dto.shortDescription()).isEqualTo(SHORT_DESC);
         assertThat(dto.serviceStatus()).isEqualTo(STATUS.name());
         assertThat(dto.thumbnailUrl()).isEqualTo(FILE_URL);

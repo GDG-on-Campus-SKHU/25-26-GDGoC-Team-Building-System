@@ -11,7 +11,7 @@ public class ProjectGalleryInfoMapper {
                 .id(galleryProject.getId())
                 .projectName(galleryProject.getProjectName())
                 .serviceStatus(galleryProject.getServiceStatus())
-                .generation(galleryProject.getGeneration())
+                .generation(galleryProject.getGeneration().getLabel())
                 .createdAt(galleryProject.getCreatedAt())
                 .build();
     }

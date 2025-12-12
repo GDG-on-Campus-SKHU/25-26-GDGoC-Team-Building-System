@@ -20,7 +20,7 @@ public class GalleryProjectInfoMapper {
         return GalleryProjectInfoResponseDto.builder()
                 .galleryProjectId(project.getId())
                 .projectName(project.getProjectName())
-                .generation(project.getGeneration())
+                .generation(project.getGeneration().getLabel())
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())
                 .description(project.getDescription())
@@ -33,6 +33,7 @@ public class GalleryProjectInfoMapper {
     public GalleryProjectSummaryResponseDto mapToSummary(GalleryProject project) {
         return GalleryProjectSummaryResponseDto.builder()
                 .galleryProjectId(project.getId())
+                .generation(project.getGeneration().getLabel())
                 .projectName(project.getProjectName())
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())

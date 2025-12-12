@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.domain;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +33,8 @@ public class GalleryProject extends BaseEntity {
     @Column(nullable = false)
     private String projectName;
     @Column(nullable = false)
-    private String generation;
+    @Enumerated(EnumType.STRING)
+    private Generation generation;
     @Column(nullable = false)
     private String shortDescription;
 
@@ -56,7 +58,7 @@ public class GalleryProject extends BaseEntity {
 
     public void update(
             String projectName,
-            String generation,
+            Generation generation,
             String shortDescription,
             ServiceStatus serviceStatus,
             String description,
