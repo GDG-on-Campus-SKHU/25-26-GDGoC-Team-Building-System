@@ -29,4 +29,5 @@ networks:
 
 volumes:
   redis-data:
+    external: true
     name: redis-data
