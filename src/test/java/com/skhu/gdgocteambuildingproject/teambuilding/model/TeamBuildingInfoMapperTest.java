@@ -58,6 +58,7 @@ class TeamBuildingInfoMapperTest {
                     .projectId(DEFAULT_ID)
                     .projectName(DEFAULT_NAME)
                     .maxMemberCount(DEFAULT_MAX_MEMBER_COUNT)
+                    .topics(List.of())
                     .availableParts(List.of())
                     .schedules(List.of())
                     .build();
