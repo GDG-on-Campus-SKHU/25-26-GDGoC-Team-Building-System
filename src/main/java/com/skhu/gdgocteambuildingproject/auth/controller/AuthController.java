@@ -65,7 +65,7 @@ public class AuthController {
             @ApiResponse(responseCode = "200", description = "로그인 성공")
     })
     @PostMapping("/login")
-    public ResponseEntity<LoginResponseDto> login(
+    public ResponseEntity<LoginResponseDto> login(@Valid
             @RequestBody LoginRequestDto dto,
             HttpServletResponse response
     ) {
