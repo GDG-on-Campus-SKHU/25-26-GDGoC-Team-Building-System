@@ -13,7 +13,7 @@ public record AdminIdeaDetailResponseDto(
         String topic,
         IdeaCreatorInfoResponseDto creator,
         boolean deleted,
-        List<IdeaMemberCompositionResponseDto> compositions
+        List<RosterPartResponseDto> rosters
 ) {
 }
 
