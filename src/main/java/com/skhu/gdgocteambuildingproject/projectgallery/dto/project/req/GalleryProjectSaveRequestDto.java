@@ -13,6 +13,6 @@ public record GalleryProjectSaveRequestDto(
         String description,
         Long leaderId,
         List<GalleryProjectMemberInfoDto> members,
-        List<Long> fileIds
+        String thumbnailUrl
 ) {
 }

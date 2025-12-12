@@ -14,6 +14,6 @@ public record GalleryProjectInfoResponseDto(
         String description,
         Long leaderId,
         List<GalleryProjectMemberResponseDto> members,
-        List<GalleryProjectFileInfoResponseDto> files
+        String thumbnailUrl
 ) {
 }
