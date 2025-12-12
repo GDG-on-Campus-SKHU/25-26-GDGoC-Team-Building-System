@@ -18,6 +18,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProj
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
@@ -85,7 +86,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         GalleryProject galleryProject = findGalleryProjectById(projectId);
         galleryProject.update(
                 requestDto.projectName(),
-                requestDto.generation(),
+                Generation.fromLabel(requestDto.generation()),
                 requestDto.shortDescription(),
                 requestDto.serviceStatus(),
                 requestDto.description(),
@@ -145,7 +146,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         return galleryProjectRepository.save(
                 GalleryProject.builder()
                         .projectName(requestDto.projectName())
-                        .generation(requestDto.generation())
+                        .generation(Generation.fromLabel(requestDto.generation()))
                         .shortDescription(requestDto.shortDescription())
                         .serviceStatus(requestDto.serviceStatus())
                         .description(requestDto.description())

@@ -5,6 +5,7 @@ import lombok.Builder;
 @Builder
 public record GalleryProjectSummaryResponseDto(
         Long galleryProjectId,
+        String generation,
         String projectName,
         String shortDescription,
         String serviceStatus,
