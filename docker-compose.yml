@@ -1,0 +1,32 @@
+# docker-compose.yml
+services:
+  app:
+    image: ${APP_IMAGE}
+    container_name: teamBuildingSystem-app
+    restart: unless-stopped
+    env_file:
+      - ./app.env
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    networks:
+      - tbs-network
+
+  redis:
+    image: redis:7-alpine
+    container_name: tbs-redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis-data:/data
+    networks:
+      - tbs-network
+
+networks:
+  tbs-network:
+    name: tbs-network
+
+volumes:
+  redis-data:
+    name: redis-data

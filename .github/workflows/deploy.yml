@@ -74,6 +74,16 @@ jobs:
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
           docker push "$ECR_REGISTRY/$ECR_REPOSITORY:latest"
 
+      # compose 파일을 EC2 로 복사(전송)
+      - name: Copy docker-compose.yml to EC2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          source: "docker-compose.yml"
+          target: "/home/ec2-user/"
+
       - name: Deploy to EC2 instance
         uses: appleboy/ssh-action@master
         with:
@@ -83,31 +93,40 @@ jobs:
           script: |
             set -euo pipefail
             
-            # 이미지 정보 준비
+            # 0) 작업 디렉터리 이동
+            cd /home/ec2-user
+          
+            # 1) 이미지 정보 준비
             ECR_REGISTRY="${{ steps.login-ecr.outputs.registry }}"
             ECR_REPOSITORY="${{ secrets.ECR_REPOSITORY }}"
             IMAGE_TAG="${{ github.sha }}"
             IMAGE="$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
             
-            # 1) ECR 로그인 & 최신 이미지 pull
+            # 2) ECR 로그인 & 최신 이미지 pull
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} \
               | docker login --username AWS --password-stdin "$ECR_REGISTRY"
             docker pull "$IMAGE"
             
-            # 2) /home/ec2-user/app.env 새로 생성 (기존 것 백업)
+            # 3) Compose용 .env 생성
+            cat > .env <<EOF
+            APP_IMAGE=$IMAGE
+            EOF
+            
+            # 4) /home/ec2-user/app.env 새로 생성 (기존 백업은 하나만 보관)
             ENV_FILE="/home/ec2-user/app.env"
-            test -f "$ENV_FILE" && cp "$ENV_FILE" "$ENV_FILE.bak.$(date +%F_%H%M%S)" || true
+            rm -f "$ENV_FILE.bak" || true
+            test -f "$ENV_FILE" && cp "$ENV_FILE" "$ENV_FILE.bak" || true
             
             cat > "$ENV_FILE" <<EOF
             TZ=Asia/Seoul
             SPRING_PROFILES_ACTIVE=local
 
-            # 2-1) --- DB ---
+            # 4-1) --- DB ---
             SPRING_DATASOURCE_URL=${{ secrets.SPRING_DATASOURCE_URL }}
             SPRING_DATASOURCE_USERNAME=${{ secrets.SPRING_DATASOURCE_USERNAME }}
             SPRING_DATASOURCE_PASSWORD=${{ secrets.SPRING_DATASOURCE_PASSWORD }}
             
-            # 2-2) --- Mail ---
+            # 4-2) --- Mail ---
             SPRING_MAIL_HOST=smtp.gmail.com
             SPRING_MAIL_PORT=587
             SPRING_MAIL_USERNAME=${{ secrets.GOOGLE_EMAIL }}
@@ -115,25 +134,25 @@ jobs:
             SPRING_MAIL_PROPERTIES_MAIL_SMTP_AUTH=true
             SPRING_MAIL_PROPERTIES_MAIL_SMTP_STARTTLS_ENABLE=true
             
-            # 2-3) --- JWT ---
+            # 4-3) --- JWT ---
             JWT_SECRET=${{ secrets.JWT_SECRET }}
             JWT_ACCESS_EXPIRATION=${{ secrets.JWT_ACCESS_EXPIRATION }}
             
-            # 2-4) --- Swagger ---
+            # 4-4) --- Swagger ---
             SWAGGER_SERVER_LOCAL=${{ secrets.SWAGGER_SERVER_LOCAL }}
             SWAGGER_SERVER_PROD=${{ secrets.SWAGGER_SERVER_PROD }}
             
-            # 2-5) --- Redis ---
-            SPRING_DATA_REDIS_HOST=${{ secrets.SPRING_DATA_REDIS_HOST }}
+            # 4-5) --- Redis ---
+            SPRING_DATA_REDIS_HOST=tbs-redis
             SPRING_DATA_REDIS_PORT=${{ secrets.SPRING_DATA_REDIS_PORT }}
             
-            # 2-6) --- CORS ---
+            # 4-6) --- CORS ---
             CORS_ALLOWED_ORIGINS=${{ secrets.CORS_ALLOWED_ORIGINS }}
             CORS_ALLOWED_METHODS=${{ secrets.CORS_ALLOWED_METHODS }}
             CORS_ALLOWED_HEADERS=${{ secrets.CORS_ALLOWED_HEADERS }}
             CORS_EXPOSED_HEADERS=${{ secrets.CORS_EXPOSED_HEADERS }}
             
-            # 2-7 --- AWS S3 ---
+            # 4-7) --- AWS S3 ---
             AWS_S3_ACCESS_KEY_ID=${{ secrets.AWS_S3_ACCESS_KEY_ID }}
             AWS_S3_SECRET_ACCESS_KEY=${{ secrets.AWS_S3_SECRET_ACCESS_KEY }}
             AWS_S3_BUCKET=${{ secrets.AWS_S3_BUCKET }}
@@ -142,36 +161,11 @@ jobs:
             
             chmod 600 "$ENV_FILE"
             
-            # 3) 기존 컨테이너 내려주고 삭제
-            docker stop teamBuildingSystem-app || true
-            docker rm   teamBuildingSystem-app || true
+            # 5) docker compose로 전체 서비스 재기동
+            docker compose down || true
+            docker compose up -d
             
-            # 4) Docker 네트워크 없으면 생성
-            docker network create tbs-network || true
-            
-            # 5) Redis 컨테이너 없으면 생성, 있으면 기동
-            if [ -z "$(docker ps -a --filter 'name=^tbs-redis$' --format '{{.Names}}')" ]; then
-              echo "redis 컨테이너를 찾을 수 없습니다. tbs-redis 컨테이너를 생성합니다."
-              docker run -d \
-                --name tbs-redis \
-                --restart unless-stopped \
-                --network tbs-network \
-                -v redis-data:/data \
-                redis:7-alpine \
-                redis-server --appendonly yes
-            else
-              echo "redis 컨테이너가 이미 있습니다."
-              docker start tbs-redis || true
-            fi
-            
-            # 6) 새 컨테이너 실행 (env-file 기반, Mysql 컨테이너, Redis 컨테이너와 네트워크 연결)
-            docker run -d --name teamBuildingSystem-app --restart unless-stopped \
-            --env-file "$ENV_FILE" \
-            --network tbs-network \
-            -p 8080:8080 \
-            "$IMAGE"
-            
-            # 7) 컨테이너 상태/로그 한 번 확인(로그 전체는 안 찍음, 구동 확인만)
+            # 6) 컨테이너 상태/로그 확인
             sleep 2
-            docker ps --filter name=teamBuildingSystem-app
+            docker compose ps
             docker logs --tail=100 teamBuildingSystem-app || true
