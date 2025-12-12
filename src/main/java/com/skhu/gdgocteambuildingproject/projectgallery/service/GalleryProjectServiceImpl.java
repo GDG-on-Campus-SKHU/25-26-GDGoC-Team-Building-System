@@ -3,11 +3,9 @@ package com.skhu.gdgocteambuildingproject.projectgallery.service;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_LIST_NOT_EXIST_IN_GALLERY;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST_IN_GALLERY;
 
-import com.skhu.gdgocteambuildingproject.global.aws.domain.File;
 import com.skhu.gdgocteambuildingproject.global.aws.repository.FileRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
-import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectFile;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
@@ -17,7 +15,6 @@ import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryP
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
-import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectFileRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -42,7 +39,6 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     private final UserRepository userRepository;
     private final GalleryProjectMemberMapper galleryProjectMemberMapper;
     private final FileRepository fileRepository;
-    private final GalleryProjectFileRepository galleryProjectFileRepository;
 
     @Override
     @Transactional
@@ -51,7 +47,6 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         GalleryProject project = createGalleryProjectEntity(requestDto, leader);
 
         saveProjectMembers(project, requestDto.members());
-        saveProjectFiles(project,requestDto.fileIds());
         return project.getId();
     }
 
@@ -94,10 +89,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
                 requestDto.shortDescription(),
                 requestDto.serviceStatus(),
                 requestDto.description(),
+                requestDto.thumbnailUrl(),
                 getUser(requestDto.leaderId())
         );
         updateProjectMembers(galleryProject, requestDto.members());
-        updateProjectFiles(galleryProject, requestDto.fileIds());
         return projectId;
     }
 
@@ -154,6 +149,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
                         .shortDescription(requestDto.shortDescription())
                         .serviceStatus(requestDto.serviceStatus())
                         .description(requestDto.description())
+                        .thumbnailUrl(requestDto.thumbnailUrl())
                         .user(leader)
                         .build()
         );
@@ -187,23 +183,6 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         }
     }
 
-    private void saveProjectFiles(
-            GalleryProject project,
-            List<Long> fileIds
-    ) {
-        for (Long fileId : fileIds) {
-            File file = getFile(fileId);
-
-            GalleryProjectFile galleryProjectFile = GalleryProjectFile.builder()
-                    .file(file)
-                    .project(project)
-                    .build();
-
-            galleryProjectFileRepository.save(galleryProjectFile);
-            project.getFiles().add(galleryProjectFile);
-        }
-    }
-
     private void updateProjectMembers(
             GalleryProject project,
             List<GalleryProjectMemberInfoDto> members
@@ -213,32 +192,9 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         divideMemberAndSave(project, members, leaderId);
     }
 
-    private void updateProjectFiles(
-            GalleryProject project,
-            List<Long> fileIds
-    ) {
-        project.clearFiles();
-        for (Long fileId : fileIds) {
-            File file = getFile(fileId);
-
-            GalleryProjectFile galleryProjectFile = GalleryProjectFile.builder()
-                    .file(file)
-                    .project(project)
-                    .build();
-
-            galleryProjectFileRepository.save(galleryProjectFile);
-            project.getFiles().add(galleryProjectFile);
-        }
-    }
-
     private User getUser(Long leaderId) {
         return userRepository.findById(leaderId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
-    }
-
-    private File getFile(Long fileId) {
-        return fileRepository.findById(fileId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.FILE_NOT_EXIST.getMessage()));
     }
 
     private MemberRole resolveRole(

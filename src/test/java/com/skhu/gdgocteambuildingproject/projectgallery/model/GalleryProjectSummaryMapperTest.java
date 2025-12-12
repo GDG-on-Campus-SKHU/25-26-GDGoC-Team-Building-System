@@ -2,15 +2,12 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectFileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectSummaryResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectFileMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
@@ -27,9 +24,6 @@ class GalleryProjectSummaryMapperTest {
     private static final ServiceStatus SERVICE_STATUS = ServiceStatus.IN_SERVICE;
     private static final String FILE_URL = "https://example.com/poster.png";
 
-    @Mock
-    private GalleryProjectFileMapper fileMapper;
-
     @InjectMocks
     private GalleryProjectInfoMapper infoMapper;
 
@@ -41,9 +35,7 @@ class GalleryProjectSummaryMapperTest {
         when(project.getProjectName()).thenReturn(PROJECT_NAME);
         when(project.getShortDescription()).thenReturn(SHORT_DESCRIPTION);
         when(project.getServiceStatus()).thenReturn(SERVICE_STATUS);
-
-        GalleryProjectFileInfoResponseDto mockFile = new GalleryProjectFileInfoResponseDto(FILE_URL);
-        when(fileMapper.map(project.getFiles())).thenReturn(List.of(mockFile));
+        when(project.getThumbnailUrl()).thenReturn(FILE_URL);
 
         // when
         GalleryProjectSummaryResponseDto result = infoMapper.mapToSummary(project);
@@ -53,23 +45,18 @@ class GalleryProjectSummaryMapperTest {
         assertThat(result.projectName()).isEqualTo(PROJECT_NAME);
         assertThat(result.shortDescription()).isEqualTo(SHORT_DESCRIPTION);
         assertThat(result.serviceStatus()).isEqualTo(SERVICE_STATUS.name());
-        assertThat(result.fileUrl()).isNotNull();
-        assertThat(result.fileUrl().fileUrl()).isEqualTo(FILE_URL);
-
-        verify(fileMapper).map(project.getFiles());
+        assertThat(result.thumbnailUrl()).isNotNull();
+        assertThat(result.thumbnailUrl()).isEqualTo(FILE_URL);
     }
 
     @Test
     void Summary_DTO_리스트를_ListResponseDto로_정상_매핑한다() {
-        // given
-        GalleryProjectFileInfoResponseDto fileInfo = new GalleryProjectFileInfoResponseDto(FILE_URL);
-
-        GalleryProjectSummaryResponseDto summaryDto = GalleryProjectSummaryResponseDto.builder()
+                GalleryProjectSummaryResponseDto summaryDto = GalleryProjectSummaryResponseDto.builder()
                 .galleryProjectId(PROJECT_ID)
                 .projectName(PROJECT_NAME)
                 .shortDescription(SHORT_DESCRIPTION)
                 .serviceStatus(SERVICE_STATUS.name())
-                .fileUrl(fileInfo)
+                .thumbnailUrl(FILE_URL)
                 .build();
 
         List<GalleryProjectSummaryResponseDto> summaryList = List.of(summaryDto);
@@ -81,6 +68,6 @@ class GalleryProjectSummaryMapperTest {
         assertThat(result.galleryProjectSummaryResponseDtoList()).hasSize(1);
         GalleryProjectSummaryResponseDto first = result.galleryProjectSummaryResponseDtoList().getFirst();
         assertThat(first.projectName()).isEqualTo(PROJECT_NAME);
-        assertThat(first.fileUrl().fileUrl()).isEqualTo(FILE_URL);
+        assertThat(first.thumbnailUrl()).isEqualTo(FILE_URL);
     }
 }
