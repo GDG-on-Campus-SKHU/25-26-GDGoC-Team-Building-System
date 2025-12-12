@@ -16,7 +16,6 @@ public class ActivityMapper {
                 .generation(activity.getGeneration().getLabel())
                 .speaker(activity.getSpeaker())
                 .videoUrl(activity.getVideoUrl())
-                .thumbnailUrl(activity.getThumbnailUrl())
                 .build();
     }
 }
