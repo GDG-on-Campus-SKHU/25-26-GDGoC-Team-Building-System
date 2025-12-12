@@ -14,33 +14,38 @@ public class EmailVerificationService {
     private final StringRedisTemplate redisTemplate;
     private static final String PREFIX = "emailCode:";
 
-    public void verify(String email, String inputCode) {
-        validateInput(email, inputCode);
-        verifyCodeOrThrow(email, inputCode);
-    }
-
-    private void validateInput(String email, String code) {
-        if (email == null || email.isBlank() || code == null || code.isBlank()) {
-            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
-        }
-    }
-
     public void saveCode(String email, String code) {
-        redisTemplate.opsForValue().set(PREFIX + email, code, 5, TimeUnit.MINUTES);
+        redisTemplate.opsForValue()
+                .set(PREFIX + email, code, 5, TimeUnit.MINUTES);
     }
 
-    public void verifyCodeOrThrow(String email, String inputCode) {
+    public void verifyCode(String email, String inputCode) {
+        validateInput(email, inputCode);
+
         String key = PREFIX + email;
         String storedCode = redisTemplate.opsForValue().get(key);
 
         if (storedCode == null) {
-            throw new IllegalArgumentException(ExceptionMessage.VERIFICATION_CODE_EXPIRED.getMessage());
+            throw new IllegalArgumentException(
+                    ExceptionMessage.VERIFICATION_CODE_EXPIRED.getMessage()
+            );
         }
 
         if (!storedCode.equals(inputCode)) {
-            throw new IllegalArgumentException(ExceptionMessage.VERIFICATION_CODE_INVALID.getMessage());
+            throw new IllegalArgumentException(
+                    ExceptionMessage.VERIFICATION_CODE_INVALID.getMessage()
+            );
         }
 
         redisTemplate.delete(key);
+    }
+
+    private void validateInput(String email, String code) {
+        if (email == null || email.isBlank() ||
+                code == null || code.isBlank()) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage()
+            );
+        }
     }
 }

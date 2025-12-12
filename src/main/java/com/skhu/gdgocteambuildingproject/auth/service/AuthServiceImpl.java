@@ -11,6 +11,7 @@ import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -116,6 +117,12 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail()))
             throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
 
+        if (userRepository.existsByNumberAndDeletedFalse(dto.getNumber())) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.PHONE_ALREADY_EXISTS.getMessage()
+            );
+        }
+
         if (!dto.getPassword().equals(dto.getPasswordConfirm()))
             throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
     }
@@ -163,9 +170,24 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateUserStatus(User user) {
-        if (user.isDeleted()) throw new IllegalStateException(ExceptionMessage.USER_NOT_EXIST.getMessage());
-        if (user.getApprovalStatus() == ApprovalStatus.WAITING) throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
-        if (user.getApprovalStatus() == ApprovalStatus.REJECTED) throw new IllegalStateException(ExceptionMessage.USER_REJECTED.getMessage());
-        if (user.getUserStatus() == UserStatus.BANNED) throw new LockedException(ExceptionMessage.BANNED_USER.getMessage());
+        if (user.isDeleted()) {
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_EXIST.getMessage());
+        }
+
+        if (user.getRole() == UserRole.SKHU_ADMIN) {
+            return;
+        }
+
+        if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
+            throw new IllegalStateException(ExceptionMessage.USER_NOT_APPROVED.getMessage());
+        }
+
+        if (user.getApprovalStatus() == ApprovalStatus.REJECTED) {
+            throw new IllegalStateException(ExceptionMessage.USER_REJECTED.getMessage());
+        }
+
+        if (user.getUserStatus() == UserStatus.BANNED) {
+            throw new LockedException(ExceptionMessage.BANNED_USER.getMessage());
+        }
     }
 }
