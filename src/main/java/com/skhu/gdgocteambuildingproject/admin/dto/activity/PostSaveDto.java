@@ -4,7 +4,6 @@ public record PostSaveDto(
         String title,
         String speaker,
         String generation,
-        String videoUrl,
-        String thumbnailUrl
+        String videoUrl
 ) {
 }

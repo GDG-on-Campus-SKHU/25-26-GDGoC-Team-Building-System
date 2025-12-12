@@ -67,7 +67,6 @@ swagger:
     - ${SWAGGER_SERVER_PROD}
     - ${SWAGGER_SERVER_LOCAL}
 
-
 springdoc:
   api-docs:
     path: /v3/api-docs

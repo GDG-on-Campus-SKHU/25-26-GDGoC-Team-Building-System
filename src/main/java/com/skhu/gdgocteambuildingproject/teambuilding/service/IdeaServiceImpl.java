@@ -6,6 +6,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_TOTAL_MEMBER_COUNT_EXCEEDED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_PROJECT;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CREATOR_CANNOT_BE_REMOVED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
@@ -24,7 +25,9 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaTitleInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.RosterMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaEnrollmentRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
@@ -52,6 +55,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -63,8 +67,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class IdeaServiceImpl implements IdeaService {
 
     private final IdeaRepository ideaRepository;
+    private final IdeaMemberRepository ideaMemberRepository;
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final IdeaEnrollmentRepository ideaEnrollmentRepository;
+    private final EntityManager entityManager;
 
     private final ProjectUtil projectUtil;
     private final ParticipationUtil participationUtil;
@@ -298,13 +305,19 @@ public class IdeaServiceImpl implements IdeaService {
 
         validateIdeaDeletable(idea);
 
-        idea.delete();
+        // 소프트 딜리트를 사용하므로 명시적으로 제거
+        ideaMemberRepository.deleteAllByIdeaId(ideaId);
+        ideaEnrollmentRepository.deleteAllByIdeaId(ideaId);
+        entityManager.flush();
+
+        idea.markAsDeleted();
     }
 
     @Override
     @Transactional
     public void hardDeleteIdea(long ideaId) {
-        ideaRepository.deleteById(ideaId);
+        Idea idea = findIdeaIncludeDeleted(ideaId);
+        ideaRepository.delete(idea);
     }
 
     @Override
@@ -312,6 +325,8 @@ public class IdeaServiceImpl implements IdeaService {
     public void removeMemberByAdmin(long ideaId, long memberId) {
         Idea idea = findIdeaIncludeDeleted(ideaId);
         User member = findUserBy(memberId);
+
+        validateRemovableMember(idea, member);
 
         // 이미 수락된 멤버면 제거
         boolean isConfirmedMember = idea.containsAsMember(member);
@@ -607,6 +622,12 @@ public class IdeaServiceImpl implements IdeaService {
 
         if (totalMemberCount > projectMaxMemberCount) {
             throw new IllegalStateException(IDEA_TOTAL_MEMBER_COUNT_EXCEEDED.getMessage());
+        }
+    }
+
+    private void validateRemovableMember(Idea idea, User user) {
+        if (idea.isCreator(user)) {
+            throw new IllegalStateException(CREATOR_CANNOT_BE_REMOVED.getMessage());
         }
     }
 

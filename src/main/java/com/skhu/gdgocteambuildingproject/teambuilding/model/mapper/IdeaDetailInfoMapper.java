@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.AdminIdeaDetailRe
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaMemberCompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterPartResponseDto;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 public class IdeaDetailInfoMapper {
     private final IdeaCreatorInfoMapper creatorInfoMapper;
     private final IdeaMemberCompositionMapper compositionMapper;
+    private final RosterPartMapper rosterPartMapper;
 
     public IdeaDetailInfoResponseDto map(Idea idea) {
         IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea);
@@ -34,7 +36,7 @@ public class IdeaDetailInfoMapper {
 
     public AdminIdeaDetailResponseDto mapForAdmin(Idea idea) {
         IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea);
-        List<IdeaMemberCompositionResponseDto> compositions = compositionMapper.map(idea);
+        List<RosterPartResponseDto> rosters = rosterPartMapper.map(idea);
 
         return AdminIdeaDetailResponseDto.builder()
                 .ideaId(idea.getId())
@@ -44,8 +46,8 @@ public class IdeaDetailInfoMapper {
                 .topicId(idea.getTopic().getId())
                 .topic(idea.getTopic().getTopic())
                 .creator(creator)
-                .compositions(compositions)
                 .deleted(idea.isDeleted())
+                .rosters(rosters)
                 .build();
     }
 }

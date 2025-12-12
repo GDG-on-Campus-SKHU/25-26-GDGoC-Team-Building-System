@@ -172,11 +172,8 @@ public class Idea extends BaseEntity {
         this.registerStatus = IdeaStatus.REGISTERED;
     }
 
-    public void delete() {
+    public void markAsDeleted() {
         deleted = true;
-
-        enrollments.clear();
-        members.clear();
     }
 
     public void restore() {
@@ -272,6 +269,10 @@ public class Idea extends BaseEntity {
     public boolean hasMember() {
         return members.stream()
                 .anyMatch(IdeaMember::isMember);
+    }
+
+    public boolean isCreator(User user) {
+        return user.equals(creator);
     }
 
     public boolean containsAsMember(User user) {

@@ -3,10 +3,10 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.*;
-import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectFileMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -39,9 +39,6 @@ class GalleryProjectInfoMapperTest {
     @Mock
     private GalleryProjectMemberMapper memberMapper;
 
-    @Mock
-    private GalleryProjectFileMapper fileMapper;
-
     @InjectMocks
     private GalleryProjectInfoMapper infoMapper;
 
@@ -56,10 +53,11 @@ class GalleryProjectInfoMapperTest {
 
         GalleryProject project = GalleryProject.builder()
                 .projectName(PROJECT_NAME)
-                .generation(GENERATION)
+                .generation(Generation.fromLabel(GENERATION))
                 .shortDescription(SHORT_DESC)
                 .serviceStatus(STATUS)
                 .description(DESCRIPTION)
+                .thumbnailUrl(FILE_URL)
                 .user(leader)
                 .build();
 
@@ -68,12 +66,8 @@ class GalleryProjectInfoMapperTest {
         List<GalleryProjectMemberResponseDto> mockMembers = List.of(
                 GalleryProjectMemberResponseDto.builder().name(USER_NAME).build()
         );
-        List<GalleryProjectFileInfoResponseDto> mockFiles = List.of(
-                GalleryProjectFileInfoResponseDto.builder().fileUrl(FILE_URL).build()
-        );
 
         when(memberMapper.mapMembersInfo(any())).thenReturn(mockMembers);
-        when(fileMapper.map(any())).thenReturn(mockFiles);
 
         // when
         GalleryProjectInfoResponseDto dto = infoMapper.mapToInfo(project);
@@ -86,8 +80,8 @@ class GalleryProjectInfoMapperTest {
         assertThat(dto.description()).isEqualTo(DESCRIPTION);
         assertThat(dto.serviceStatus()).isEqualTo(STATUS.name());
         assertThat(dto.leaderId()).isEqualTo(LEADER_ID);
+        assertThat(dto.thumbnailUrl()).isEqualTo(FILE_URL);
         assertThat(dto.members()).isEqualTo(mockMembers);
-        assertThat(dto.files()).isEqualTo(mockFiles);
     }
 
     @Test
@@ -97,12 +91,10 @@ class GalleryProjectInfoMapperTest {
 
         when(project.getId()).thenReturn(PROJECT_ID);
         when(project.getProjectName()).thenReturn(PROJECT_NAME);
+        when(project.getGeneration()).thenReturn(Generation.fromLabel(GENERATION));
         when(project.getShortDescription()).thenReturn(SHORT_DESC);
         when(project.getServiceStatus()).thenReturn(STATUS);
-
-        when(fileMapper.map(any())).thenReturn(List.of(
-                GalleryProjectFileInfoResponseDto.builder().fileUrl(FILE_URL).build()
-        ));
+        when(project.getThumbnailUrl()).thenReturn(FILE_URL);
 
         // when
         GalleryProjectSummaryResponseDto dto = infoMapper.mapToSummary(project);
@@ -110,8 +102,9 @@ class GalleryProjectInfoMapperTest {
         // then
         assertThat(dto.galleryProjectId()).isEqualTo(PROJECT_ID);
         assertThat(dto.projectName()).isEqualTo(PROJECT_NAME);
+        assertThat(dto.generation()).isEqualTo(GENERATION);
         assertThat(dto.shortDescription()).isEqualTo(SHORT_DESC);
         assertThat(dto.serviceStatus()).isEqualTo(STATUS.name());
-        assertThat(dto.fileUrl().fileUrl()).isEqualTo(FILE_URL);
+        assertThat(dto.thumbnailUrl()).isEqualTo(FILE_URL);
     }
 }

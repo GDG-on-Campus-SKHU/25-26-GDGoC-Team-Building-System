@@ -25,7 +25,7 @@ public interface GalleryProjectControllerApi {
                     """
                     프로젝트 갤러리에 새로운 프로젝트를 전시합니다.
                     
-                    팀원 선택창에서 선택한 멤버 목록과, 파일 업로드 후 반환된 fileId 리스트를 body로 받습니다.
+                    팀원 선택창에서 선택한 멤버 목록을 body로 받습니다.
                     
                     ServiceStatus: IN_SERVICE(운영 중), NOT_IN_SERVICE(미운영 중)
                     
@@ -37,7 +37,7 @@ public interface GalleryProjectControllerApi {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "프로젝트 생성 성공"),
             @ApiResponse(responseCode = "400", description = "요청 데이터가 유효하지 않거나, 필요한 필드를 입력하지 않음"),
-            @ApiResponse(responseCode = "404", description = "leaderId에 해당하는 유저가 없거나, fileId에 해당하는 파일이 없음"),
+            @ApiResponse(responseCode = "404", description = "leaderId에 해당하는 유저가 없음"),
     })
     ResponseEntity<Long> exhibitProject(@RequestBody GalleryProjectSaveRequestDto requestDto);
 
@@ -89,7 +89,7 @@ public interface GalleryProjectControllerApi {
                     """
                     프로젝트 갤러리에 전시되어있는 프로젝트를 수정합니다.
                     
-                    생성 때와 같이, 멤버 목록과 fileId 리스트를 body로 받습니다.
+                    생성 때와 같이, 멤버 목록을 body로 받습니다.
                     
                     ServiceStatus: IN_SERVICE(운영 중), NOT_IN_SERVICE(미운영 중)
                     
@@ -101,7 +101,7 @@ public interface GalleryProjectControllerApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "프로젝트 수정 성공"),
             @ApiResponse(responseCode = "400", description = "요청 데이터가 유효하지 않거나, 필요한 필드를 입력하지 않음"),
-            @ApiResponse(responseCode = "404", description = "leaderId와 fileId에 해당하는 유저나 파일이 없거나, projectId에 해당하는 프로젝트가 없음"),
+            @ApiResponse(responseCode = "404", description = "leaderId에 해당하는 유저가 없거나, projectId에 해당하는 프로젝트가 없음"),
     })
     ResponseEntity<Long> updateProject(
             @PathVariable Long projectId,

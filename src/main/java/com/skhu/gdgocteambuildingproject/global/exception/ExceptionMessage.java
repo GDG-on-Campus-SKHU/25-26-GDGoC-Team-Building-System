@@ -19,6 +19,8 @@ public enum ExceptionMessage {
     USER_REJECTED("승인이 거절된 사용자입니다."),
     REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
     INVALID_JWT_TOKEN("유효하지 않은 JWT 토큰입니다."),
+    PHONE_ALREADY_EXISTS("이미 가입된 전화번호입니다."),
+    INVALID_SIGNUP_ROLE("회원가입으로는 관리자 권한을 부여할 수 없습니다."),
 
     // Email
     USER_EMAIL_NOT_EXIST("존재하지 않거나 탈퇴한 이메일입니다."),
@@ -60,6 +62,7 @@ public enum ExceptionMessage {
     IDEA_TOTAL_MEMBER_COUNT_EXCEEDED("아이디어의 총 멤버 구성 인원수가 프로젝트의 최대 인원수를 초과합니다."),
     MAX_MEMBER_COUNT_TOO_SMALL("최대 인원수는 현재 인원수(수락 + 수락 예정)보다 작을 수 없습니다."),
     IDEA_MEMBER_NOT_FOUND("해당 ID의 아이디어멤버를 찾울 수 없습니다"),
+    CREATOR_CANNOT_BE_REMOVED("팀장은 제거할 수 없습니다."),
     TOPIC_NOT_EXIST("해당 주제를 찾을 수 없습니다."),
     TOPIC_FOR_OTHER_PROJECT("다른 프로젝트에 대한 주제입니다."),
 

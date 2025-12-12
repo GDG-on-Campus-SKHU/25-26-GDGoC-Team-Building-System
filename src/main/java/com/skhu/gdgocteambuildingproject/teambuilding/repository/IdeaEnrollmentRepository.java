@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Lock;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -17,4 +18,8 @@ public interface IdeaEnrollmentRepository extends JpaRepository<IdeaEnrollment, 
     Optional<IdeaEnrollment> findByIdWithIdeaLock(@Param("enrollmentId") Long enrollmentId);
 
     List<IdeaEnrollment> findBySchedule(ProjectSchedule schedule);
+
+    @Modifying
+    @Query("DELETE FROM IdeaEnrollment e WHERE e.idea.id = :ideaId")
+    void deleteAllByIdeaId(@Param("ideaId") long ideaId);
 }

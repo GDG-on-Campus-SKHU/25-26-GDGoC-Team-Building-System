@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.global.email.service;
 
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
@@ -19,28 +20,34 @@ public class EmailService {
     private final UserRepository userRepository;
     private final EmailVerificationService emailVerificationService;
 
-    public void sendCode(String email) {
-        validateEmailFormat(email);
-        validateEmailExists(email);
+    public void sendPasswordResetVerificationCode(String email) {
+        User user = getValidUserByEmail(email);
 
         String code = generateVerificationCode();
         emailVerificationService.saveCode(email, code);
-        sendVerificationEmail(email, code);
+        sendVerificationEmail(user.getEmail(), code);
+    }
+
+    private User getValidUserByEmail(String email) {
+        validateEmailFormat(email);
+
+        return userRepository.findByEmailAndDeletedFalse(email)
+                .orElseThrow(() ->
+                        new IllegalArgumentException(
+                                ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
+                        )
+                );
     }
 
     private void validateEmailFormat(String email) {
         if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage());
+            throw new IllegalArgumentException(
+                    ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage()
+            );
         }
     }
 
-    public void validateEmailExists(String email) {
-        if (!userRepository.existsByEmailAndDeletedFalse(email)) {
-            throw new IllegalArgumentException(ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage());
-        }
-    }
-
-    public String generateVerificationCode() {
+    private String generateVerificationCode() {
         Random random = new Random();
         StringBuilder code = new StringBuilder();
         for (int i = 0; i < 6; i++) {
@@ -49,7 +56,7 @@ public class EmailService {
         return code.toString();
     }
 
-    public void sendVerificationEmail(String to, String code) {
+    private void sendVerificationEmail(String to, String code) {
         String subject = "[GDGoC Team Project] 비밀번호 재설정 인증번호";
         String content = """
                 <div style='font-family: Arial;'>

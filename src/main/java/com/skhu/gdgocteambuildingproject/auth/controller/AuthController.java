@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -16,15 +17,32 @@ import org.springframework.web.bind.annotation.*;
 @Tag(
         name = "Auth API",
         description = """
-인증 관련 기능을 제공합니다.
+인증(Auth) 관련 API를 제공합니다.
 
-사용 가능한 ENUM 값:
+• Generation
+  - 22-23
+  - 23-24
+  - 24-25
+  - 25-26
 
-Generation: 22-23, 23-24, 24-25, 25-26
-Part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
-UserPosition: MEMBER, CORE, ORGANIZER
-UserRole: OTHERS, SKHU_MEMBER
-""")
+• Part
+  - PM
+  - DESIGN
+  - WEB
+  - MOBILE
+  - BACKEND
+  - AI
+
+• UserPosition
+  - MEMBER
+  - CORE
+  - ORGANIZER
+
+• UserRole
+  - OTHERS
+  - SKHU_MEMBER
+"""
+)
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
@@ -37,7 +55,7 @@ public class AuthController {
     })
     @PostMapping("/signup")
     public ResponseEntity<LoginResponseDto> signUp(
-            @RequestBody SignUpRequestDto dto,
+            @Valid @RequestBody SignUpRequestDto dto,
             HttpServletResponse response
     ) {
         return ResponseEntity.ok(authService.signUp(dto, response));

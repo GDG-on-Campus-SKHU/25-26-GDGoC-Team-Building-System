@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.domain;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.ServiceStatus;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -32,7 +33,8 @@ public class GalleryProject extends BaseEntity {
     @Column(nullable = false)
     private String projectName;
     @Column(nullable = false)
-    private String generation;
+    @Enumerated(EnumType.STRING)
+    private Generation generation;
     @Column(nullable = false)
     private String shortDescription;
 
@@ -44,6 +46,8 @@ public class GalleryProject extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
+    private String thumbnailUrl; // null일 결우 프론트에서 기본이미지 처리
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private User user;
@@ -52,16 +56,13 @@ public class GalleryProject extends BaseEntity {
     @Builder.Default
     private List<GalleryProjectMember> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<GalleryProjectFile> files = new ArrayList<>();
-
     public void update(
             String projectName,
-            String generation,
+            Generation generation,
             String shortDescription,
             ServiceStatus serviceStatus,
             String description,
+            String thumbnailUrl,
             User leader
     ) {
         this.projectName = projectName;
@@ -69,14 +70,11 @@ public class GalleryProject extends BaseEntity {
         this.shortDescription = shortDescription;
         this.serviceStatus = serviceStatus;
         this.description = description;
+        this.thumbnailUrl = thumbnailUrl;
         this.user = leader;
     }
 
     public void clearMembers() {
         this.members.clear();
-    }
-
-    public void clearFiles() {
-        this.files.clear();
     }
 }

@@ -15,33 +15,29 @@ import java.util.List;
 public class GalleryProjectInfoMapper {
 
     private final GalleryProjectMemberMapper memberMapper;
-    private final GalleryProjectFileMapper fileMapper;
 
     public GalleryProjectInfoResponseDto mapToInfo(GalleryProject project) {
         return GalleryProjectInfoResponseDto.builder()
                 .galleryProjectId(project.getId())
                 .projectName(project.getProjectName())
-                .generation(project.getGeneration())
+                .generation(project.getGeneration().getLabel())
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())
                 .description(project.getDescription())
                 .leaderId(project.getUser().getId())
                 .members(memberMapper.mapMembersInfo(project.getMembers()))
-                .files(fileMapper.map(project.getFiles()))
+                .thumbnailUrl(project.getThumbnailUrl())
                 .build();
     }
 
     public GalleryProjectSummaryResponseDto mapToSummary(GalleryProject project) {
         return GalleryProjectSummaryResponseDto.builder()
                 .galleryProjectId(project.getId())
+                .generation(project.getGeneration().getLabel())
                 .projectName(project.getProjectName())
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())
-                .fileUrl(
-                        fileMapper.map(project.getFiles()).stream()
-                            .findFirst()
-                            .orElse(null)
-                )
+                .thumbnailUrl(project.getThumbnailUrl())
                 .build();
     }
 

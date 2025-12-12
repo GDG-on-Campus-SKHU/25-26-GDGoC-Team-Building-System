@@ -49,7 +49,6 @@ public class AdminActivityServiceImpl implements AdminActivityService {
                 requestDto.title(),
                 requestDto.speaker(),
                 Generation.fromLabel(requestDto.generation()),
-                requestDto.thumbnailUrl(),
                 requestDto.videoUrl()
         );
 
@@ -106,6 +105,13 @@ public class AdminActivityServiceImpl implements AdminActivityService {
         category.changeCategoryInfo(dto.categoryName(), dto.published());
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public PostResponseDto getActivityPost(Long postId) {
+        Activity activity = getActivityPostOrThrow(postId);
+        return postInfoMapper.toPostResponseDto(activity);
+    }
+
     private ActivityCategory getOrCreateCategory(ActivitySaveRequestDto requestDto) {
         return activityCategoryRepository.findByName(requestDto.categoryName())
                 .orElseGet(() -> createCategory(requestDto));
@@ -130,7 +136,6 @@ public class AdminActivityServiceImpl implements AdminActivityService {
                     .generation(Generation.fromLabel(postDto.generation()))
                     .speaker(postDto.speaker())
                     .videoUrl(postDto.videoUrl())
-                    .thumbnailUrl(postDto.thumbnailUrl())
                     .build();
 
             activityRepository.save(activity);
