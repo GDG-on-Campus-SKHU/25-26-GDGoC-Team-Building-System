@@ -1,6 +1,9 @@
 package com.skhu.gdgocteambuildingproject.global.email.service;
 
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,11 +25,30 @@ public class ResetPasswordService {
 
         var user = userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() ->
-                        new IllegalArgumentException(ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage())
+                        new IllegalArgumentException(
+                                ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
+                        )
                 );
 
+        if (user.getRole() != UserRole.SKHU_ADMIN) {
+
+            if (user.getApprovalStatus() != ApprovalStatus.APPROVED) {
+                throw new IllegalStateException(
+                        ExceptionMessage.USER_NOT_APPROVED.getMessage()
+                );
+            }
+
+            if (user.getUserStatus() == UserStatus.BANNED) {
+                throw new IllegalStateException(
+                        ExceptionMessage.BANNED_USER.getMessage()
+                );
+            }
+        }
+
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
-            throw new IllegalArgumentException(ExceptionMessage.PASSWORD_SAME_AS_OLD.getMessage());
+            throw new IllegalArgumentException(
+                    ExceptionMessage.PASSWORD_SAME_AS_OLD.getMessage()
+            );
         }
 
         user.updatePassword(passwordEncoder.encode(newPassword));
