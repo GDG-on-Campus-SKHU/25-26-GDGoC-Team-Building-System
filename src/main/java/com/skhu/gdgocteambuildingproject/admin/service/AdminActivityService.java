@@ -18,4 +18,6 @@ public interface AdminActivityService {
     void deleteCategory(Long categoryId);
 
     void updateCategoryTitleAndStatus(Long categoryId, ActivityUpdateRequestDto dto);
+
+    PostResponseDto getActivityPost(Long postId);
 }

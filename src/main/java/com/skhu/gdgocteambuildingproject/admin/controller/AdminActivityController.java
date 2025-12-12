@@ -72,4 +72,11 @@ public class AdminActivityController implements AdminActivityControllerApi {
         adminActivityService.updateCategoryTitleAndStatus(categoryId, dto);
         return NO_CONTENT;
     }
+
+    @Override
+    @GetMapping("/detail/{postId}")
+    public ResponseEntity<PostResponseDto> getActivityPost(@PathVariable Long postId) {
+        PostResponseDto activityPost = adminActivityService.getActivityPost(postId);
+        return ResponseEntity.ok(activityPost);
+    }
 }
