@@ -26,7 +26,7 @@ public class ActivityInfoMapper {
         return ActivityInfoResponseDto.builder()
                 .title(activity.getTitle())
                 .speaker(activity.getSpeaker())
-                .generation(activity.getGeneration())
+                .generation(activity.getGeneration().getLabel())
                 .videoUrl(activity.getVideoUrl())
                 .thumbnailUrl(activity.getThumbnailUrl())
                 .build();

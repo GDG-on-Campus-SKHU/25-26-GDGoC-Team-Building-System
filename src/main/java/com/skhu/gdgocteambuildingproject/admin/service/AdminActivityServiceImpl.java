@@ -10,6 +10,7 @@ import com.skhu.gdgocteambuildingproject.activity.domain.ActivityCategory;
 import com.skhu.gdgocteambuildingproject.activity.repository.ActivityCategoryRepository;
 import com.skhu.gdgocteambuildingproject.activity.repository.ActivityRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -47,7 +48,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
         activity.update(
                 requestDto.title(),
                 requestDto.speaker(),
-                requestDto.generation(),
+                Generation.fromLabel(requestDto.generation()),
                 requestDto.thumbnailUrl(),
                 requestDto.videoUrl()
         );
@@ -126,7 +127,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
             Activity activity = Activity.builder()
                     .activityCategory(category)
                     .title(postDto.title())
-                    .generation(postDto.generation())
+                    .generation(Generation.fromLabel(postDto.generation()))
                     .speaker(postDto.speaker())
                     .videoUrl(postDto.videoUrl())
                     .thumbnailUrl(postDto.thumbnailUrl())
