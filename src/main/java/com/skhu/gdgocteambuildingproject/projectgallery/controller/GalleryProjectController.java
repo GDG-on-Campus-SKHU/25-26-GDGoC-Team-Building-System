@@ -11,7 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -63,11 +62,11 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
         return ResponseEntity.ok(galleryProjectService.updateGalleryProjectByProjectId(projectId, requestDto));
     }
 
-    @Override
-    @DeleteMapping("/{projectId}")
-    @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
-    public ResponseEntity<Void> deleteProject(@PathVariable Long projectId) {
-        galleryProjectService.deleteGalleryProjectByProjectId(projectId);
-        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
-    }
+//    @Override
+//    @DeleteMapping("/{projectId}")
+//    @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
+//    public ResponseEntity<Void> deleteProject(@PathVariable Long projectId) {
+//        galleryProjectService.deleteGalleryProjectByProjectId(projectId);
+//        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+//    }
 }

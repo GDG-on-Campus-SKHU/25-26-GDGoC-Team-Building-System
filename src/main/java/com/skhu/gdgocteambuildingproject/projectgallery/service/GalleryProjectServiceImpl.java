@@ -97,12 +97,12 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         return projectId;
     }
 
-    @Override
-    @Transactional
-    public void deleteGalleryProjectByProjectId(Long projectId) {
-        GalleryProject galleryProject = findGalleryProjectById(projectId);
-        galleryProjectRepository.delete(galleryProject);
-    }
+//    @Override
+//    @Transactional
+//    public void deleteGalleryProjectByProjectId(Long projectId) {
+//        GalleryProject galleryProject = findGalleryProjectById(projectId);
+//        galleryProjectRepository.delete(galleryProject);
+//    }
 
     private GalleryProject findGalleryProjectById(Long projectId) {
         return galleryProjectRepository.findById(projectId)

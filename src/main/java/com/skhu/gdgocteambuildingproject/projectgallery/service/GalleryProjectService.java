@@ -19,5 +19,5 @@ public interface GalleryProjectService {
             GalleryProjectSaveRequestDto requestDto
     );
 
-    void deleteGalleryProjectByProjectId(Long projectId);
+//    void deleteGalleryProjectByProjectId(Long projectId);
 }

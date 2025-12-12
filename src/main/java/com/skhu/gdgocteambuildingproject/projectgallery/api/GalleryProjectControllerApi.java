@@ -108,18 +108,18 @@ public interface GalleryProjectControllerApi {
             @RequestBody GalleryProjectSaveRequestDto requestDto
     );
 
-    @Operation(
-            summary = "프로젝트 갤러리에 존재하는 프로젝트 삭제",
-            description =
-                    """
-                    프로젝트 갤러리에 전시되어있는 프로젝트를 삭제합니다.
-                    
-                    id에 해당하는 프로젝트가 없을 경우, 404 응답을 반환합니다.
-                    """
-    )
-    @ApiResponses({
-            @ApiResponse(responseCode = "204", description = "프로젝트 삭제 성공"),
-            @ApiResponse(responseCode = "404", description = "projectId에 해당하는 프로젝트가 없음"),
-    })
-    ResponseEntity<Void> deleteProject(@PathVariable Long projectId);
+//    @Operation(
+//            summary = "프로젝트 갤러리에 존재하는 프로젝트 삭제",
+//            description =
+//                    """
+//                    프로젝트 갤러리에 전시되어있는 프로젝트를 삭제합니다.
+//
+//                    id에 해당하는 프로젝트가 없을 경우, 404 응답을 반환합니다.
+//                    """
+//    )
+//    @ApiResponses({
+//            @ApiResponse(responseCode = "204", description = "프로젝트 삭제 성공"),
+//            @ApiResponse(responseCode = "404", description = "projectId에 해당하는 프로젝트가 없음"),
+//    })
+//    ResponseEntity<Void> deleteProject(@PathVariable Long projectId);
 }
