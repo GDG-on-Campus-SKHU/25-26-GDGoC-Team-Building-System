@@ -34,11 +34,15 @@ import java.util.*;
 @Table(name = "users")
 public class User extends BaseEntity {
 
+    @Column(nullable = false, unique = true)
     private String email;
-    private String password;
 
+    private String password;
     private String name;
+
+    @Column(nullable = false, unique = true)
     private String number;
+
     private String introduction;
     private String school;
 
