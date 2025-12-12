@@ -163,11 +163,14 @@ jobs:
             # 5) tbs-network가 없으면 생성
             docker network create tbs-network || true
             
-            # 6) docker compose로 전체 서비스 재기동
+            # 6) 기존 컨테이너 제거
+            docker rm -f teamBuildingSystem-app tbs-redis || true
+            
+            # 7) docker compose로 전체 서비스 재기동
             docker compose down || true
             docker compose up -d
             
-            # 7) 컨테이너 상태/로그 확인
+            # 8) 컨테이너 상태/로그 확인
             sleep 2
             docker compose ps
             docker logs --tail=100 teamBuildingSystem-app || true
