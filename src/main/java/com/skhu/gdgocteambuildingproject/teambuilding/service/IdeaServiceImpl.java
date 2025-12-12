@@ -313,7 +313,8 @@ public class IdeaServiceImpl implements IdeaService {
     @Override
     @Transactional
     public void hardDeleteIdea(long ideaId) {
-        ideaRepository.deleteById(ideaId);
+        Idea idea = findIdeaIncludeDeleted(ideaId);
+        ideaRepository.delete(idea);
     }
 
     @Override
