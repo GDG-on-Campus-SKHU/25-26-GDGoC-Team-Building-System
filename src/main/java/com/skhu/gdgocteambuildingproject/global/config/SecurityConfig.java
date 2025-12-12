@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.global.config;
 
 import com.skhu.gdgocteambuildingproject.global.jwt.JwtFilter;
+import com.skhu.gdgocteambuildingproject.global.jwt.service.CustomAccessDeniedHandler;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,6 +26,7 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAccessDeniedHandler accessDeniedHandler;
 
     @Value("${cors.allowed-origins}")
     private List<String> allowedOrigins;
@@ -62,6 +64,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class)
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .build();
     }
