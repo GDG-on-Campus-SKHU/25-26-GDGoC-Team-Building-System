@@ -172,11 +172,8 @@ public class Idea extends BaseEntity {
         this.registerStatus = IdeaStatus.REGISTERED;
     }
 
-    public void delete() {
+    public void markAsDeleted() {
         deleted = true;
-
-        enrollments.clear();
-        members.clear();
     }
 
     public void restore() {

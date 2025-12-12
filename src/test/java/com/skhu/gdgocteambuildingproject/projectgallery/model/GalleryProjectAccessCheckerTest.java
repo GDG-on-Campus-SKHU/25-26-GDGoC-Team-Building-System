@@ -25,8 +25,8 @@ class GalleryProjectAccessCheckerTest {
     private static final Long PROJECT_ID = 999L;
     private static final Long USER_ID = 123L;
 
-    private static final UserRole ADMIN_ROLE = UserRole.SKHU_ADMIN;
-    private static final UserRole MEMBER_ROLE = UserRole.SKHU_MEMBER;
+    private static final UserRole ADMIN_ROLE = UserRole.ROLE_SKHU_ADMIN;
+    private static final UserRole MEMBER_ROLE = UserRole.ROLE_SKHU_MEMBER;
     private static final MemberRole LEADER_ROLE = MemberRole.LEADER;
 
     @Mock

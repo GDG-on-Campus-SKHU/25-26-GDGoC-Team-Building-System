@@ -25,7 +25,9 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaTitleInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.RosterMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaEnrollmentRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.AdminIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoIncludeDeletedPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoIncludeDeletedResponseDto;
@@ -53,6 +55,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -64,8 +67,11 @@ import org.springframework.transaction.annotation.Transactional;
 public class IdeaServiceImpl implements IdeaService {
 
     private final IdeaRepository ideaRepository;
+    private final IdeaMemberRepository ideaMemberRepository;
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
+    private final IdeaEnrollmentRepository ideaEnrollmentRepository;
+    private final EntityManager entityManager;
 
     private final ProjectUtil projectUtil;
     private final ParticipationUtil participationUtil;
@@ -299,13 +305,19 @@ public class IdeaServiceImpl implements IdeaService {
 
         validateIdeaDeletable(idea);
 
-        idea.delete();
+        // 소프트 딜리트를 사용하므로 명시적으로 제거
+        ideaMemberRepository.deleteAllByIdeaId(ideaId);
+        ideaEnrollmentRepository.deleteAllByIdeaId(ideaId);
+        entityManager.flush();
+
+        idea.markAsDeleted();
     }
 
     @Override
     @Transactional
     public void hardDeleteIdea(long ideaId) {
-        ideaRepository.deleteById(ideaId);
+        Idea idea = findIdeaIncludeDeleted(ideaId);
+        ideaRepository.delete(idea);
     }
 
     @Override
@@ -596,8 +608,6 @@ public class IdeaServiceImpl implements IdeaService {
                 .filter(Idea::isTemporary)
                 .findAny()
                 .ifPresent(user::removeIdea);
-
-        ideaRepository.flush();
     }
 
     private void validateTotalMemberCount(
