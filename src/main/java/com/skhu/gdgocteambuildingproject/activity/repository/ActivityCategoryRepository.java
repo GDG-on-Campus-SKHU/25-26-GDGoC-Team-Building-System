@@ -9,5 +9,5 @@ import java.util.Optional;
 public interface ActivityCategoryRepository extends JpaRepository<ActivityCategory, Long> {
     Optional<ActivityCategory> findByName(String name);
 
-    List<ActivityCategory> findAllByIsPublishedTrue();
+    List<ActivityCategory> findAllByPublishedTrue();
 }
