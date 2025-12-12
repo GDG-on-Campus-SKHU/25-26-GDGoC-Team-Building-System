@@ -596,6 +596,8 @@ public class IdeaServiceImpl implements IdeaService {
                 .filter(Idea::isTemporary)
                 .findAny()
                 .ifPresent(user::removeIdea);
+
+        ideaRepository.flush();
     }
 
     private void validateTotalMemberCount(
