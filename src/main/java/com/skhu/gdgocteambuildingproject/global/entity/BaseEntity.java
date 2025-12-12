@@ -29,7 +29,7 @@ public abstract class BaseEntity {
         if (!(o instanceof BaseEntity otherBaseEntity)) {
             return false;
         }
-        return Objects.equals(id, otherBaseEntity.id);
+        return Objects.equals(getId(), otherBaseEntity.getId());
     }
 
     @Override
