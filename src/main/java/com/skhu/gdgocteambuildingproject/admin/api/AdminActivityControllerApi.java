@@ -73,4 +73,10 @@ public interface AdminActivityControllerApi {
             @Parameter(description = "수정할 카테고리 ID", required = true) Long categoryId,
             @Parameter(description = "수정할 카테고리 정보", required = true) ActivityUpdateRequestDto dto
     );
+
+    @Operation(summary = "관리자의 액티비티 게시글 상세 조회", description = "게시글 ID를 이용하여 액티비티 활동 게시글의 상세 정보를 조회합니다.")
+    ResponseEntity<PostResponseDto> getActivityPost(
+            @Parameter(description = "조회할 게시글 ID", required = true, example = "1")
+            Long postId
+    );
 }

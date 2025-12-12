@@ -73,6 +73,7 @@ public class AdminActivityController implements AdminActivityControllerApi {
         return NO_CONTENT;
     }
 
+    @Override
     @GetMapping("/detail/{postId}")
     public ResponseEntity<PostResponseDto> getActivityPost(@PathVariable Long postId) {
         PostResponseDto activityPost = adminActivityService.getActivityPost(postId);
