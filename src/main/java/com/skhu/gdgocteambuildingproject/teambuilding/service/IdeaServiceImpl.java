@@ -306,8 +306,8 @@ public class IdeaServiceImpl implements IdeaService {
         validateIdeaDeletable(idea);
 
         // 소프트 딜리트를 사용하므로 명시적으로 제거
-        ideaMemberRepository.deleteAll(idea.getMembers());
-        ideaEnrollmentRepository.deleteAll(idea.getEnrollments());
+        ideaMemberRepository.deleteAllByIdeaId(ideaId);
+        ideaEnrollmentRepository.deleteAllByIdeaId(ideaId);
         entityManager.flush();
 
         idea.markAsDeleted();
