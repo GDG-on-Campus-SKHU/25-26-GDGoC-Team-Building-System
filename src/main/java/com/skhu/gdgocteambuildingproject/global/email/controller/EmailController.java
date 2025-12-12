@@ -48,18 +48,19 @@ public class EmailController {
 
     @PostMapping("/verify")
     @Operation(
-            summary = "이메일 인증번호 확인",
+            summary = "이메일 인증번호 검증",
             description = """
-                    이메일로 전송된 인증번호가 Redis의 값과 일치하는지 검증합니다.
-                    - 인증 성공 시 저장된 인증번호는 삭제됩니다.
+                    이메일로 전송된 인증번호가 유효한지 검증합니다.
+                    - 인증번호는 삭제되지 않습니다.
+                    - 비밀번호 재설정 시점에만 소모됩니다.
                     """
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "인증 성공"),
+            @ApiResponse(responseCode = "200", description = "인증번호 유효"),
             @ApiResponse(responseCode = "400", description = "코드 불일치, 만료 또는 입력 오류")
     })
     public ResponseEntity<Void> verifyCode(@Valid @RequestBody VerifyCodeRequest request) {
-        emailVerificationService.verifyCode(
+        emailVerificationService.validateCode(
                 request.getEmail(),
                 request.getCode()
         );
@@ -70,17 +71,25 @@ public class EmailController {
     @Operation(
             summary = "비밀번호 재설정",
             description = """
-                    인증 완료된 사용자에 한해 비밀번호를 재설정합니다.
-                    - 인증되지 않은 경우 실패합니다.
+                    인증번호 검증 후 비밀번호를 재설정합니다.
+                    - 인증번호가 유효하지 않으면 실패합니다.
                     - 기존 비밀번호와 동일하면 오류가 발생합니다.
-                    - 비밀번호는 최소 8자 이상이어야 합니다.
+                    - 비밀번호 변경 성공 시 인증번호는 소모됩니다.
                     """
     )
     @ApiResponses({
-            @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공"),
-            @ApiResponse(responseCode = "400", description = "코드 불일치, 만료 또는 비밀번호 형식 오류")
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "비밀번호 재설정 성공"
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "코드 불일치, 만료 또는 비밀번호 형식 오류"
+            )
     })
-    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
+    public ResponseEntity<Void> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request
+    ) {
         resetPasswordService.resetPassword(
                 request.getEmail(),
                 request.getCode(),
