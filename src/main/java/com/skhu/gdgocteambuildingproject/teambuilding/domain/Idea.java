@@ -8,11 +8,11 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PART_NOT_AVAILABLE;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.TOPIC_FOR_OTHER_PROJECT;
 
+import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaMemberRole;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
-import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
-import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -23,7 +23,6 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -68,8 +67,8 @@ public class Idea extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User creator;
 
-    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
     private ProjectTopic topic;
 
     @OneToMany(mappedBy = "idea", cascade = CascadeType.ALL, orphanRemoval = true)
