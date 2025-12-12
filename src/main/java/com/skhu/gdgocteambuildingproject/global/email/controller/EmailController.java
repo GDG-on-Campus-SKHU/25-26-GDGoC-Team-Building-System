@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,7 +41,7 @@ public class EmailController {
             @ApiResponse(responseCode = "200", description = "인증번호 전송 완료"),
             @ApiResponse(responseCode = "400", description = "이메일이 존재하지 않음 또는 형식 오류")
     })
-    public ResponseEntity<Void> sendCode(@RequestBody SendCodeRequest request) {
+    public ResponseEntity<Void> sendCode(@Valid @RequestBody SendCodeRequest request) {
         emailService.sendPasswordResetVerificationCode(request.getEmail());
         return ResponseEntity.ok().build();
     }
@@ -57,7 +58,7 @@ public class EmailController {
             @ApiResponse(responseCode = "200", description = "인증 성공"),
             @ApiResponse(responseCode = "400", description = "코드 불일치, 만료 또는 입력 오류")
     })
-    public ResponseEntity<Void> verifyCode(@RequestBody VerifyCodeRequest request) {
+    public ResponseEntity<Void> verifyCode(@Valid @RequestBody VerifyCodeRequest request) {
         emailVerificationService.verifyCode(
                 request.getEmail(),
                 request.getCode()
@@ -79,7 +80,7 @@ public class EmailController {
             @ApiResponse(responseCode = "200", description = "비밀번호 재설정 성공"),
             @ApiResponse(responseCode = "400", description = "코드 불일치, 만료 또는 비밀번호 형식 오류")
     })
-    public ResponseEntity<Void> resetPassword(@RequestBody ResetPasswordRequest request){
+    public ResponseEntity<Void> resetPassword(@Valid @RequestBody ResetPasswordRequest request){
         resetPasswordService.resetPassword(
                 request.getEmail(),
                 request.getCode(),

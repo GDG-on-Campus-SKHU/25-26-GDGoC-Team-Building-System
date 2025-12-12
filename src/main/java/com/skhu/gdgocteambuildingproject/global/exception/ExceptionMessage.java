@@ -20,6 +20,7 @@ public enum ExceptionMessage {
     REFRESH_TOKEN_INVALID("유효하지 않은 리프레시 토큰입니다."),
     INVALID_JWT_TOKEN("유효하지 않은 JWT 토큰입니다."),
     PHONE_ALREADY_EXISTS("이미 가입된 전화번호입니다."),
+    INVALID_SIGNUP_ROLE("회원가입으로는 관리자 권한을 부여할 수 없습니다."),
 
     // Email
     USER_EMAIL_NOT_EXIST("존재하지 않거나 탈퇴한 이메일입니다."),
