@@ -114,7 +114,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     private void validateSignUp(SignUpRequestDto dto) {
-        if (dto.getRole() == UserRole.SKHU_ADMIN) {
+        if (dto.getRole() == UserRole.ROLE_SKHU_ADMIN) {
             throw new IllegalArgumentException(
                     ExceptionMessage.INVALID_SIGNUP_ROLE.getMessage()
             );
@@ -180,7 +180,7 @@ public class AuthServiceImpl implements AuthService {
             throw new IllegalStateException(ExceptionMessage.USER_NOT_EXIST.getMessage());
         }
 
-        if (user.getRole() == UserRole.SKHU_ADMIN) {
+        if (user.getRole() == UserRole.ROLE_SKHU_ADMIN) {
             return;
         }
 
