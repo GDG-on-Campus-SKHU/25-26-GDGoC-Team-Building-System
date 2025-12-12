@@ -64,8 +64,9 @@ cors:
 
 swagger:
   servers:
-    - ${SWAGGER_SERVER_LOCAL}
     - ${SWAGGER_SERVER_PROD}
+    - ${SWAGGER_SERVER_LOCAL}
+
 
 springdoc:
   api-docs:

@@ -48,7 +48,7 @@ class UserInfoMapperTest {
                 .school(TEST_USER_SCHOOL)
                 .email(TEST_USER_EMAIL)
                 .number(TEST_USER_NUMBER)
-                .role(UserRole.SKHU_MEMBER)
+                .role(UserRole.ROLE_SKHU_MEMBER)
                 .password(PASSWORD)
                 .build();
 
