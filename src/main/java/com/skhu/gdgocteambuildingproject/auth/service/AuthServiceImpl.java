@@ -116,6 +116,12 @@ public class AuthServiceImpl implements AuthService {
         if (userRepository.existsByEmailAndDeletedFalse(dto.getEmail()))
             throw new IllegalArgumentException(ExceptionMessage.EMAIL_ALREADY_EXISTS.getMessage());
 
+        if (userRepository.existsByNumberAndDeletedFalse(dto.getNumber())) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.PHONE_ALREADY_EXISTS.getMessage()
+            );
+        }
+
         if (!dto.getPassword().equals(dto.getPasswordConfirm()))
             throw new IllegalArgumentException(ExceptionMessage.INVALID_PASSWORD.getMessage());
     }
