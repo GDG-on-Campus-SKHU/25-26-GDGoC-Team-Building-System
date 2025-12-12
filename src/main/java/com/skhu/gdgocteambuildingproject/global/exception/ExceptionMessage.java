@@ -11,6 +11,9 @@ public enum ExceptionMessage {
     BANNED_USER("정지된 계정입니다."),
     ALREADY_BANNED_USER("이미 정지된 계정입니다."),
     ALREADY_ACTIVE_USER("이미 활성화된 계정입니다."),
+    INVALID_USER_ROLE("유효하지 않은 사용자 권한(UserRole)입니다."),
+    INVALID_USER_POSITION("유효하지 않은 사용자 포지션(UserPosition)입니다."),
+    INVALID_PART("유효하지 않은 Part 값입니다."),
 
     //Auth
     EMAIL_ALREADY_EXISTS("이미 가입된 이메일입니다."),
@@ -79,6 +82,7 @@ public enum ExceptionMessage {
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
+    PROJECT_NOT_EXHIBITED("전시된 프로젝트가 아닙니다."),
 
     // S3
     IO_EXCEPTION_ON_IMAGE_UPLOAD("이미지 업로드 과정에서 에외가 발생했습니다."),

@@ -29,7 +29,7 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
         String searchKeyword = keyword.trim();
 
         List<GalleryProject> galleryProjects =
-                galleryProjectRepository.findByProjectNameContaining(searchKeyword);
+                galleryProjectRepository.findByProjectNameContainingAndExhibitedTrue(searchKeyword);
 
         return galleryProjects.stream()
                 .map(projectGalleryInfoMapper::toDto)

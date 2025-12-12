@@ -38,6 +38,7 @@ public class GalleryProjectMemberMapper {
 
     private MemberSearchResponseDto userFromEntity(User user) {
         return MemberSearchResponseDto.builder()
+                .userId(user.getId())
                 .name(user.getName())
                 .school(user.getSchool())
                 .generationAndPosition(joinGenerationAndPositions(user))
