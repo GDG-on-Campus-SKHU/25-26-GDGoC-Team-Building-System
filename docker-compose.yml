@@ -1,4 +1,3 @@
-# docker-compose.yml
 services:
   app:
     image: ${APP_IMAGE}
@@ -25,6 +24,7 @@ services:
 
 networks:
   tbs-network:
+    external: true
     name: tbs-network
 
 volumes:
