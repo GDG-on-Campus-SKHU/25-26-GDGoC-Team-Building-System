@@ -44,6 +44,8 @@ public class GalleryProject extends BaseEntity {
     @Column(nullable = false)
     private String description;
 
+    private String thumbnailUrl; // null일 결우 프론트에서 기본이미지 처리
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
     private User user;
@@ -52,16 +54,13 @@ public class GalleryProject extends BaseEntity {
     @Builder.Default
     private List<GalleryProjectMember> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
-    @Builder.Default
-    private List<GalleryProjectFile> files = new ArrayList<>();
-
     public void update(
             String projectName,
             String generation,
             String shortDescription,
             ServiceStatus serviceStatus,
             String description,
+            String thumbnailUrl,
             User leader
     ) {
         this.projectName = projectName;
@@ -69,14 +68,11 @@ public class GalleryProject extends BaseEntity {
         this.shortDescription = shortDescription;
         this.serviceStatus = serviceStatus;
         this.description = description;
+        this.thumbnailUrl = thumbnailUrl;
         this.user = leader;
     }
 
     public void clearMembers() {
         this.members.clear();
-    }
-
-    public void clearFiles() {
-        this.files.clear();
     }
 }

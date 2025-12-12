@@ -8,6 +8,6 @@ public record GalleryProjectSummaryResponseDto(
         String projectName,
         String shortDescription,
         String serviceStatus,
-        GalleryProjectFileInfoResponseDto fileUrl
+        String thumbnailUrl
 ) {
 }

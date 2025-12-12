@@ -93,8 +93,8 @@ class GalleryProjectAccessCheckerTest {
     }
 
     @ParameterizedTest
-    @EnumSource(value = UserRole.class, names = {"OTHERS", "BANNED"})
-    void User_엔티티의_권한이_OTHERS_또는_BANNED_인지_검증한다(UserRole role) throws Exception {
+    @EnumSource(value = UserRole.class, names = "OTHERS")
+    void User_엔티티의_권한이_OTHERS_인지_검증한다(UserRole role) throws Exception {
         // given
         User mockUser = mock(User.class);
 

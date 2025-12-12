@@ -15,7 +15,6 @@ import java.util.List;
 public class GalleryProjectInfoMapper {
 
     private final GalleryProjectMemberMapper memberMapper;
-    private final GalleryProjectFileMapper fileMapper;
 
     public GalleryProjectInfoResponseDto mapToInfo(GalleryProject project) {
         return GalleryProjectInfoResponseDto.builder()
@@ -27,7 +26,7 @@ public class GalleryProjectInfoMapper {
                 .description(project.getDescription())
                 .leaderId(project.getUser().getId())
                 .members(memberMapper.mapMembersInfo(project.getMembers()))
-                .files(fileMapper.map(project.getFiles()))
+                .thumbnailUrl(project.getThumbnailUrl())
                 .build();
     }
 
@@ -37,11 +36,7 @@ public class GalleryProjectInfoMapper {
                 .projectName(project.getProjectName())
                 .shortDescription(project.getShortDescription())
                 .serviceStatus(project.getServiceStatus().name())
-                .fileUrl(
-                        fileMapper.map(project.getFiles()).stream()
-                            .findFirst()
-                            .orElse(null)
-                )
+                .thumbnailUrl(project.getThumbnailUrl())
                 .build();
     }
 

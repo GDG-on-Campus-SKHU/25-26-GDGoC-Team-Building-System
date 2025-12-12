@@ -18,7 +18,10 @@ public class Activity extends BaseEntity {
 
     @Column(length = 5)
     private String speaker;
+
+    @Enumerated(EnumType.STRING)
     private Generation generation;
+
     private String videoUrl;
     private String thumbnailUrl;
 
