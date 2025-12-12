@@ -55,6 +55,7 @@ import jakarta.persistence.EntityNotFoundException;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
+import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -70,6 +71,7 @@ public class IdeaServiceImpl implements IdeaService {
     private final TeamBuildingProjectRepository projectRepository;
     private final UserRepository userRepository;
     private final IdeaEnrollmentRepository ideaEnrollmentRepository;
+    private final EntityManager entityManager;
 
     private final ProjectUtil projectUtil;
     private final ParticipationUtil participationUtil;
@@ -306,8 +308,9 @@ public class IdeaServiceImpl implements IdeaService {
         // 소프트 딜리트를 사용하므로 명시적으로 제거
         ideaMemberRepository.deleteAll(idea.getMembers());
         ideaEnrollmentRepository.deleteAll(idea.getEnrollments());
+        entityManager.flush();
 
-        idea.delete();
+        idea.markAsDeleted();
     }
 
     @Override
