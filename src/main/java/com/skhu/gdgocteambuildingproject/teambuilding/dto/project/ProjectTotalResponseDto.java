@@ -8,6 +8,7 @@ public record ProjectTotalResponseDto(
         Long projectId,
         String projectName,
         int maxMemberCount,
+        List<ProjectTopicResponseDto> topics,
         List<ProjectAvailablePartResponseDto> availableParts,
         List<ProjectScheduleResponseDto> schedules
 ) {
