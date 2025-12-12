@@ -274,6 +274,10 @@ public class Idea extends BaseEntity {
                 .anyMatch(IdeaMember::isMember);
     }
 
+    public boolean isCreator(User user) {
+        return user.equals(creator);
+    }
+
     public boolean containsAsMember(User user) {
         return findMemberBy(user).isPresent();
     }

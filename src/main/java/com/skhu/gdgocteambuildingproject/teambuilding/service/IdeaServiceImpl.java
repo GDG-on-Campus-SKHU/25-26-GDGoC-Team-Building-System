@@ -6,6 +6,7 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.IDEA_TOTAL_MEMBER_COUNT_EXCEEDED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_ENROLLMENT_STATUS;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.ILLEGAL_PROJECT;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.CREATOR_CANNOT_BE_REMOVED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_CREATOR_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_MEMBER_OF_IDEA;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.NOT_REGISTRATION_SCHEDULE;
@@ -313,6 +314,8 @@ public class IdeaServiceImpl implements IdeaService {
         Idea idea = findIdeaIncludeDeleted(ideaId);
         User member = findUserBy(memberId);
 
+        validateRemovableMember(idea, member);
+
         // 이미 수락된 멤버면 제거
         boolean isConfirmedMember = idea.containsAsMember(member);
         if (isConfirmedMember) {
@@ -607,6 +610,12 @@ public class IdeaServiceImpl implements IdeaService {
 
         if (totalMemberCount > projectMaxMemberCount) {
             throw new IllegalStateException(IDEA_TOTAL_MEMBER_COUNT_EXCEEDED.getMessage());
+        }
+    }
+
+    private void validateRemovableMember(Idea idea, User user) {
+        if (idea.isCreator(user)) {
+            throw new IllegalStateException(CREATOR_CANNOT_BE_REMOVED.getMessage());
         }
     }
 
