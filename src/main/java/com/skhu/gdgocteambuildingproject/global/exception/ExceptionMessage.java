@@ -82,6 +82,7 @@ public enum ExceptionMessage {
     // GalleryProject
     PROJECT_NOT_EXIST_IN_GALLERY("프로젝트가 갤러리에 존재하지 않습니다."),
     PROJECT_LIST_NOT_EXIST_IN_GALLERY("아직 등록된 프로젝트가 없습니다."),
+    PROJECT_NOT_EXHIBITED("전시된 프로젝트가 아닙니다."),
 
     // S3
     IO_EXCEPTION_ON_IMAGE_UPLOAD("이미지 업로드 과정에서 에외가 발생했습니다."),

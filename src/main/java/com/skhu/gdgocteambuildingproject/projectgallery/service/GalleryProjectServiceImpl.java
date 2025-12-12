@@ -1,9 +1,9 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.service;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_LIST_NOT_EXIST_IN_GALLERY;
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXHIBITED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST_IN_GALLERY;
 
-import com.skhu.gdgocteambuildingproject.global.aws.repository.FileRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
@@ -39,7 +39,6 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     private final GalleryProjectInfoMapper galleryProjectInfoMapper;
     private final UserRepository userRepository;
     private final GalleryProjectMemberMapper galleryProjectMemberMapper;
-    private final FileRepository fileRepository;
 
     @Override
     @Transactional
@@ -105,20 +104,26 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 //    }
 
     private GalleryProject findGalleryProjectById(Long projectId) {
-        return galleryProjectRepository.findById(projectId)
+        GalleryProject galleryProject = galleryProjectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
+
+        if (!galleryProject.isExhibited()) {
+            throw new IllegalStateException(PROJECT_NOT_EXHIBITED.getMessage());
+        }
+
+        return galleryProject;
     }
 
     private GalleryProjectListResponseDto findAllGalleryProjects() {
         List<GalleryProject> galleryProjects =
-                galleryProjectRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+                galleryProjectRepository.findByExhibitedTrueOrderByCreatedAtDesc();
 
         return mapToGalleryProjectsResponseDto(galleryProjects);
     }
 
     private GalleryProjectListResponseDto findGalleryProjectsByGeneration(String generation) {
         List<GalleryProject> galleryProjects =
-                galleryProjectRepository.findByGenerationOrderByCreatedAtDesc(generation);
+                galleryProjectRepository.findByGenerationAndExhibitedTrueOrderByCreatedAtDesc(Generation.fromLabel(generation));
 
         return mapToGalleryProjectsResponseDto(galleryProjects);
     }

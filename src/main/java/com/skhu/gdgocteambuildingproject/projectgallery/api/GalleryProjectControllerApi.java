@@ -50,6 +50,7 @@ public interface GalleryProjectControllerApi {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "프로젝트 상세 조회 성공"),
+            @ApiResponse(responseCode = "400", description = "projectId에 해당하는 프로젝트가 전시되지 않음"),
             @ApiResponse(responseCode = "404", description = "projectId에 해당하는 프로젝트가 없음"),
     })
     ResponseEntity<GalleryProjectInfoResponseDto> findCurrentGalleryProjectInfoByProjectId(@PathVariable Long projectId);
@@ -61,6 +62,8 @@ public interface GalleryProjectControllerApi {
                     프로젝트 갤러리에 전시되어 있는 프로젝트 목록을 조회합니다. 정렬은 최신순으로 나열합니다.
                     
                     generation(기수)를 parameter로 필터링하고, parameter를 넣지 않으면 필터링 없이 모든 내용을 조회합니다.
+                    
+                    전시 여부가 true인 프로젝트만 목록에 조회됩니다.
                     """
     )
     @ApiResponses({
