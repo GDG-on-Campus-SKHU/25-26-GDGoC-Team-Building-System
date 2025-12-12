@@ -55,7 +55,6 @@ public interface AdminActivityControllerApi {
     ResponseEntity<Void> deleteActivityPost(
             @Parameter(description = "삭제할 게시글의 ID", required = true) Long postId);
 
-
     @Operation(summary = "카테고리 삭제", description = "카테고리 ID를 통해 특정 카테고리를 삭제합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "삭제 성공"),
@@ -72,5 +71,11 @@ public interface AdminActivityControllerApi {
     ResponseEntity<Void> updateCategoryTitleAndStatus(
             @Parameter(description = "수정할 카테고리 ID", required = true) Long categoryId,
             @Parameter(description = "수정할 카테고리 정보", required = true) ActivityUpdateRequestDto dto
+    );
+
+    @Operation(summary = "관리자의 액티비티 게시글 상세 조회", description = "게시글 ID를 이용하여 액티비티 활동 게시글의 상세 정보를 조회합니다.")
+    ResponseEntity<PostResponseDto> getActivityPost(
+            @Parameter(description = "조회할 게시글 ID", required = true, example = "1")
+            Long postId
     );
 }

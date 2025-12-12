@@ -28,7 +28,6 @@ public class ActivityInfoMapper {
                 .speaker(activity.getSpeaker())
                 .generation(activity.getGeneration().getLabel())
                 .videoUrl(activity.getVideoUrl())
-                .thumbnailUrl(activity.getThumbnailUrl())
                 .build();
     }
 

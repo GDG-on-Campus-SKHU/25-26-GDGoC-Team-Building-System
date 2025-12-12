@@ -23,7 +23,6 @@ public class Activity extends BaseEntity {
     private Generation generation;
 
     private String videoUrl;
-    private String thumbnailUrl;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "activity_category_id")
@@ -31,22 +30,19 @@ public class Activity extends BaseEntity {
 
     @Builder
     public Activity(String title, String speaker, Generation generation,
-                    String videoUrl, ActivityCategory activityCategory,
-                    String thumbnailUrl) {
+                    String videoUrl, ActivityCategory activityCategory) {
         this.title = title;
         this.speaker = speaker;
         this.generation = generation;
         this.videoUrl = videoUrl;
         this.activityCategory = activityCategory;
-        this.thumbnailUrl = thumbnailUrl;
     }
 
     public void update(String title, String speaker,
-                       Generation generation, String thumbnailUrl, String videoUrl) {
+                       Generation generation, String videoUrl) {
         this.title = title;
         this.speaker = speaker;
         this.generation = generation;
-        this.thumbnailUrl = thumbnailUrl;
         this.videoUrl = videoUrl;
     }
 }

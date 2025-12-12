@@ -10,7 +10,6 @@ public record ActivityResponseDto(
         String postTitle,
         String speaker,
         String generation,
-        String videoUrl,
-        String thumbnailUrl
+        String videoUrl
 ) {
 }
