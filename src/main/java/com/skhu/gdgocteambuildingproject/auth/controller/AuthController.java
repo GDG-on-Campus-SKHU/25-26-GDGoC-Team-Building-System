@@ -39,8 +39,8 @@ import org.springframework.web.bind.annotation.*;
   - ORGANIZER
 
 • UserRole
-  - OTHERS
-  - SKHU_MEMBER
+  - ROLE_OTHERS
+  - ROLE_SKHU_MEMBER
 """
 )
 @RestController
