@@ -94,9 +94,10 @@ jobs:
               | docker login --username AWS --password-stdin "$ECR_REGISTRY"
             docker pull "$IMAGE"
             
-            # 2) /home/ec2-user/app.env 새로 생성 (기존 것 백업)
+            # 2) /home/ec2-user/app.env 새로 생성 (기존 백업은 하나만 보관)
             ENV_FILE="/home/ec2-user/app.env"
-            test -f "$ENV_FILE" && cp "$ENV_FILE" "$ENV_FILE.bak.$(date +%F_%H%M%S)" || true
+            rm -f "$ENV_FILE.bak" || true
+            test -f "$ENV_FILE" && cp "$ENV_FILE" "$ENV_FILE.bak" || true
             
             cat > "$ENV_FILE" <<EOF
             TZ=Asia/Seoul
