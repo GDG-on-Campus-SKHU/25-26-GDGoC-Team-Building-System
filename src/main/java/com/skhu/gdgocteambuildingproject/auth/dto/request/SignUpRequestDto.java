@@ -54,6 +54,10 @@ public class SignUpRequestDto {
     @Schema(example = "MEMBER", description = "사용자 포지션(UserPosition): MEMBER / CORE / ORGANIZER")
     private UserPosition position;
 
-    @Schema(example = "OTHERS", description = "사용자 권한(UserRole)")
-    private UserRole role;
+    @Schema(
+            example = "ROLE_OTHERS",
+            description = "사용자 권한(UserRole)",
+            defaultValue = "ROLE_OTHERS"
+    )
+    private UserRole role = UserRole.ROLE_OTHERS;
 }
