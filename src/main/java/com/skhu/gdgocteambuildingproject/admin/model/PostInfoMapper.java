@@ -11,7 +11,7 @@ public class PostInfoMapper {
                 .id(activity.getId())
                 .title(activity.getTitle())
                 .speaker(activity.getSpeaker())
-                .generation(activity.getGeneration())
+                .generation(activity.getGeneration().getLabel())
                 .thumbnailUrl(activity.getThumbnailUrl())
                 .videoUrl(activity.getVideoUrl())
                 .build();

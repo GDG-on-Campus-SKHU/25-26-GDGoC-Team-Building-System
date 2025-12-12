@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.activity.domain;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -17,7 +18,7 @@ public class Activity extends BaseEntity {
 
     @Column(length = 5)
     private String speaker;
-    private String generation;  // TODO: Generation enum으로 바꾸기
+    private Generation generation;
     private String videoUrl;
     private String thumbnailUrl;
 
@@ -26,7 +27,7 @@ public class Activity extends BaseEntity {
     private ActivityCategory activityCategory;
 
     @Builder
-    public Activity(String title, String speaker, String generation,
+    public Activity(String title, String speaker, Generation generation,
                     String videoUrl, ActivityCategory activityCategory,
                     String thumbnailUrl) {
         this.title = title;
@@ -38,7 +39,7 @@ public class Activity extends BaseEntity {
     }
 
     public void update(String title, String speaker,
-                       String generation, String thumbnailUrl, String videoUrl) {
+                       Generation generation, String thumbnailUrl, String videoUrl) {
         this.title = title;
         this.speaker = speaker;
         this.generation = generation;
