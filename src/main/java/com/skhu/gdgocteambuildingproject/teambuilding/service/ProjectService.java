@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.service;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectNameUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -30,6 +31,8 @@ public interface ProjectService {
     ModifiableProjectResponseDto findModifiableProject();
 
     void updateProject(long projectId, ProjectUpdateRequestDto requestDto);
+
+    void updateProjectName(long projectId, ProjectNameUpdateRequestDto requestDto);
 
     List<SchoolResponseDto> findSchools();
 
