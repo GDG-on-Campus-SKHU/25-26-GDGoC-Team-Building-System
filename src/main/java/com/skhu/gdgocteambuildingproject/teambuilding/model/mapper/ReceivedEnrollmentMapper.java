@@ -1,8 +1,8 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.model.mapper;
 
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
-import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import org.springframework.stereotype.Component;
@@ -16,7 +16,7 @@ public class ReceivedEnrollmentMapper {
         return ReceivedEnrollmentResponseDto.builder()
                 .enrollmentId(enrollment.getId())
                 .choice(enrollment.getChoice())
-                .enrollmentStatus(enrollment.getStatus())
+                .enrollmentStatus(enrollment.getStatus().confirmedStatus())
                 .enrollmentAcceptable(idea.isEnrollmentAvailable(part))
                 .applicantId(applicant.getId())
                 .applicantName(applicant.getName())
