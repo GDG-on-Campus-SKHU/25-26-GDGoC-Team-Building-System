@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.api;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
@@ -36,5 +37,14 @@ public interface AdminProjectGalleryApi {
             @Parameter(description = "페이지 당 항목 수", example = "20") int size,
             @Parameter(description = "정렬 기준 필드", example = "id") String sortBy,
             @Parameter(description = "정렬 순서 (ASC, DESC)", example = "ASC") SortOrder order
+    );
+
+    @Operation(summary = "프로젝트 갤러리 상세 조회", description = "프로젝트 ID를 통해 갤러리 상세 정보를 조회합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "조회 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 프로젝트")
+    })
+    ResponseEntity<ProjectGalleryDetailResponseDto> getProjectGallery(
+            @Parameter(description = "프로젝트 ID", example = "1", required = true) Long projectId
     );
 }
