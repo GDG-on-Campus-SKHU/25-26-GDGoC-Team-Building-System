@@ -78,8 +78,11 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TechStack> techStacks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserLink> userLinks = new ArrayList<>();
 
     @OneToMany(mappedBy = "user")
     private List<Grade> grades = new ArrayList<>();
@@ -92,9 +95,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "applicant")
     private List<IdeaEnrollment> enrollments = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<UserLink> userLinks = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String name, String number,
