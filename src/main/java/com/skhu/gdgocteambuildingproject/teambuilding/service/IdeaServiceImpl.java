@@ -20,6 +20,9 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaEnrollment;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.TemporaryIdeaDetailResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TemporaryIdeaMapper;
+import java.time.LocalDateTime;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaDetailInfoMapper;
@@ -75,8 +78,10 @@ public class IdeaServiceImpl implements IdeaService {
 
     private final ProjectUtil projectUtil;
     private final ParticipationUtil participationUtil;
+
     private final IdeaTitleInfoMapper ideaTitleInfoMapper;
     private final IdeaDetailInfoMapper ideaDetailInfoMapper;
+    private final TemporaryIdeaMapper temporaryIdeaMapper;
     private final RosterMapper rosterMapper;
 
     @Override
@@ -189,7 +194,7 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional(readOnly = true)
-    public IdeaDetailInfoResponseDto findTemporaryIdea(
+    public TemporaryIdeaDetailResponseDto findTemporaryIdea(
             long projectId,
             long userId
     ) {
@@ -199,7 +204,7 @@ public class IdeaServiceImpl implements IdeaService {
                 .filter(Idea::isTemporary)
                 .orElseThrow(() -> new EntityNotFoundException(TEMPORARY_IDEA_NOT_EXIST.getMessage()));
 
-        return ideaDetailInfoMapper.map(idea);
+        return temporaryIdeaMapper.map(idea);
     }
 
     @Override
@@ -540,6 +545,10 @@ public class IdeaServiceImpl implements IdeaService {
                 .build();
         idea.initCreatorToMember(ideaDto.creatorPart());
 
+        if (ideaDto.registerStatus() == IdeaStatus.TEMPORARY) {
+            idea.updateLastTemporarySavedAt(LocalDateTime.now());
+        }
+
         return idea;
     }
 
@@ -549,8 +558,12 @@ public class IdeaServiceImpl implements IdeaService {
     ) {
         validateIdeaNotRegistered(idea);
 
-        if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
-            validateTotalMemberCount(requestDto.compositions(), idea.getProject());
+        switch (requestDto.registerStatus()) {
+            case REGISTERED -> {
+                validateTotalMemberCount(requestDto.compositions(), idea.getProject());
+                idea.register();
+            }
+            case TEMPORARY -> idea.updateLastTemporarySavedAt(LocalDateTime.now());
         }
 
         ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
@@ -562,10 +575,6 @@ public class IdeaServiceImpl implements IdeaService {
         );
         idea.updateCreatorPart(requestDto.creatorPart());
         updateIdeaCompositions(idea, requestDto.compositions());
-
-        if (requestDto.registerStatus() == IdeaStatus.REGISTERED) {
-            idea.register();
-        }
 
         return idea;
     }
