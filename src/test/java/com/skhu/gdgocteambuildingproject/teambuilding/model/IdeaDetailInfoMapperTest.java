@@ -9,9 +9,11 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.ProjectTopic;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreatorInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaMemberCompositionResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterPartResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaCreatorInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaMemberCompositionMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.RosterPartMapper;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -30,6 +32,8 @@ class IdeaDetailInfoMapperTest {
     @Mock
     private List<IdeaMemberCompositionResponseDto> COMPOSITIONS_DTOS;
     @Mock
+    private List<RosterPartResponseDto> ROSTER_DTOS;
+    @Mock
     private IdeaCreatorInfoResponseDto CREATOR_DTO;
 
     @Mock
@@ -40,6 +44,8 @@ class IdeaDetailInfoMapperTest {
     private IdeaCreatorInfoMapper creatorInfoMapper;
     @Mock
     private IdeaMemberCompositionMapper compositionMapper;
+    @Mock
+    private RosterPartMapper rosterMapper;
 
     @InjectMocks
     private IdeaDetailInfoMapper ideaDetailInfoMapper;
@@ -83,7 +89,7 @@ class IdeaDetailInfoMapperTest {
         when(topic.getTopic()).thenReturn(TOPIC);
         when(idea.isDeleted()).thenReturn(false);
         when(creatorInfoMapper.map(idea)).thenReturn(CREATOR_DTO);
-        when(compositionMapper.map(idea)).thenReturn(COMPOSITIONS_DTOS);
+        when(rosterMapper.map(idea)).thenReturn(ROSTER_DTOS);
 
         // when
         AdminIdeaDetailResponseDto dto = ideaDetailInfoMapper.mapForAdmin(idea);
@@ -96,7 +102,7 @@ class IdeaDetailInfoMapperTest {
         assertThat(dto.topicId()).isEqualTo(TOPIC_ID);
         assertThat(dto.topic()).isEqualTo(TOPIC);
         assertThat(dto.creator()).isEqualTo(CREATOR_DTO);
-        assertThat(dto.compositions()).isEqualTo(COMPOSITIONS_DTOS);
+        assertThat(dto.rosters()).isEqualTo(ROSTER_DTOS);
         assertThat(dto.deleted()).isFalse();
     }
 }
