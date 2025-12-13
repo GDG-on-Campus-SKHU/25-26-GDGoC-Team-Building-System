@@ -199,14 +199,16 @@ public class TeamBuildingProject extends BaseEntity {
         projectSchedule.updateDates(startDate, endDate);
     }
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public void update(
-            String name,
             int maxMemberCount,
             List<Part> availableParts,
             List<String> topics,
             List<User> participants
     ) {
-        this.name = name;
         this.maxMemberCount = maxMemberCount;
 
         updateAvailableParts(availableParts);

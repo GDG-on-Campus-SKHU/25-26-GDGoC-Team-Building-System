@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.constants.api;
 
 import com.skhu.gdgocteambuildingproject.constants.dto.GenerationResponseDto;
+import com.skhu.gdgocteambuildingproject.constants.dto.PartResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
@@ -19,4 +20,15 @@ public interface ConstantsApi {
                     """
     )
     ResponseEntity<List<GenerationResponseDto>> getGenerations();
+
+    @Operation(
+            summary = "파트 목록 조회",
+            description = """
+                    사용할 수 있는 파트 목록을 조회합니다.
+                    
+                    name: 파트 코드 (PM, DESIGN, WEB, MOBILE, BACKEND, AI)
+                    koreanName: 파트 한글명 (기획, 디자인, 프론트엔드(웹), 프론트엔드(모바일), 백엔드, AI/ML)
+                    """
+    )
+    ResponseEntity<List<PartResponseDto>> getParts();
 }

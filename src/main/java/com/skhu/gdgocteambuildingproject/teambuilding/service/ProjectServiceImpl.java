@@ -8,6 +8,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectNameUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
@@ -151,7 +152,6 @@ public class ProjectServiceImpl implements ProjectService {
         List<User> participants = findParticipatingUsers(requestDto.participantUserIds());
 
         project.update(
-                requestDto.projectName(),
                 requestDto.maxMemberCount(),
                 requestDto.availableParts(),
                 requestDto.topics(),
@@ -165,6 +165,14 @@ public class ProjectServiceImpl implements ProjectService {
                     schedule.endAt()
             );
         }
+    }
+
+    @Override
+    @Transactional
+    public void updateProjectName(long projectId, ProjectNameUpdateRequestDto requestDto) {
+        TeamBuildingProject project = findProjectBy(projectId);
+
+        project.updateName(requestDto.projectName());
     }
 
     @Override

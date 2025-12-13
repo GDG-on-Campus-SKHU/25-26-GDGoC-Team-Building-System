@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.constants.controller;
 
 import com.skhu.gdgocteambuildingproject.constants.dto.GenerationResponseDto;
+import com.skhu.gdgocteambuildingproject.constants.dto.PartResponseDto;
 import com.skhu.gdgocteambuildingproject.constants.api.ConstantsApi;
 import com.skhu.gdgocteambuildingproject.constants.service.ConstantsService;
 import java.util.List;
@@ -21,6 +22,14 @@ public class ConstantsController implements ConstantsApi {
     @GetMapping("/generations")
     public ResponseEntity<List<GenerationResponseDto>> getGenerations() {
         List<GenerationResponseDto> response = constantsService.getGenerations();
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/parts")
+    public ResponseEntity<List<PartResponseDto>> getParts() {
+        List<PartResponseDto> response = constantsService.getParts();
 
         return ResponseEntity.ok(response);
     }
