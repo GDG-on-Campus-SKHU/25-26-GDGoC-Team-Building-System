@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUserIdFrom;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.ProjectService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -13,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -47,7 +49,7 @@ public class ProjectController {
 
     @GetMapping("/projects/current")
     @Operation(
-            summary = "프로젝트 정보 및 일정 조회",
+            summary = "현재 프로젝트 정보 및 일정 조회",
             description = """
                     현재 진행중이거나 예정된 프로젝트의 정보 및 일정을 조회합니다.
                     또한, 본인이 해당 프로젝트에 아이디어를 등록할 수 있는지, 다른 아이디어에 지원할 수 있는지 여부를 같이 반환합니다.
@@ -67,6 +69,28 @@ public class ProjectController {
         long userId = getUserIdFrom(principal);
 
         TeamBuildingInfoResponseDto response = projectService.findCurrentProjectInfo(userId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/projects/{projectId}")
+    @Operation(
+            summary = "프로젝트 정보 및 일정 조회(ID 기반)",
+            description = """
+                    ID를 기반으로 찾은 프로젝트의 정보 및 일정을 조회합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    
+                    scheduleType: IDEA_REGISTRATION, FIRST_TEAM_BUILDING, FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING, SECOND_TEAM_BUILDING_ANNOUNCEMENT, THIRD_TEAM_BUILDING, FINAL_RESULT_ANNOUNCEMENT
+                    """
+    )
+    public ResponseEntity<ProjectTotalResponseDto> findProjectInfoById(
+            Principal principal,
+            @PathVariable long projectId
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        ProjectTotalResponseDto response = projectService.findProjectInfoById(userId, projectId);
 
         return ResponseEntity.ok(response);
     }

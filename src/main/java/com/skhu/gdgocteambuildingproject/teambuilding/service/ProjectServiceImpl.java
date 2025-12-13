@@ -9,6 +9,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPag
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectNameUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
@@ -25,6 +26,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ModifiableProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.PastProjectMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectInfoMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ProjectTotalMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TeamBuildingInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
@@ -57,6 +59,7 @@ public class ProjectServiceImpl implements ProjectService {
     private final TeamBuildingInfoMapper teamBuildingInfoMapper;
     private final PastProjectMapper pastProjectMapper;
     private final ProjectInfoMapper projectInfoMapper;
+    private final ProjectTotalMapper projectTotalMapper;
     private final ModifiableProjectMapper modifiableProjectMapper;
 
     @Override
@@ -103,6 +106,17 @@ public class ProjectServiceImpl implements ProjectService {
         validateProjectScheduled(currentProject);
 
         return teamBuildingInfoMapper.map(currentProject, user);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ProjectTotalResponseDto findProjectInfoById(long userId, long projectId) {
+        TeamBuildingProject project = findProjectBy(projectId);
+
+        participationUtil.validateParticipation(userId, projectId);
+        validateProjectScheduled(project);
+
+        return projectTotalMapper.map(project);
     }
 
     @Override
