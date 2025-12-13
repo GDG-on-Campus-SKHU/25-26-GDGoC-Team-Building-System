@@ -9,6 +9,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaUpdateRequest
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.TemporaryIdeaDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -127,13 +128,13 @@ public class IdeaController {
                     존재하지 않을 경우 404를 응답합니다.
                     """
     )
-    public ResponseEntity<IdeaDetailInfoResponseDto> findTemporaryIdea(
+    public ResponseEntity<TemporaryIdeaDetailResponseDto> findTemporaryIdea(
             Principal principal,
             @PathVariable long projectId
     ) {
         long userId = getUserIdFrom(principal);
 
-        IdeaDetailInfoResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
+        TemporaryIdeaDetailResponseDto response = ideaService.findTemporaryIdea(projectId, userId);
 
         return ResponseEntity.ok(response);
     }

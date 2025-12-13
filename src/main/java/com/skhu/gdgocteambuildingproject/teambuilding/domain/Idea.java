@@ -23,6 +23,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -62,6 +63,8 @@ public class Idea extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private IdeaStatus registerStatus;
+
+    private LocalDateTime lastTemporarySavedAt;
 
     @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -170,6 +173,10 @@ public class Idea extends BaseEntity {
 
     public void register() {
         this.registerStatus = IdeaStatus.REGISTERED;
+    }
+
+    public void updateLastTemporarySavedAt(LocalDateTime lastTemporarySavedAt) {
+        this.lastTemporarySavedAt = lastTemporarySavedAt;
     }
 
     public void markAsDeleted() {

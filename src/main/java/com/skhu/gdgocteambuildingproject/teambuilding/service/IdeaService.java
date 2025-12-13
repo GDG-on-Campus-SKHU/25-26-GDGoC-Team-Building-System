@@ -9,6 +9,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreateRequest
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.TemporaryIdeaDetailResponseDto;
 
 public interface IdeaService {
 
@@ -48,7 +49,7 @@ public interface IdeaService {
             long ideaId
     );
 
-    IdeaDetailInfoResponseDto findTemporaryIdea(
+    TemporaryIdeaDetailResponseDto findTemporaryIdea(
             long projectId,
             long userId
     );
