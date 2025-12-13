@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
 import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectGalleryApi;
+import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminProjectGalleryService;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -8,10 +9,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -42,5 +40,12 @@ public class AdminProjectGalleryController implements AdminProjectGalleryApi {
                 adminProjectGalleryService.getProjectGallerys(page, size, sortBy, order);
 
         return ResponseEntity.ok(projectGallerys);
+    }
+
+    @Override
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ProjectGalleryDetailResponseDto> getProjectGallery(@PathVariable Long projectId) {
+        ProjectGalleryDetailResponseDto projectGallery = adminProjectGalleryService.getProjectGallery(projectId);
+        return ResponseEntity.ok(projectGallery);
     }
 }
