@@ -73,7 +73,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         validateEnrollmentAvailable(currentSchedule.getType());
         validateChoice(requestDto.choice(), applicant, currentSchedule);
         validateApplicantCanEnroll(applicant, currentProject);
-        validateEnrollmentUnique(applicant, idea);
+        validateEnrollmentUnique(applicant, idea, currentSchedule);
 
         IdeaEnrollment enrollment = saveEnrollment(applicant, idea, currentSchedule, requestDto);
         idea.addEnrollment(enrollment);
@@ -279,9 +279,11 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     private void validateEnrollmentUnique(
             User applicant,
-            Idea idea
+            Idea idea,
+            ProjectSchedule currentSchedule
     ) {
         boolean alreadyEnrolled = applicant.getEnrollments().stream()
+                .filter(enrollment -> currentSchedule.equals(enrollment.getSchedule()))
                 .anyMatch(enrollment -> enrollment.getIdea().equals(idea));
 
         if (alreadyEnrolled) {
