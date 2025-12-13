@@ -25,7 +25,8 @@ public interface IdeaService {
             int size,
             String sortBy,
             SortOrder order,
-            boolean recruitingOnly
+            boolean recruitingOnly,
+            Long topicId
     );
 
     IdeaTitleInfoIncludeDeletedPageResponseDto findIdeasIncludeDeleted(
