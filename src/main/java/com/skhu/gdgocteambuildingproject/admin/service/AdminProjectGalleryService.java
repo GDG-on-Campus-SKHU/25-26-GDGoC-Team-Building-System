@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.service;
 
+import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 
@@ -14,4 +15,6 @@ public interface AdminProjectGalleryService {
             String sortBy,
             SortOrder order
     );
+
+    ProjectGalleryDetailResponseDto getProjectGallery(Long projectId);
 }
