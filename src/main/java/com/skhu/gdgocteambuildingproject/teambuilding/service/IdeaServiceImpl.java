@@ -86,7 +86,7 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
-    public IdeaDetailInfoResponseDto createIdea(
+    public TemporaryIdeaDetailResponseDto createIdea(
             long projectId,
             long userId,
             IdeaCreateRequestDto requestDto
@@ -109,7 +109,7 @@ public class IdeaServiceImpl implements IdeaService {
                 .map(idea -> updateExistTemporaryIdea(idea, requestDto))
                 .orElseGet(() -> saveNewIdea(creator, project, requestDto));
 
-        return ideaDetailInfoMapper.map(postedIdea);
+        return temporaryIdeaMapper.map(postedIdea);
     }
 
     @Override
@@ -238,8 +238,8 @@ public class IdeaServiceImpl implements IdeaService {
         validateIdeaOwnership(idea, userId);
 
         ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
+        idea.updateTopic(topic);
         idea.updateTexts(
-                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -266,8 +266,8 @@ public class IdeaServiceImpl implements IdeaService {
         validateTotalMemberCount(requestDto.compositions(), idea.getProject());
 
         ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
+        idea.updateTopic(topic);
         idea.updateTexts(
-                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -287,8 +287,8 @@ public class IdeaServiceImpl implements IdeaService {
         Idea idea = findIdeaIncludeDeleted(ideaId);
 
         ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
+        idea.updateTopic(topic);
         idea.updateTexts(
-                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -527,26 +527,27 @@ public class IdeaServiceImpl implements IdeaService {
     }
 
     private Idea buildIdea(
-            IdeaCreateRequestDto ideaDto,
+            IdeaCreateRequestDto requestDto,
             TeamBuildingProject project,
             User creator
     ) {
-        ProjectTopic topic = findTopicBy(project, ideaDto.topicId());
-
         Idea idea = Idea.builder()
-                .topic(topic)
-                .title(ideaDto.title())
-                .introduction(ideaDto.introduction())
-                .description(ideaDto.description())
-                .registerStatus(ideaDto.registerStatus())
+                .title(requestDto.title())
+                .introduction(requestDto.introduction())
+                .description(requestDto.description())
+                .registerStatus(requestDto.registerStatus())
                 .project(project)
                 .creator(creator)
-                .creatorPart(ideaDto.creatorPart())
+                .creatorPart(requestDto.creatorPart())
                 .build();
-        idea.initCreatorToMember(ideaDto.creatorPart());
+        idea.initCreatorToMember(requestDto.creatorPart());
 
-        if (ideaDto.registerStatus() == IdeaStatus.TEMPORARY) {
-            idea.updateLastTemporarySavedAt(LocalDateTime.now());
+        switch (requestDto.registerStatus()) {
+            case REGISTERED -> updateTopic(idea, requestDto.topicId());
+            case TEMPORARY -> {
+                idea.updateLastTemporarySavedAt(LocalDateTime.now());
+                updateTopicIfExists(idea, requestDto.topicId());
+            }
         }
 
         return idea;
@@ -561,14 +562,16 @@ public class IdeaServiceImpl implements IdeaService {
         switch (requestDto.registerStatus()) {
             case REGISTERED -> {
                 validateTotalMemberCount(requestDto.compositions(), idea.getProject());
+                updateTopic(idea, requestDto.topicId());
                 idea.register();
             }
-            case TEMPORARY -> idea.updateLastTemporarySavedAt(LocalDateTime.now());
+            case TEMPORARY -> {
+                idea.updateLastTemporarySavedAt(LocalDateTime.now());
+                updateTopicIfExists(idea, requestDto.topicId());
+            }
         }
 
-        ProjectTopic topic = findTopicBy(idea.getProject(), requestDto.topicId());
         idea.updateTexts(
-                topic,
                 requestDto.title(),
                 requestDto.introduction(),
                 requestDto.description()
@@ -577,6 +580,23 @@ public class IdeaServiceImpl implements IdeaService {
         updateIdeaCompositions(idea, requestDto.compositions());
 
         return idea;
+    }
+
+    private void updateTopicIfExists(Idea idea, Long topicId) {
+        if (topicId == null) {
+            return;
+        }
+
+        updateTopic(idea, topicId);
+    }
+
+    private void updateTopic(Idea idea, Long topicId) {
+        if (topicId == null) {
+            throw new IllegalArgumentException(TOPIC_NOT_EXIST.getMessage());
+        }
+
+        ProjectTopic topic = findTopicBy(idea.getProject(), topicId);
+        idea.updateTopic(topic);
     }
 
     private void updateIdeaCompositions(
@@ -628,6 +648,13 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseThrow(() -> new EntityNotFoundException(ENROLLMENT_NOT_EXIST.getMessage()));
     }
 
+    private ProjectTopic findTopicBy(TeamBuildingProject project, Long topicId) {
+        return project.getTopics().stream()
+                .filter(topic -> topic.getId().equals(topicId))
+                .findAny()
+                .orElseThrow(() -> new EntityNotFoundException(TOPIC_NOT_EXIST.getMessage()));
+    }
+
     private Pageable setupPagination(
             int page,
             int size,
@@ -668,12 +695,5 @@ public class IdeaServiceImpl implements IdeaService {
         if (idea.isCreator(user)) {
             throw new IllegalStateException(CREATOR_CANNOT_BE_REMOVED.getMessage());
         }
-    }
-
-    private ProjectTopic findTopicBy(TeamBuildingProject project, Long topicId) {
-        return project.getTopics().stream()
-                .filter(topic -> topic.getId().equals(topicId))
-                .findAny()
-                .orElseThrow(() -> new EntityNotFoundException(TOPIC_NOT_EXIST.getMessage()));
     }
 }

@@ -22,13 +22,16 @@ public class IdeaDetailInfoMapper {
         IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea);
         List<IdeaMemberCompositionResponseDto> compositions = compositionMapper.map(idea);
 
+        Long topicId = idea.getTopic() != null ? idea.getTopic().getId() : null;
+        String topic = idea.getTopic() != null ? idea.getTopic().getTopic() : null;
+
         return IdeaDetailInfoResponseDto.builder()
                 .ideaId(idea.getId())
                 .title(idea.getTitle())
                 .introduction(idea.getIntroduction())
                 .description(idea.getDescription())
-                .topicId(idea.getTopic().getId())
-                .topic(idea.getTopic().getTopic())
+                .topicId(topicId)
+                .topic(topic)
                 .creator(creator)
                 .compositions(compositions)
                 .build();
@@ -38,13 +41,16 @@ public class IdeaDetailInfoMapper {
         IdeaCreatorInfoResponseDto creator = creatorInfoMapper.map(idea);
         List<RosterPartResponseDto> rosters = rosterPartMapper.map(idea);
 
+        Long topicId = idea.getTopic() != null ? idea.getTopic().getId() : null;
+        String topic = idea.getTopic() != null ? idea.getTopic().getTopic() : null;
+
         return AdminIdeaDetailResponseDto.builder()
                 .ideaId(idea.getId())
                 .title(idea.getTitle())
                 .introduction(idea.getIntroduction())
                 .description(idea.getDescription())
-                .topicId(idea.getTopic().getId())
-                .topic(idea.getTopic().getTopic())
+                .topicId(topicId)
+                .topic(topic)
                 .creator(creator)
                 .deleted(idea.isDeleted())
                 .rosters(rosters)

@@ -54,14 +54,14 @@ public class IdeaController {
                     registerStatus: TEMPORARY, REGISTERED
                     """
     )
-    public ResponseEntity<IdeaDetailInfoResponseDto> createIdea(
+    public ResponseEntity<TemporaryIdeaDetailResponseDto> createIdea(
             Principal principal,
             @PathVariable long projectId,
             @RequestBody IdeaCreateRequestDto requestDto
     ) {
         long userId = getUserIdFrom(principal);
 
-        IdeaDetailInfoResponseDto response = ideaService.createIdea(projectId, userId, requestDto);
+        TemporaryIdeaDetailResponseDto response = ideaService.createIdea(projectId, userId, requestDto);
 
         return ResponseEntity.ok(response);
     }

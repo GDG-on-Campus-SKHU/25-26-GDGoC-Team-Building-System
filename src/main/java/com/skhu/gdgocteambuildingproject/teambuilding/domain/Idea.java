@@ -70,7 +70,6 @@ public class Idea extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     private User creator;
 
-    @JoinColumn(nullable = false)
     @ManyToOne(fetch = FetchType.LAZY)
     private ProjectTopic topic;
 
@@ -143,17 +142,18 @@ public class Idea extends BaseEntity {
     }
 
     public void updateTexts(
-            ProjectTopic topic,
             String title,
             String introduction,
             String description
     ) {
-        validateTopic(topic);
-
-        this.topic = topic;
         this.title = title;
         this.introduction = introduction;
         this.description = description;
+    }
+
+    public void updateTopic(ProjectTopic topic) {
+        validateTopic(topic);
+        this.topic = topic;
     }
 
     public void updateComposition(Part part, int count) {
@@ -380,7 +380,7 @@ public class Idea extends BaseEntity {
     }
 
     private void validateTopic(ProjectTopic topic) {
-        if (!project.equals(topic.getProject())) {
+        if (topic == null || !project.equals(topic.getProject())) {
             throw new IllegalArgumentException(TOPIC_FOR_OTHER_PROJECT.getMessage());
         }
     }
