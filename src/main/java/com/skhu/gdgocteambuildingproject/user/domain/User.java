@@ -146,7 +146,7 @@ public class User extends BaseEntity {
                 .findAny();
     }
 
-    public List<IdeaEnrollment> getEnrollmentFrom(ProjectSchedule schedule) {
+    public List<IdeaEnrollment> getEnrollmentsFrom(ProjectSchedule schedule) {
         return enrollments.stream()
                 .filter(enrollment -> enrollment.getSchedule().equals(schedule))
                 .toList();
