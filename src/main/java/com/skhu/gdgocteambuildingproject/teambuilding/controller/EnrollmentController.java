@@ -3,16 +3,15 @@ package com.skhu.gdgocteambuildingproject.teambuilding.controller;
 import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUserIdFrom;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.service.EnrollmentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.security.Principal;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -130,13 +129,13 @@ public class EnrollmentController {
                     scheduleEnded: 일정(파라미터로 전달한 일정)이 마감되었는지 여부
                     """
     )
-    public ResponseEntity<List<SentEnrollmentResponseDto>> findSentEnrollments(
+    public ResponseEntity<SentEnrollmentsResponseDto> findSentEnrollments(
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
         long userId = getUserIdFrom(principal);
 
-        List<SentEnrollmentResponseDto> response = enrollmentService.getSentEnrollments(userId, scheduleType);
+        SentEnrollmentsResponseDto response = enrollmentService.getSentEnrollments(userId, scheduleType);
 
         return ResponseEntity.ok(response);
     }
@@ -159,13 +158,13 @@ public class EnrollmentController {
                     enrollmentPart: PM, DESIGN, WEB, MOBILE, BACKEND, AI
                     """
     )
-    public ResponseEntity<List<ReceivedEnrollmentResponseDto>> findReceivedApplyHistory(
+    public ResponseEntity<ReceivedEnrollmentsResponseDto> findReceivedApplyHistory(
             Principal principal,
             @RequestParam ScheduleType scheduleType
     ) {
         long userId = getUserIdFrom(principal);
 
-        List<ReceivedEnrollmentResponseDto> response = enrollmentService.getReceivedEnrollments(userId, scheduleType);
+        ReceivedEnrollmentsResponseDto response = enrollmentService.getReceivedEnrollments(userId, scheduleType);
 
         return ResponseEntity.ok(response);
     }
