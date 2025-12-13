@@ -76,6 +76,8 @@ public class IdeaController {
                     order: ASC 또는 DESC
                     
                     recruitingOnly: 모집 중인 아이디어만 보기(인원이 최대로 차지 않은 아이디어만 보기)
+                    
+                    topicId: 특정 주제(topic)를 사용하는 아이디어만 필터링 (선택적)
                     """
     )
     public ResponseEntity<IdeaTitleInfoPageResponseDto> findIdeas(
@@ -85,11 +87,12 @@ public class IdeaController {
             @RequestParam int size,
             @RequestParam String sortBy,
             @RequestParam SortOrder order,
-            @RequestParam boolean recruitingOnly
+            @RequestParam boolean recruitingOnly,
+            @RequestParam(required = false) Long topicId
     ) {
         long userId = getUserIdFrom(principal);
 
-        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, userId, page, size, sortBy, order, recruitingOnly);
+        IdeaTitleInfoPageResponseDto response = ideaService.findIdeas(projectId, userId, page, size, sortBy, order, recruitingOnly, topicId);
 
         return ResponseEntity.ok(response);
     }

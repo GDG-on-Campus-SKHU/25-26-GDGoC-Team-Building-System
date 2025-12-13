@@ -19,6 +19,10 @@ public interface IdeaRepository extends JpaRepository<Idea, Long> {
 
     Page<Idea> findByProjectIdAndRecruitingIsTrue(long projectId, Pageable pageable);
 
+    Page<Idea> findByProjectIdAndTopicId(long projectId, long topicId, Pageable pageable);
+
+    Page<Idea> findByProjectIdAndTopicIdAndRecruitingIsTrue(long projectId, long topicId, Pageable pageable);
+
     @Query(
             value = "SELECT * FROM idea WHERE project_id = :project_id",
             countQuery = "SELECT count(*) FROM idea WHERE project_id = :project_id",

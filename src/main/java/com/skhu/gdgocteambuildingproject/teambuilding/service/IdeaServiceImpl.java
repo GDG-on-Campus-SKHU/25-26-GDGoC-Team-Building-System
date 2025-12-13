@@ -116,13 +116,14 @@ public class IdeaServiceImpl implements IdeaService {
             int size,
             String sortBy,
             SortOrder order,
-            boolean recruitingOnly
+            boolean recruitingOnly,
+            Long topicId
     ) {
         participationUtil.validateParticipation(userId, projectId);
 
         Pageable pagination = setupPagination(page, size, sortBy, order);
 
-        Page<Idea> ideas = findPagedIdeasOf(projectId, pagination, recruitingOnly);
+        Page<Idea> ideas = findIdeasBy(projectId, recruitingOnly, topicId, pagination);
         List<IdeaTitleInfoResponseDto> ideaDtos = ideas
                 .stream()
                 .map(ideaTitleInfoMapper::map)
@@ -430,12 +431,41 @@ public class IdeaServiceImpl implements IdeaService {
         }
     }
 
-    private Page<Idea> findPagedIdeasOf(long projectId, Pageable pagination, boolean recruitingOnly) {
+    private Page<Idea> findIdeasBy(
+            long projectId,
+            boolean recruitingOnly,
+            Long topicId,
+            Pageable pagination
+    ) {
         if (recruitingOnly) {
+            return findRecruitingIdeas(projectId, topicId, pagination);
+        }
+
+        return findAllIdeas(projectId, topicId, pagination);
+    }
+
+    private Page<Idea> findRecruitingIdeas(
+            long projectId,
+            Long topicId,
+            Pageable pagination
+    ) {
+        if (topicId == null) {
             return ideaRepository.findByProjectIdAndRecruitingIsTrue(projectId, pagination);
         }
 
-        return ideaRepository.findByProjectId(projectId, pagination);
+        return ideaRepository.findByProjectIdAndTopicIdAndRecruitingIsTrue(projectId, topicId, pagination);
+    }
+
+    private Page<Idea> findAllIdeas(
+            long projectId,
+            Long topicId,
+            Pageable pagination
+    ) {
+        if (topicId == null) {
+            return ideaRepository.findByProjectId(projectId, pagination);
+        }
+
+        return ideaRepository.findByProjectIdAndTopicId(projectId, topicId, pagination);
     }
 
     private Idea saveNewIdea(
