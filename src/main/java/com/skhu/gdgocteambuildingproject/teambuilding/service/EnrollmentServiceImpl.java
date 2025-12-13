@@ -23,12 +23,14 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.EnrollmentAvailabilityMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.EnrollmentReadableMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.ReceivedEnrollmentMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.SentEnrollmentMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaEnrollmentRepository;
@@ -36,6 +38,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -52,6 +55,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     private final EnrollmentAvailabilityMapper availabilityMapper;
     private final SentEnrollmentMapper sentEnrollmentMapper;
     private final ReceivedEnrollmentMapper receivedEnrollmentMapper;
+    private final EnrollmentReadableMapper enrollmentReadableMapper;
     private final ProjectUtil projectUtil;
     private final ParticipationUtil participationUtil;
 
@@ -138,7 +142,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
 
-        List<IdeaEnrollment> enrollments = user.getEnrollmentFrom(schedule);
+        List<IdeaEnrollment> enrollments = user.getEnrollmentsFrom(schedule);
 
         return sentEnrollmentMapper.map(enrollments, schedule);
     }
@@ -161,6 +165,24 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         List<IdeaEnrollment> enrollments = idea.getEnrollmentsOf(schedule);
 
         return receivedEnrollmentMapper.map(enrollments, idea, schedule);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<EnrollmentReadableResponseDto> getSentEnrollmentReadabilities(long userId) {
+        User user = findUserBy(userId);
+        TeamBuildingProject currentProject = findCurrentProject();
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
+        List<ScheduleType> enrollmentAvailableSchedules = ScheduleType.enrollments();
+        LocalDateTime now = LocalDateTime.now();
+
+        return enrollmentReadableMapper.mapReadableSchedules(
+                enrollmentAvailableSchedules,
+                user,
+                currentProject,
+                now
+        );
     }
 
     @Override

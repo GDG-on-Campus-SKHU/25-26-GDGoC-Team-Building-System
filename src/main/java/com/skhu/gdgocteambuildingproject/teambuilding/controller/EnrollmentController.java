@@ -5,6 +5,8 @@ import static com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil.getUse
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
+import java.util.List;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
@@ -136,6 +138,29 @@ public class EnrollmentController {
         long userId = getUserIdFrom(principal);
 
         SentEnrollmentsResponseDto response = enrollmentService.getSentEnrollments(userId, scheduleType);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/sent/readabilities")
+    @Operation(
+            summary = "지원 내역 조회 가능 여부 조회",
+            description = """
+                    일정별로, 본인이 해당 일정의 지원 내역을 조회할 수 있는지 여부를 응답합니다.
+                    
+                    조회의 조건:
+                     - 1차 팀빌딩: 1차 팀빌딩 기간이 시작한 이후라면 조회할 수 있다.
+                     - 2차 팀빌딩: 2차 팀빌딩 기간이 시작한 이후면서, 1차 팀빌딩 때 멤버로 수락되지 않았다면 조회할 수 있다.
+                    
+                    scheduleType: FIRST_TEAM_BUILDING, SECOND_TEAM_BUILDING
+                    """
+    )
+    public ResponseEntity<List<EnrollmentReadableResponseDto>> getSentEnrollmentReadabilities(
+            Principal principal
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        List<EnrollmentReadableResponseDto> response = enrollmentService.getSentEnrollmentReadabilities(userId);
 
         return ResponseEntity.ok(response);
     }

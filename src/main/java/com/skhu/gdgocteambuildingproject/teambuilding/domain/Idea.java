@@ -349,6 +349,7 @@ public class Idea extends BaseEntity {
                 .user(enrollment.getApplicant())
                 .part(enrollment.getPart())
                 .role(IdeaMemberRole.MEMBER)
+                .acceptedAt(enrollment.getSchedule().getType())
                 .build();
     }
 
