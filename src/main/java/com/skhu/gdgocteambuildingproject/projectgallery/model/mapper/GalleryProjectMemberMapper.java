@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMem
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectMemberAddDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -43,6 +44,15 @@ public class GalleryProjectMemberMapper {
                 users.stream()
                 .map(this::userFromEntity)
                 .toList());
+    }
+
+    public TokenUserInfoForProjectBuildingResponseDto mapExhibitor(User user, UserGeneration userGeneration) {
+        return TokenUserInfoForProjectBuildingResponseDto.builder()
+                .userId(user.getId())
+                .name(user.getName())
+                .school(user.getSchool())
+                .generationAndPosition(userGeneration.getGeneration().getLabel() + " " + userGeneration.getPosition())
+                .build();
     }
 
     private GalleryProjectMemberResponseDto memberFromEntity(GalleryProjectMember member) {

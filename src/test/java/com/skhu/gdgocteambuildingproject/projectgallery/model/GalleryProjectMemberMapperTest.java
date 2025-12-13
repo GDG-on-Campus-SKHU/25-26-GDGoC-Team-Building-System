@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.model;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -82,5 +83,33 @@ class GalleryProjectMemberMapperTest {
         assertThat(dto.generationAndPosition())
                 .isEqualTo(GENERATION_AND_POSITION);
     }
+
+    @Test
+    void User와_UserGeneration을_전시용_DTO로_매핑한다() throws Exception {
+        // given
+        Constructor<User> constructor = User.class.getDeclaredConstructor();
+        constructor.setAccessible(true);
+        User user = constructor.newInstance();
+
+        ReflectionTestUtils.setField(user, "id", USER_ID);
+        ReflectionTestUtils.setField(user, "name", USER_NAME);
+        ReflectionTestUtils.setField(user, "school", SCHOOL);
+
+        UserGeneration userGeneration = mock(UserGeneration.class);
+        when(userGeneration.getGeneration()).thenReturn(Generation.GEN_25_26);
+        when(userGeneration.getPosition()).thenReturn(UserPosition.MEMBER);
+
+        // when
+        TokenUserInfoForProjectBuildingResponseDto dto =
+                mapper.mapExhibitor(user, userGeneration);
+
+        // then
+        assertThat(dto.userId()).isEqualTo(USER_ID);
+        assertThat(dto.name()).isEqualTo(USER_NAME);
+        assertThat(dto.school()).isEqualTo(SCHOOL);
+        assertThat(dto.generationAndPosition())
+                .isEqualTo(GENERATION_AND_POSITION);
+    }
+
 }
 

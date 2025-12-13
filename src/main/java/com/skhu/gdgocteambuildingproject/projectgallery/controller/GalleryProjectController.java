@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.controller;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.api.GalleryProjectControllerApi;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
@@ -19,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.security.Principal;
 
 @RestController
 @RequestMapping("/project-gallery")
@@ -60,6 +63,12 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
             @RequestBody GalleryProjectSaveRequestDto requestDto
     ) {
         return ResponseEntity.ok(galleryProjectService.updateGalleryProjectByProjectId(projectId, requestDto));
+    }
+
+    @Override
+    @GetMapping("/exhibitor")
+    public ResponseEntity<TokenUserInfoForProjectBuildingResponseDto> findExhibitorFromToken(Principal principal) {
+        return ResponseEntity.ok(galleryProjectService.findExhibitorInfo(principal));
     }
 
 //    @Override

@@ -5,10 +5,12 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST_IN_GALLERY;
 
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectMemberAddDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
@@ -18,7 +20,9 @@ import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProj
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
@@ -26,6 +30,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
 
 @Service
@@ -37,6 +42,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     private final GalleryProjectInfoMapper galleryProjectInfoMapper;
     private final UserRepository userRepository;
     private final GalleryProjectMemberMapper galleryProjectMemberMapper;
+    private final UserGenerationRepository userGenerationRepository;
 
     @Override
     @Transactional
@@ -92,6 +98,14 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         );
         updateProjectMembers(galleryProject, requestDto.leader(), requestDto.members());
         return projectId;
+    }
+
+    @Override
+    public TokenUserInfoForProjectBuildingResponseDto findExhibitorInfo(Principal principal) {
+        User user = getUser(PrincipalUtil.getUserIdFrom(principal));
+        UserGeneration userGeneration = userGenerationRepository.findByUserAndIsMainTrue(user);
+
+        return galleryProjectMemberMapper.mapExhibitor(user, userGeneration);
     }
 
 //    @Override
