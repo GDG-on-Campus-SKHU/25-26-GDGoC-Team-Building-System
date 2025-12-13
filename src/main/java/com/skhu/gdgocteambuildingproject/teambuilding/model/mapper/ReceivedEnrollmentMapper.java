@@ -16,7 +16,7 @@ public class ReceivedEnrollmentMapper {
         return ReceivedEnrollmentResponseDto.builder()
                 .enrollmentId(enrollment.getId())
                 .choice(enrollment.getChoice())
-                .enrollmentStatus(enrollment.getStatus().confirmedStatus())
+                .enrollmentStatus(enrollment.getStatus().forCreator())
                 .enrollmentAcceptable(idea.isEnrollmentAvailable(part))
                 .applicantId(applicant.getId())
                 .applicantName(applicant.getName())

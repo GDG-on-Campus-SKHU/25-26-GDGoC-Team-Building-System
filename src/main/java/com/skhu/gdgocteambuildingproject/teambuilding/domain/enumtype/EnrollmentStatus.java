@@ -17,11 +17,19 @@ public enum EnrollmentStatus {
         this.waitingToConfirm = waitingToConfirm;
     }
 
-    public EnrollmentStatus confirmedStatus() {
+    public EnrollmentStatus forCreator() {
         return switch (this) {
             case SCHEDULED_TO_ACCEPT -> ACCEPTED;
             case SCHEDULED_TO_REJECT -> REJECTED;
             default -> this;
         };
+    }
+
+    public EnrollmentStatus forApplicant() {
+        if (isWaitingToConfirm()) {
+            return WAITING;
+        }
+
+        return this;
     }
 }
