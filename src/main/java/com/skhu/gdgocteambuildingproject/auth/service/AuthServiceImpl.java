@@ -220,6 +220,12 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
+        if (user.getUserStatus() == UserStatus.BANNED) {
+            throw new LockedException(
+                    ExceptionMessage.BANNED_USER.getMessage()
+            );
+        }
+
         if (user.getApprovalStatus() == ApprovalStatus.WAITING) {
             throw new IllegalStateException(
                     ExceptionMessage.USER_NOT_APPROVED.getMessage()
@@ -229,12 +235,6 @@ public class AuthServiceImpl implements AuthService {
         if (user.getApprovalStatus() == ApprovalStatus.REJECTED) {
             throw new IllegalStateException(
                     ExceptionMessage.USER_REJECTED.getMessage()
-            );
-        }
-
-        if (user.getUserStatus() == UserStatus.BANNED) {
-            throw new LockedException(
-                    ExceptionMessage.BANNED_USER.getMessage()
             );
         }
     }

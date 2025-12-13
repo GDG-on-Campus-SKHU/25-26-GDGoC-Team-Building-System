@@ -1,14 +1,8 @@
 package com.skhu.gdgocteambuildingproject.global.exception;
 
-import static org.springframework.http.HttpStatus.BAD_GATEWAY;
-import static org.springframework.http.HttpStatus.BAD_REQUEST;
-import static org.springframework.http.HttpStatus.CONFLICT;
-import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
-import static org.springframework.http.HttpStatus.METHOD_NOT_ALLOWED;
-import static org.springframework.http.HttpStatus.NOT_FOUND;
-import static org.springframework.http.HttpStatus.UNAUTHORIZED;
-import static org.springframework.http.HttpStatus.UNSUPPORTED_MEDIA_TYPE;
-
+import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
+import com.skhu.gdgocteambuildingproject.admin.exception.ActivityPostNotFoundException;
+import com.skhu.gdgocteambuildingproject.admin.exception.AdminUserManageNotExistException;
 import io.jsonwebtoken.JwtException;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.ConstraintViolationException;
@@ -16,6 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.LockedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -25,11 +21,10 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.server.ResponseStatusException;
-import com.skhu.gdgocteambuildingproject.admin.exception.ActivityPostNotFoundException;
-import com.skhu.gdgocteambuildingproject.admin.exception.AdminUserManageNotExistException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
+
+import static org.springframework.http.HttpStatus.*;
 
 @Slf4j
 @RestControllerAdvice
@@ -99,7 +94,30 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalJson(HttpMessageNotReadableException exception) {
         log.warn("[ERROR RESPONSE] http message not readable", exception);
 
-        return ResponseEntity.status(BAD_REQUEST).body("JSON 파싱에 실패했습니다.");
+        Throwable cause = exception.getCause();
+
+        if (cause instanceof ValueInstantiationException valueException) {
+            Throwable rootCause = valueException.getCause();
+
+            if (rootCause instanceof IllegalArgumentException) {
+                return ResponseEntity
+                        .status(BAD_REQUEST)
+                        .body(rootCause.getMessage());
+            }
+        }
+
+        return ResponseEntity
+                .status(BAD_REQUEST)
+                .body("JSON 파싱에 실패했습니다.");
+    }
+
+    @ExceptionHandler(LockedException.class)
+    public ResponseEntity<String> handleLockedException(LockedException exception) {
+        log.warn("[ERROR RESPONSE] banned user", exception);
+
+        return ResponseEntity
+                .status(FORBIDDEN)
+                .body(exception.getMessage());
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)
