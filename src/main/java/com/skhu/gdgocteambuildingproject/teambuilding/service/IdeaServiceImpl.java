@@ -86,7 +86,7 @@ public class IdeaServiceImpl implements IdeaService {
 
     @Override
     @Transactional
-    public IdeaDetailInfoResponseDto createIdea(
+    public TemporaryIdeaDetailResponseDto createIdea(
             long projectId,
             long userId,
             IdeaCreateRequestDto requestDto
@@ -109,7 +109,7 @@ public class IdeaServiceImpl implements IdeaService {
                 .map(idea -> updateExistTemporaryIdea(idea, requestDto))
                 .orElseGet(() -> saveNewIdea(creator, project, requestDto));
 
-        return ideaDetailInfoMapper.map(postedIdea);
+        return temporaryIdeaMapper.map(postedIdea);
     }
 
     @Override

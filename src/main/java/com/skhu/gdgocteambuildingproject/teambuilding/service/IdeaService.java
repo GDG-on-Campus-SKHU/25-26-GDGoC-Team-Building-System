@@ -13,7 +13,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.TemporaryIdeaDeta
 
 public interface IdeaService {
 
-    IdeaDetailInfoResponseDto createIdea(
+    TemporaryIdeaDetailResponseDto createIdea(
             long projectId,
             long userId,
             IdeaCreateRequestDto requestDto
