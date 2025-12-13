@@ -5,13 +5,18 @@ import com.skhu.gdgocteambuildingproject.auth.dto.request.LoginRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.request.SignUpRequestDto;
 import com.skhu.gdgocteambuildingproject.auth.dto.response.LoginResponseDto;
 import com.skhu.gdgocteambuildingproject.auth.service.AuthService;
+import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.bind.annotation.CookieValue;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
+@RequestMapping("/auth")
 public class AuthController implements AuthControllerApi {
 
     private final AuthService authService;
@@ -33,16 +38,17 @@ public class AuthController implements AuthControllerApi {
     }
 
     @Override
-    public ResponseEntity<LoginResponseDto> refresh(
-            String refreshToken,
+    public ResponseEntity<LoginResponseDto> reissueAccessToken(
+            @CookieValue(name = "token", required = false)
+            String token,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.refresh(refreshToken, response));
+        return ResponseEntity.ok(authService.refresh(token, response));
     }
 
     @Override
     public ResponseEntity<Void> logout(
-            String refreshToken,
+            @CookieValue(name = "token", required = false) String refreshToken,
             HttpServletResponse response
     ) {
         authService.logout(refreshToken, response);
@@ -50,11 +56,15 @@ public class AuthController implements AuthControllerApi {
     }
 
     @Override
-    public ResponseEntity<Void> delete(
-            Long userId,
-            HttpServletResponse response
-    ) {
-        authService.delete(userId, response);
+    public ResponseEntity<Void> delete(HttpServletResponse response) {
+
+        UserPrincipal principal =
+                (UserPrincipal) SecurityContextHolder
+                        .getContext()
+                        .getAuthentication()
+                        .getPrincipal();
+
+        authService.delete(principal.getUser().getId(), response);
         return ResponseEntity.noContent().build();
     }
 }

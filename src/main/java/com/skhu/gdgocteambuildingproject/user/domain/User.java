@@ -34,13 +34,13 @@ import java.util.*;
 @Table(name = "users")
 public class User extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String email;
 
     private String password;
     private String name;
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = true, unique = true)
     private String number;
 
     private String introduction;
@@ -63,10 +63,10 @@ public class User extends BaseEntity {
 
     private String banReason;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.PERSIST)
     private List<RefreshToken> refreshTokens = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private Set<UserGeneration> generation = new HashSet<>();
 
     // 승인 여부
@@ -78,23 +78,23 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus userStatus = UserStatus.ACTIVE;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<TechStack> techStacks = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<TechStack> techStacks = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "user")
     private List<Grade> grades = new ArrayList<>();
 
-    @OneToMany(mappedBy = "creator", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Idea> ideas = new ArrayList<>();
+    @OneToMany(mappedBy = "creator")
+    private List<Idea> ideas = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<IdeaMember> members = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<IdeaMember> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "applicant", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<IdeaEnrollment> enrollments = new ArrayList<>();
+    @OneToMany(mappedBy = "applicant")
+    private List<IdeaEnrollment> enrollments = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<UserLink> userLinks = new ArrayList<>();
+    @OneToMany(mappedBy = "user")
+    private List<UserLink> userLinks = new ArrayList<>();
 
     @Builder
     public User(String email, String password, String name, String number,

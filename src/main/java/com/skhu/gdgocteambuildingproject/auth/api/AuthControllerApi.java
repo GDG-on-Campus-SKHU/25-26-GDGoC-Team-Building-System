@@ -12,7 +12,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @Tag(
@@ -62,7 +61,13 @@ public interface AuthControllerApi {
                     headers = {
                             @Header(
                                     name = "Set-Cookie",
-                                    description = "refreshToken=xxx; HttpOnly; Path=/; Max-Age=...",
+                                    description = """
+                                    refreshToken=xxx;
+                                    HttpOnly;
+                                    Secure;
+                                    SameSite=None;
+                                    Path=/
+                                    """,
                                     schema = @Schema(type = "string")
                             )
                     }
@@ -75,25 +80,39 @@ public interface AuthControllerApi {
     );
 
     @Operation(
-            summary = "토큰 재발급",
-            description = "HttpOnly Cookie에 저장된 Refresh Token을 사용하여 Access Token을 재발급합니다.",
-            responses = {
-                    @ApiResponse(responseCode = "200", description = "토큰 재발급 성공")
-            }
+            summary = "Access Token 재발급",
+            description = """
+        - 저장된 Refresh Token을 사용하여 새로운 Access Token을 발급합니다.
+        - Refresh Token은 HttpOnly Cookie를 통해 자동으로 전달됩니다.
+        - Access Token은 응답 본문으로 반환됩니다.
+        - Refresh Token은 응답 본문에 포함되지 않습니다.
+        - Refresh Token이 없거나 유효하지 않으면 요청에 실패합니다.
+        """
     )
-    @PostMapping("/refresh")
-    ResponseEntity<LoginResponseDto> refresh(
-            @CookieValue(name = "refreshToken", required = false) String refreshToken,
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Access Token 재발급 성공"),
+            @ApiResponse(responseCode = "401", description = "Refresh Token이 없거나 유효하지 않음")
+    })
+    @PostMapping("/token/access")
+    ResponseEntity<LoginResponseDto> reissueAccessToken(
+            @CookieValue(name = "token", required = false)
+            String token,
+
             HttpServletResponse response
     );
 
     @Operation(
             summary = "로그아웃",
-            description = "Refresh Token을 만료시켜 로그아웃 처리합니다.",
-            responses = {
-                    @ApiResponse(responseCode = "204", description = "로그아웃 성공")
-            }
+            description = """
+    - 인증 여부와 관계없이 로그아웃 처리합니다.
+    - Access Token / Refresh Token 전달 여부와 무관하게 항상 성공합니다.
+    - Refresh Token이 존재할 경우 서버에서 무효화합니다.
+    - 로그아웃은 멱등 API이며 항상 204 No Content를 반환합니다.
+    """
     )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "로그아웃 성공")
+    })
     @PostMapping("/logout")
     ResponseEntity<Void> logout(
             @CookieValue(name = "refreshToken", required = false) String refreshToken,
@@ -108,8 +127,5 @@ public interface AuthControllerApi {
             }
     )
     @DeleteMapping("/delete")
-    ResponseEntity<Void> delete(
-            @AuthenticationPrincipal Long userId,
-            HttpServletResponse response
-    );
+    ResponseEntity<Void> delete(HttpServletResponse response);
 }
