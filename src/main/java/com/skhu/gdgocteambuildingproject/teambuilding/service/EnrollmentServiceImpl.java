@@ -24,7 +24,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleTy
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
@@ -145,7 +145,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<ReceivedEnrollmentResponseDto> getReceivedEnrollments(
+    public ReceivedEnrollmentsResponseDto getReceivedEnrollments(
             long userId,
             ScheduleType scheduleType
     ) {
@@ -160,9 +160,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         ProjectSchedule schedule = currentProject.getScheduleFrom(scheduleType);
         List<IdeaEnrollment> enrollments = idea.getEnrollmentsOf(schedule);
 
-        return enrollments.stream()
-                .map(enrollment -> receivedEnrollmentMapper.map(enrollment, idea))
-                .toList();
+        return receivedEnrollmentMapper.map(enrollments, idea, schedule);
     }
 
     @Override

@@ -21,10 +21,8 @@ public class SentEnrollmentMapper {
                 .map(enrollment -> map(enrollment, schedule))
                 .toList();
 
-        boolean scheduleEnded = isScheduleEnded(schedule);
-
         return SentEnrollmentsResponseDto.builder()
-                .scheduleEnded(scheduleEnded)
+                .scheduleEnded(isScheduleEnded(schedule))
                 .enrollments(enrollmentDtos)
                 .build();
     }
