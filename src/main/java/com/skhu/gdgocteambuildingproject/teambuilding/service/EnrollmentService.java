@@ -5,7 +5,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentD
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import java.util.List;
 
 public interface EnrollmentService {
@@ -27,7 +27,7 @@ public interface EnrollmentService {
             long applicantId
     );
 
-    List<SentEnrollmentResponseDto> getSentEnrollments(
+    SentEnrollmentsResponseDto getSentEnrollments(
             long userId,
             ScheduleType scheduleType
     );

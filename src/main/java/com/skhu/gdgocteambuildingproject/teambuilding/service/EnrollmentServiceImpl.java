@@ -21,11 +21,11 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.Choice;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.EnrollmentAvailabilityMapper;
@@ -126,7 +126,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<SentEnrollmentResponseDto> getSentEnrollments(
+    public SentEnrollmentsResponseDto getSentEnrollments(
             long userId,
             ScheduleType scheduleType
     ) {
@@ -140,9 +140,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
 
         List<IdeaEnrollment> enrollments = user.getEnrollmentFrom(schedule);
 
-        return enrollments.stream()
-                .map(enrollment -> sentEnrollmentMapper.map(enrollment, schedule))
-                .toList();
+        return sentEnrollmentMapper.map(enrollments, schedule);
     }
 
     @Override
