@@ -1,0 +1,75 @@
+package com.skhu.gdgocteambuildingproject.global.email.api;
+
+import com.skhu.gdgocteambuildingproject.global.email.dto.ResetPasswordRequest;
+import com.skhu.gdgocteambuildingproject.global.email.dto.SendCodeRequest;
+import com.skhu.gdgocteambuildingproject.global.email.dto.VerifyCodeRequest;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestBody;
+
+@Tag(
+        name = "Email 인증 API",
+        description = "이메일 인증번호 발송, 인증 검증, 비밀번호 재설정 API"
+)
+public interface EmailControllerApi {
+
+    @Operation(
+            summary = "이메일 인증번호 전송",
+            description = """
+                    입력된 이메일로 6자리 인증번호를 전송합니다.
+                    - 존재하는 회원 이메일인지 검증합니다.
+                    - 인증번호는 Redis에 5분간 저장됩니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증번호 전송 완료"),
+            @ApiResponse(responseCode = "400", description = "이메일이 존재하지 않음 또는 형식 오류")
+    })
+    ResponseEntity<Void> sendCode(
+            @Valid @RequestBody SendCodeRequest request
+    );
+
+    @Operation(
+            summary = "이메일 인증번호 검증",
+            description = """
+                    이메일로 전송된 인증번호가 유효한지 검증합니다.
+                    - 인증번호는 삭제되지 않습니다.
+                    - 비밀번호 재설정 시점에만 소모됩니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "인증번호 유효"),
+            @ApiResponse(responseCode = "400", description = "코드 불일치, 만료 또는 입력 오류")
+    })
+    ResponseEntity<Void> verifyCode(
+            @Valid @RequestBody VerifyCodeRequest request
+    );
+
+    @Operation(
+            summary = "비밀번호 재설정",
+            description = """
+                    인증번호 검증 후 비밀번호를 재설정합니다.
+                    - 인증번호가 유효하지 않으면 실패합니다.
+                    - 기존 비밀번호와 동일하면 오류가 발생합니다.
+                    - 비밀번호 변경 성공 시 인증번호는 소모됩니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "비밀번호 재설정 성공",
+                    content = @io.swagger.v3.oas.annotations.media.Content()
+            ),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = "코드 불일치, 만료 또는 비밀번호 형식 오류"
+            )
+    })
+    ResponseEntity<Void> resetPassword(
+            @Valid @RequestBody ResetPasswordRequest request
+    );
+}

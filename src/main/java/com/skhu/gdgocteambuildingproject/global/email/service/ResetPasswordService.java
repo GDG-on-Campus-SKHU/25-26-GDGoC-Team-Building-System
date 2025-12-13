@@ -18,44 +18,30 @@ public class ResetPasswordService {
 
     @Transactional
     public void resetPassword(String email, String code, String newPassword) {
-        validateResetPasswordRequest(email, code, newPassword);
-        emailVerificationService.verifyCode(email, code);
+        emailVerificationService.validateCode(email, code);
 
-        User user = getUserByEmail(email);
-        validateNewPassword(user, newPassword);
-
-        user.updatePassword(passwordEncoder.encode(newPassword));
-    }
-
-    private void validateResetPasswordRequest(String email, String code, String newPassword) {
-        if (email == null || email.isBlank()
-                || code == null || code.isBlank()
-                || newPassword == null || newPassword.isBlank()) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.PASSWORD_INVALID_FORMAT.getMessage()
-            );
-        }
-
-        if (newPassword.length() < 8) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.PASSWORD_INVALID_FORMAT.getMessage()
-            );
-        }
-    }
-
-    private User getUserByEmail(String email) {
-        return userRepository.findByEmailAndDeletedFalse(email)
+        User user = userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
                                 ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
                         )
                 );
-    }
 
-    private void validateNewPassword(User user, String newPassword) {
         if (passwordEncoder.matches(newPassword, user.getPassword())) {
             throw new IllegalArgumentException(
                     ExceptionMessage.PASSWORD_SAME_AS_OLD.getMessage()
+            );
+        }
+        user.updatePassword(passwordEncoder.encode(newPassword));
+        emailVerificationService.consumeCode(email);
+    }
+
+    private void validateRequest(String email, String code, String newPassword) {
+        if (email == null || email.isBlank()
+                || code == null || code.isBlank()
+                || newPassword == null || newPassword.isBlank()) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.PASSWORD_INVALID_FORMAT.getMessage()
             );
         }
     }

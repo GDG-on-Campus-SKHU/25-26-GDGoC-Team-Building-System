@@ -10,20 +10,32 @@ import java.util.concurrent.TimeUnit;
 @Service
 @RequiredArgsConstructor
 public class EmailVerificationService {
-
     private final StringRedisTemplate redisTemplate;
     private static final String PREFIX = "emailCode:";
+    private static final long EXPIRE_MINUTES = 5;
+
+    private String normalizeEmail(String email) {
+        return email.trim().toLowerCase();
+    }
+
+    private String key(String email) {
+        return PREFIX + normalizeEmail(email);
+    }
 
     public void saveCode(String email, String code) {
         redisTemplate.opsForValue()
-                .set(PREFIX + email, code, 5, TimeUnit.MINUTES);
+                .set(key(email), code, EXPIRE_MINUTES, TimeUnit.MINUTES);
     }
 
-    public void verifyCode(String email, String inputCode) {
-        validateInput(email, inputCode);
+    public void validateCode(String email, String inputCode) {
+        if (email == null || email.isBlank()
+                || inputCode == null || inputCode.isBlank()) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage()
+            );
+        }
 
-        String key = PREFIX + email;
-        String storedCode = redisTemplate.opsForValue().get(key);
+        String storedCode = redisTemplate.opsForValue().get(key(email));
 
         if (storedCode == null) {
             throw new IllegalArgumentException(
@@ -36,16 +48,9 @@ public class EmailVerificationService {
                     ExceptionMessage.VERIFICATION_CODE_INVALID.getMessage()
             );
         }
-
-        redisTemplate.delete(key);
     }
 
-    private void validateInput(String email, String code) {
-        if (email == null || email.isBlank() ||
-                code == null || code.isBlank()) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage()
-            );
-        }
+    public void consumeCode(String email) {
+        redisTemplate.delete(key(email));
     }
 }

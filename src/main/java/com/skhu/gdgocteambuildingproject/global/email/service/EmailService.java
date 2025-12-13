@@ -21,30 +21,16 @@ public class EmailService {
     private final EmailVerificationService emailVerificationService;
 
     public void sendPasswordResetVerificationCode(String email) {
-        User user = getValidUserByEmail(email);
-
-        String code = generateVerificationCode();
-        emailVerificationService.saveCode(email, code);
-        sendVerificationEmail(user.getEmail(), code);
-    }
-
-    private User getValidUserByEmail(String email) {
-        validateEmailFormat(email);
-
-        return userRepository.findByEmailAndDeletedFalse(email)
+        User user = userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
                                 ExceptionMessage.USER_EMAIL_NOT_EXIST.getMessage()
                         )
                 );
-    }
 
-    private void validateEmailFormat(String email) {
-        if (email == null || email.isBlank()) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.EMAIL_INVALID_FORMAT.getMessage()
-            );
-        }
+        String code = generateVerificationCode();
+        emailVerificationService.saveCode(user.getEmail(), code);
+        sendVerificationEmail(user.getEmail(), code);
     }
 
     private String generateVerificationCode() {
@@ -61,7 +47,6 @@ public class EmailService {
         String content = """
                 <div style='font-family: Arial;'>
                     <h3>비밀번호 재설정을 위한 인증번호입니다.</h3>
-                    <p>아래 인증번호를 입력해주세요:</p>
                     <h2 style='color: #4B9EEA;'>%s</h2>
                     <p>인증번호는 5분간 유효합니다.</p>
                 </div>
@@ -69,13 +54,14 @@ public class EmailService {
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+            MimeMessageHelper helper =
+                    new MimeMessageHelper(message, true, "UTF-8");
             helper.setTo(to);
             helper.setSubject(subject);
             helper.setText(content, true);
             mailSender.send(message);
         } catch (MessagingException e) {
-            throw new RuntimeException("이메일 전송 실패: " + e.getMessage());
+            throw new RuntimeException("이메일 전송 실패");
         }
     }
 }

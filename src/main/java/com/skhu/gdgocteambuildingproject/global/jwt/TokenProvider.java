@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.global.jwt;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.CustomUserDetailsService;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
@@ -28,6 +29,9 @@ public class TokenProvider {
     private final Key key;
     private final long accessTokenValidityTime;
     private final CustomUserDetailsService customUserDetailsService;
+    private static final String TOKEN_TYPE_CLAIM = "tokenType";
+    private static final String ACCESS_TOKEN = "ACCESS";
+    private static final String REFRESH_TOKEN = "REFRESH";
 
     public TokenProvider(
             @Value("${jwt.secret}") String secretKey,
@@ -42,42 +46,46 @@ public class TokenProvider {
 
     public String createAccessToken(User user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + accessTokenValidityTime);
+        Date expiry = new Date(now.getTime() + accessTokenValidityTime);
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim(ROLE_CLAIM, user.getRole().name())
+                .claim(TOKEN_TYPE_CLAIM, ACCESS_TOKEN)
                 .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
     public String createRefreshToken(User user) {
         Date now = new Date();
-        Date expiryDate = new Date(now.getTime() + accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER);
+        Date expiry = new Date(now.getTime() + accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER);
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
+                .claim(TOKEN_TYPE_CLAIM, REFRESH_TOKEN)
                 .setIssuedAt(now)
-                .setExpiration(expiryDate)
+                .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        String userPk = getUserPk(token);
-        UserDetails userDetails = customUserDetailsService.loadUserByUsername(userPk);
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-    }
+    public Authentication getAuthentication(String accessToken) {
+        Claims claims = parseClaims(accessToken);
 
-    public String getUserPk(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        if (!isAccessToken(claims)) {
+            throw new JwtException("ACCESS_TOKEN_REQUIRED");
+        }
+
+        UserDetails userDetails =
+                customUserDetailsService.loadUserByUsername(claims.getSubject());
+
+        return new UsernamePasswordAuthenticationToken(
+                userDetails,
+                null,
+                userDetails.getAuthorities()
+        );
     }
 
     public String resolveToken(HttpServletRequest request) {
@@ -88,15 +96,52 @@ public class TokenProvider {
         return null;
     }
 
-    public boolean validateToken(String token) {
+    public void validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (JwtException | IllegalArgumentException e) {
-            log.error(ExceptionMessage.INVALID_JWT_TOKEN.getMessage() + ": {}", e.getMessage());
-            return false;
+            parseClaims(token);
+        } catch (Exception e) {
+            log.error(ExceptionMessage.INVALID_JWT_TOKEN.getMessage(), e);
+            throw new JwtException(ExceptionMessage.INVALID_JWT_TOKEN.getMessage());
         }
     }
+
+    public void validateJwtFormat(String token) {
+        try {
+            Jwts.parserBuilder()
+                    .setSigningKey(key)
+                    .build()
+                    .parseClaimsJws(token);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.INVALID_JWT_TOKEN.getMessage()
+            );
+        }
+    }
+
+    public boolean isAccessToken(String token) {
+        return isAccessToken(parseClaims(token));
+    }
+
+    public boolean isRefreshToken(String token) {
+        return isRefreshToken(parseClaims(token));
+    }
+
+    private boolean isAccessToken(Claims claims) {
+        return ACCESS_TOKEN.equals(claims.get(TOKEN_TYPE_CLAIM));
+    }
+
+    private boolean isRefreshToken(Claims claims) {
+        return REFRESH_TOKEN.equals(claims.get(TOKEN_TYPE_CLAIM));
+    }
+
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token)
+                .getBody();
+    }
+
 
     public long getRefreshTokenExpirySeconds() {
         return (accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER) / 1000;

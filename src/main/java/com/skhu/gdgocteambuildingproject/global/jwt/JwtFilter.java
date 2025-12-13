@@ -18,25 +18,25 @@ import java.util.List;
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
+
     private final TokenProvider tokenProvider;
 
-    private static final List<String> EXCLUDE_URLS = List.of(
+    private static final List<String> EXCLUDE_PATH_PREFIXES = List.of(
             "/auth/signup",
             "/auth/login",
             "/auth/refresh",
-            "/auth/logout",
 
-            "/email/send",
-            "/email/verify",
-            "/email/reset-password",
-
-            "/swagger-ui/**",
-            "/v3/api-docs/**"
+            "/email/",
+            "/swagger-ui",
+            "/v3/api-docs"
     );
 
-    public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
-            throws IOException, ServletException {
-
+    @Override
+    public void doFilter(
+            ServletRequest request,
+            ServletResponse response,
+            FilterChain chain
+    ) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI();
 
@@ -45,19 +45,26 @@ public class JwtFilter extends GenericFilterBean {
             return;
         }
 
-        String jwt = tokenProvider.resolveToken(httpRequest);
-        if (!StringUtils.hasText(jwt) || !tokenProvider.validateToken(jwt)) {
+        String token = tokenProvider.resolveToken(httpRequest);
+
+        if (!StringUtils.hasText(token)) {
             chain.doFilter(request, response);
             return;
         }
 
-        Authentication authentication = tokenProvider.getAuthentication(jwt);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
+        tokenProvider.validateToken(token);
 
+        if (!tokenProvider.isAccessToken(token)) {
+            throw new io.jsonwebtoken.JwtException("ACCESS_TOKEN_REQUIRED");
+        }
+
+        Authentication authentication = tokenProvider.getAuthentication(token);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
 
     private boolean isExcluded(String path) {
-        return EXCLUDE_URLS.stream().anyMatch(path::startsWith);
+        return EXCLUDE_PATH_PREFIXES.stream()
+                .anyMatch(path::startsWith);
     }
 }

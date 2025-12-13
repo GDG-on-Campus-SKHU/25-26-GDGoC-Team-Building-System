@@ -16,7 +16,7 @@ public class RefreshTokenCookieWriter {
     public void write(HttpServletResponse response, String refreshToken) {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", refreshToken)
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Lax")
                 .path("/")
                 .maxAge(tokenService.getRefreshTokenExpirySeconds())
@@ -28,7 +28,7 @@ public class RefreshTokenCookieWriter {
     public void clear(HttpServletResponse response) {
         ResponseCookie cookie = ResponseCookie.from("refreshToken", "")
                 .httpOnly(true)
-                .secure(false)
+                .secure(true)
                 .sameSite("Lax")
                 .path("/")
                 .maxAge(0)
