@@ -344,7 +344,7 @@ public class IdeaServiceImpl implements IdeaService {
         // 수락 예정인 멤버면 스케줄러가 무시하도록 상태 변경
         IdeaEnrollment enrollment = idea.findScheduleToAcceptEnrollmentOf(member)
                 .orElseThrow(() -> new IllegalStateException(NOT_MEMBER_OF_IDEA.getMessage()));
-        enrollment.accept();
+        enrollment.scheduleToReject();
     }
 
     @Override
@@ -376,8 +376,7 @@ public class IdeaServiceImpl implements IdeaService {
 
         validateMemberDeletable(enrollment);
 
-        // '수락' 상태로 강제해서 스케줄러가 무시하도록 한다.
-        enrollment.accept();
+        enrollment.scheduleToReject();
     }
 
     private ProjectSchedule findCurrentSchedule() {
