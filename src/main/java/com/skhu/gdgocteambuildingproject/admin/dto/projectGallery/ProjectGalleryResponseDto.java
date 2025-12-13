@@ -10,7 +10,7 @@ public record ProjectGalleryResponseDto(
         Long id,
         String projectName,
         String generation,
-        ServiceStatus serviceStatus,
+        boolean exhibited,
         LocalDateTime createdAt
 ) {
 }
