@@ -39,11 +39,10 @@ public class AuthController implements AuthControllerApi {
 
     @Override
     public ResponseEntity<LoginResponseDto> reissueAccessToken(
-            @CookieValue(name = "token", required = false)
-            String token,
+            String refreshToken,
             HttpServletResponse response
     ) {
-        return ResponseEntity.ok(authService.refresh(token, response));
+        return ResponseEntity.ok(authService.refresh(refreshToken, response));
     }
 
     @Override

@@ -95,9 +95,8 @@ public interface AuthControllerApi {
     })
     @PostMapping("/token/access")
     ResponseEntity<LoginResponseDto> reissueAccessToken(
-            @CookieValue(name = "token", required = false)
-            String token,
-
+            @CookieValue(name = "refreshToken", required = false)
+            String refreshToken,
             HttpServletResponse response
     );
 
