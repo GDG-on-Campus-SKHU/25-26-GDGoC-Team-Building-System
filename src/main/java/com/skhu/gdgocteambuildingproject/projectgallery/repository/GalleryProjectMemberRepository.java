@@ -5,6 +5,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRo
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GalleryProjectMemberRepository extends JpaRepository<GalleryProjectMember, Long> {
     boolean existsByProjectIdAndUserIdAndRole(
@@ -14,4 +15,6 @@ public interface GalleryProjectMemberRepository extends JpaRepository<GalleryPro
     );
 
     List<GalleryProjectMember> findAllByUserId(Long userId);
+
+    Optional<GalleryProjectMember> findByUserIdAndProjectId(Long userId, Long projectId);
 }

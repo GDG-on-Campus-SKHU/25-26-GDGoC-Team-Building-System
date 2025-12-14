@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.mypage.service;
 
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProjectExhibitUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.MypageProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
@@ -20,4 +21,6 @@ public interface MypageService {
     List<UserLinkOptionsResponseDto> getAllUserLinkOptions();
 
     List<MypageProjectGalleryResponseDto> getUserGalleryProjects(Long userId);
+
+    MypageProjectGalleryResponseDto updateProjectExhibit(Long userId, ProjectExhibitUpdateRequestDto requestDto);
 }

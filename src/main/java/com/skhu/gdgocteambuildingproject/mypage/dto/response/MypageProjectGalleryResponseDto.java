@@ -1,24 +1,19 @@
 package com.skhu.gdgocteambuildingproject.mypage.dto.response;
 
-import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import lombok.Builder;
 
+import java.util.List;
+
 @Builder
 public record MypageProjectGalleryResponseDto(
+        Long projectId,
         String thumbnailImageUrl,
         String projectName,
         boolean exhibited,
         String shortIntroduction,
-        MemberRole myRole
+        MemberRole myRole,
+        MypageProjectMemberResponseDto leader,
+        List<MypageProjectMemberResponseDto> members
 ) {
-    public static MypageProjectGalleryResponseDto from(GalleryProject project, MemberRole myRole) {
-        return MypageProjectGalleryResponseDto.builder()
-                .thumbnailImageUrl(project.getThumbnailUrl())
-                .projectName(project.getProjectName())
-                .exhibited(project.getExhibited())
-                .shortIntroduction(project.getShortDescription())
-                .myRole(myRole)
-                .build();
-    }
 }
