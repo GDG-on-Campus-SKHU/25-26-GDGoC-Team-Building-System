@@ -66,9 +66,8 @@ public class JwtFilter extends GenericFilterBean {
             Authentication authentication = tokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         } catch (Exception e) {
-            log.warn("[JWT FILTER] Invalid JWT token", e);
             // 인증을 설정하지 않고 필터 체인을 계속 진행
-            // Spring Security가 인증이 없다고 판단하고 CustomAuthenticationEntryPoint를 호출함
+            log.warn("[JWT FILTER] Invalid JWT token", e);
         }
 
         chain.doFilter(request, response);
