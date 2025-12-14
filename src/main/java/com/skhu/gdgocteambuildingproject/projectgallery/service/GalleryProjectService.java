@@ -11,13 +11,14 @@ import java.security.Principal;
 public interface GalleryProjectService {
     Long exhibitProject(GalleryProjectSaveRequestDto requestDto);
 
-    GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Long projectId);
+    GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Principal principal, Long projectId);
 
     GalleryProjectListResponseDto findGalleryProjects(String generation);
 
     MemberSearchListResponseDto searchMemberByName(String name);
 
     Long updateGalleryProjectByProjectId(
+            Principal principal,
             Long projectId,
             GalleryProjectSaveRequestDto requestDto
     );

@@ -56,7 +56,10 @@ public interface GalleryProjectControllerApi {
             @ApiResponse(responseCode = "400", description = "projectId에 해당하는 프로젝트가 전시되지 않음"),
             @ApiResponse(responseCode = "404", description = "projectId에 해당하는 프로젝트가 없음"),
     })
-    ResponseEntity<GalleryProjectInfoResponseDto> findCurrentGalleryProjectInfoByProjectId(@PathVariable Long projectId);
+    ResponseEntity<GalleryProjectInfoResponseDto> findCurrentGalleryProjectInfoByProjectId(
+            Principal principal,
+            @PathVariable Long projectId
+    );
 
     @Operation(
             summary = "갤러리에 있는 프로젝트 목록 조회",
@@ -110,6 +113,7 @@ public interface GalleryProjectControllerApi {
             @ApiResponse(responseCode = "404", description = "leaderId에 해당하는 유저가 없거나, projectId에 해당하는 프로젝트가 없음"),
     })
     ResponseEntity<Long> updateProject(
+            Principal principal,
             @PathVariable Long projectId,
             @RequestBody GalleryProjectSaveRequestDto requestDto
     );

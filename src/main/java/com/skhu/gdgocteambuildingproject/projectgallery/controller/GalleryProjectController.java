@@ -39,8 +39,11 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
 
     @Override
     @GetMapping("/{projectId}")
-    public ResponseEntity<GalleryProjectInfoResponseDto> findCurrentGalleryProjectInfoByProjectId(@PathVariable Long projectId) {
-        return ResponseEntity.ok(galleryProjectService.findCurrentGalleryProjectInfoByProjectId(projectId));
+    public ResponseEntity<GalleryProjectInfoResponseDto> findCurrentGalleryProjectInfoByProjectId(
+            Principal principal,
+            @PathVariable Long projectId
+    ) {
+        return ResponseEntity.ok(galleryProjectService.findCurrentGalleryProjectInfoByProjectId(principal, projectId));
     }
 
     @Override
@@ -59,10 +62,11 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
     @PutMapping("/{projectId}")
     @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
     public ResponseEntity<Long> updateProject(
+            Principal principal,
             @PathVariable Long projectId,
             @RequestBody GalleryProjectSaveRequestDto requestDto
     ) {
-        return ResponseEntity.ok(galleryProjectService.updateGalleryProjectByProjectId(projectId, requestDto));
+        return ResponseEntity.ok(galleryProjectService.updateGalleryProjectByProjectId(principal, projectId, requestDto));
     }
 
     @Override
