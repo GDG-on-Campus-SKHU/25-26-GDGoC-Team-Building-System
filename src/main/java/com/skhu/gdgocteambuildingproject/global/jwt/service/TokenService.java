@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
 
@@ -27,12 +26,12 @@ public class TokenService {
     }
 
     @Transactional
-    public RefreshToken store(User user, String token) {
+    public void store(User user, String token) {
         LocalDateTime expiredAt =
                 LocalDateTime.now()
                         .plusSeconds(tokenProvider.getRefreshTokenExpirySeconds());
 
-        return refreshTokenRepository.save(
+        refreshTokenRepository.save(
                 RefreshToken.of(user, token, expiredAt)
         );
     }
