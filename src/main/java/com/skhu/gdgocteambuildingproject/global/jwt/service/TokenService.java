@@ -27,12 +27,12 @@ public class TokenService {
     }
 
     @Transactional
-    public void store(User user, String token) {
+    public RefreshToken store(User user, String token) {
         LocalDateTime expiredAt =
                 LocalDateTime.now()
                         .plusSeconds(tokenProvider.getRefreshTokenExpirySeconds());
 
-        refreshTokenRepository.save(
+        return refreshTokenRepository.save(
                 RefreshToken.of(user, token, expiredAt)
         );
     }

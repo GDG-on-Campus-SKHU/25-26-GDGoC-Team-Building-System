@@ -17,6 +17,7 @@ import org.springframework.security.oauth2.jwt.JwtException;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 
@@ -24,22 +25,24 @@ import java.util.Date;
 @Component
 public class TokenProvider {
     private static final String ROLE_CLAIM = "Role";
-    private static final int REFRESH_TOKEN_MULTIPLIER = 7;
-    private final Key key;
-    private final long accessTokenValidityTime;
-    private final CustomUserDetailsService customUserDetailsService;
     private static final String TOKEN_TYPE_CLAIM = "tokenType";
     private static final String ACCESS_TOKEN = "ACCESS";
     private static final String REFRESH_TOKEN = "REFRESH";
 
+    private final Key key;
+    private final long accessTokenValidityTime;
+    private final long refreshTokenValidityTime;
+    private final CustomUserDetailsService customUserDetailsService;
+
     public TokenProvider(
             @Value("${jwt.secret}") String secretKey,
             @Value("${jwt.access.expiration}") long accessTokenValidityTime,
+            @Value("${jwt.refresh.expiration}") long refreshTokenValidityTime,
             CustomUserDetailsService customUserDetailsService
     ) {
-        byte[] keyBytes = secretKey.getBytes(java.nio.charset.StandardCharsets.UTF_8);
-        this.key = Keys.hmacShaKeyFor(keyBytes);
+        this.key = Keys.hmacShaKeyFor(secretKey.getBytes(StandardCharsets.UTF_8));
         this.accessTokenValidityTime = accessTokenValidityTime;
+        this.refreshTokenValidityTime = refreshTokenValidityTime;
         this.customUserDetailsService = customUserDetailsService;
     }
 
@@ -59,7 +62,7 @@ public class TokenProvider {
 
     public String createRefreshToken(User user) {
         Date now = new Date();
-        Date expiry = new Date(now.getTime() + accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER);
+        Date expiry = new Date(now.getTime() + refreshTokenValidityTime);
 
         return Jwts.builder()
                 .setSubject(user.getId().toString())
@@ -142,6 +145,6 @@ public class TokenProvider {
     }
 
     public long getRefreshTokenExpirySeconds() {
-        return (accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER) / 1000;
+        return refreshTokenValidityTime / 1000;
     }
 }
