@@ -202,6 +202,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
             GalleryProject project,
             List<GalleryProjectMemberAddDto> members
     ) {
+        if (members == null || members.isEmpty()) {
+            return;
+        }
+
         for (GalleryProjectMemberAddDto memberDto : members) {
             User user = getUser(memberDto.userId());
             GalleryProjectMember member = GalleryProjectMember.builder()
