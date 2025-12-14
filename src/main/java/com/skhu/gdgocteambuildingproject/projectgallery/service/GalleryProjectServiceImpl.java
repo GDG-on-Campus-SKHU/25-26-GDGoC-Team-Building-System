@@ -22,6 +22,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjec
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -56,8 +57,8 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Long projectId) {
-        GalleryProject galleryProject = findGalleryProjectById(projectId);
+    public GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Principal principal, Long projectId) {
+        GalleryProject galleryProject = findGalleryProjectById(principal, projectId);
 
         return galleryProjectInfoMapper.mapToInfo(galleryProject);
     }
@@ -83,10 +84,11 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     @Override
     @Transactional
     public Long updateGalleryProjectByProjectId(
+            Principal principal,
             Long projectId,
             GalleryProjectSaveRequestDto requestDto
     ) {
-        GalleryProject galleryProject = findGalleryProjectById(projectId);
+        GalleryProject galleryProject = findGalleryProjectById(principal, projectId);
         galleryProject.update(
                 requestDto.projectName(),
                 Generation.fromLabel(requestDto.generation()),
@@ -115,11 +117,12 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 //        galleryProjectRepository.delete(galleryProject);
 //    }
 
-    private GalleryProject findGalleryProjectById(Long projectId) {
+    private GalleryProject findGalleryProjectById(Principal principal, Long projectId) {
         GalleryProject galleryProject = galleryProjectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
+        User user = getUser(PrincipalUtil.getUserIdFrom(principal));
 
-        if (!galleryProject.getExhibited()) {
+        if (!galleryProject.getExhibited() && !galleryProject.getUser().equals(user) && !user.getRole().equals(UserRole.ROLE_SKHU_ADMIN)) {
             throw new IllegalStateException(PROJECT_NOT_EXHIBITED.getMessage());
         }
 
@@ -202,6 +205,10 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
             GalleryProject project,
             List<GalleryProjectMemberAddDto> members
     ) {
+        if (members == null || members.isEmpty()) {
+            return;
+        }
+
         for (GalleryProjectMemberAddDto memberDto : members) {
             User user = getUser(memberDto.userId());
             GalleryProjectMember member = GalleryProjectMember.builder()
