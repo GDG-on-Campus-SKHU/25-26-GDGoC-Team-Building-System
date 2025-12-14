@@ -2,6 +2,7 @@ package com.skhu.gdgocteambuildingproject.mypage.api;
 
 import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.MypageProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
@@ -11,7 +12,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 import java.util.List;
@@ -72,4 +72,18 @@ public interface MypageControllerApi {
     )
     @ApiResponse(responseCode = "200")
     ResponseEntity<List<UserLinkOptionsResponseDto>> getLinkTypeOptions();
+
+    @Operation(
+            summary = "내 프로젝트 목록 조회",
+            description = """
+                    마이페이지의 my project 탭에서 현재 로그인한 사용자 본인의 프로젝트 목록을 조회합니다.
+                    팀원일 경우 프로젝트의 정보만 반환, 팀장일 경우 프로젝트의 정보와 전시 여부 정보를 반환합니다.
+                    현재 로그인한 사용자의 프로젝트 목록만 조회가 가능합니다.
+                    가장 최근에 등록한 순서로 정렬됩니다.
+                    """
+    )
+    @ApiResponse(responseCode = "200", description = "프로젝트 목록 조회 성공")
+    ResponseEntity<List<MypageProjectGalleryResponseDto>> getUserGalleryProjects(
+            @Parameter(hidden = true) @AuthenticationPrincipal UserPrincipal userPrincipal
+    );
 }
