@@ -4,7 +4,6 @@ import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectMemberR
 import com.skhu.gdgocteambuildingproject.admin.util.GenerationMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
-import com.skhu.gdgocteambuildingproject.user.domain.User;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -17,15 +16,13 @@ public class ProjectMemberMapper {
 
     private final GenerationMapper generationMapper;
 
-    public ProjectMemberResponseDto mapLeader(User leader) {
-        return ProjectMemberResponseDto.builder()
-                .userId(leader.getId())
-                .name(leader.getName())
-                .school(leader.getSchool())
-                .memberRole(MemberRole.LEADER)
-                .generations(generationMapper.toMainGenerationDtos(leader))
-                .part(leader.getPart())
-                .build();
+    public ProjectMemberResponseDto mapLeader(List<GalleryProjectMember> members) {
+        GalleryProjectMember leader = members.stream()
+                .filter(member -> member.getRole() == MemberRole.LEADER)
+                .findFirst()
+                .orElseThrow();
+
+        return memberFromEntity(leader);
     }
 
     public List<ProjectMemberResponseDto> mapMembers(List<GalleryProjectMember> members) {
