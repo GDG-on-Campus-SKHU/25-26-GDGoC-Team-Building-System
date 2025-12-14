@@ -85,4 +85,18 @@ public class GalleryProject extends BaseEntity {
     public void updateExhibited(boolean exhibited) {
         this.exhibited = exhibited;
     }
+
+    public void updateByAdmin(String projectName,
+                              Generation generation,
+                              String shortDescription,
+                              ServiceStatus serviceStatus,
+                              String description,
+                              User leader) {
+        this.projectName = projectName;
+        this.generation = generation;
+        this.shortDescription = shortDescription;
+        this.serviceStatus = serviceStatus;
+        this.description = description;
+        this.user = leader;
+    }
 }
