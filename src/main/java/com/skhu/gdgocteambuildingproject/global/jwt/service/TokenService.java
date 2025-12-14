@@ -14,7 +14,6 @@ import java.time.LocalDateTime;
 @Service
 @RequiredArgsConstructor
 public class TokenService {
-
     private final RefreshTokenRepository refreshTokenRepository;
     private final TokenProvider tokenProvider;
 
