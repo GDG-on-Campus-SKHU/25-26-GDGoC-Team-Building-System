@@ -5,30 +5,33 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST_IN_GALLERY;
 
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
+import com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectMemberAddDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberInfoDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectMemberMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
+import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
+import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.util.List;
-import java.util.Map;
 
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
@@ -39,14 +42,15 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
     private final GalleryProjectInfoMapper galleryProjectInfoMapper;
     private final UserRepository userRepository;
     private final GalleryProjectMemberMapper galleryProjectMemberMapper;
+    private final UserGenerationRepository userGenerationRepository;
 
     @Override
     @Transactional
     public Long exhibitProject(GalleryProjectSaveRequestDto requestDto) {
-        User leader = getUser(requestDto.leaderId());
+        User leader = getUser(requestDto.leader().userId());
         GalleryProject project = createGalleryProjectEntity(requestDto, leader);
 
-        saveProjectMembers(project, requestDto.members());
+        saveProjectMembers(project, requestDto.leader(), requestDto.members());
         return project.getId();
     }
 
@@ -90,10 +94,18 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
                 requestDto.serviceStatus(),
                 requestDto.description(),
                 requestDto.thumbnailUrl(),
-                getUser(requestDto.leaderId())
+                getUser(requestDto.leader().userId())
         );
-        updateProjectMembers(galleryProject, requestDto.members());
+        updateProjectMembers(galleryProject, requestDto.leader(), requestDto.members());
         return projectId;
+    }
+
+    @Override
+    public TokenUserInfoForProjectBuildingResponseDto findExhibitorInfo(Principal principal) {
+        User user = getUser(PrincipalUtil.getUserIdFrom(principal));
+        UserGeneration userGeneration = userGenerationRepository.findByUserAndIsMainTrue(user);
+
+        return galleryProjectMemberMapper.mapExhibitor(user, userGeneration);
     }
 
 //    @Override
@@ -163,22 +175,37 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private void saveProjectMembers(
             GalleryProject project,
-            List<GalleryProjectMemberInfoDto> members
+            GalleryProjectMemberAddDto leader,
+            List<GalleryProjectMemberAddDto> members
     ) {
-        Long leaderId = project.getUser().getId();
-        divideMemberAndSave(project, members, leaderId);
+        addLeaderWithProject(project, leader);
+        addMembersWithProject(project, members);
     }
 
-    private void divideMemberAndSave(
+    private void addLeaderWithProject(
             GalleryProject project,
-            List<GalleryProjectMemberInfoDto> members,
-            Long leaderId
+            GalleryProjectMemberAddDto leader
     ) {
-        for (GalleryProjectMemberInfoDto memberDto : members) {
+        User user = getUser(leader.userId());
+        GalleryProjectMember member = GalleryProjectMember.builder()
+                .role(MemberRole.LEADER)
+                .part(leader.part())
+                .user(user)
+                .project(project)
+                .build();
+
+        galleryProjectMemberRepository.save(member);
+        project.getMembers().add(member);
+    }
+
+    private void addMembersWithProject(
+            GalleryProject project,
+            List<GalleryProjectMemberAddDto> members
+    ) {
+        for (GalleryProjectMemberAddDto memberDto : members) {
             User user = getUser(memberDto.userId());
-            MemberRole role = resolveRole(leaderId, memberDto.userId());
             GalleryProjectMember member = GalleryProjectMember.builder()
-                    .role(role)
+                    .role(MemberRole.MEMBER)
                     .part(memberDto.part())
                     .user(user)
                     .project(project)
@@ -191,27 +218,16 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     private void updateProjectMembers(
             GalleryProject project,
-            List<GalleryProjectMemberInfoDto> members
+            GalleryProjectMemberAddDto leader,
+            List<GalleryProjectMemberAddDto> members
     ) {
         project.clearMembers();
-        Long leaderId = project.getUser().getId();
-        divideMemberAndSave(project, members, leaderId);
+        addLeaderWithProject(project, leader);
+        addMembersWithProject(project, members);
     }
 
     private User getUser(Long leaderId) {
         return userRepository.findById(leaderId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
-    }
-
-    private MemberRole resolveRole(
-            Long leaderId,
-            Long memberId
-    ) {
-        Map<Boolean, MemberRole> selector = Map.of(
-                true, MemberRole.LEADER,
-                false, MemberRole.MEMBER
-        );
-
-        return selector.get(memberId.equals(leaderId));
     }
 }

@@ -73,11 +73,8 @@ public class IdeaEnrollment extends BaseEntity {
         }
     }
 
-    /**
-     * 지원의 상태를 '수락'으로 전이한다.
-     */
-    public void accept() {
-        status = ACCEPTED;
+    public boolean isAccepted() {
+        return status == ACCEPTED;
     }
 
     public boolean isCancelable() {

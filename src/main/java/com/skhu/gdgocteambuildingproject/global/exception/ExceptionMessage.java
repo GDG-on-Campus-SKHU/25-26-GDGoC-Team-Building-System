@@ -37,6 +37,7 @@ public enum ExceptionMessage {
     NOT_PARTICIPATED("프로젝트에 접근 권한이 없습니다."),
     ALREADY_PARTICIPATED("이미 프로젝트에 참여하고 있습니다."),
     SCHEDULE_NOT_EXIST("현재 진행중인 일정이 없습니다."),
+    NOT_ENROLLMENT_SCHEDULE("지원 일정이 아닙니다."),
     NOT_REGISTRATION_SCHEDULE("아이디어 등록 기간이 아닙니다."),
     SCHEDULE_PASSED("일정이 지났습니다."),
     ILLEGAL_SCHEDULE_DATE("일정의 날짜가 부적절합니다."),

@@ -12,7 +12,7 @@ public record GalleryProjectInfoResponseDto(
         String shortDescription,
         String serviceStatus,
         String description,
-        Long leaderId,
+        GalleryProjectMemberResponseDto leader,
         List<GalleryProjectMemberResponseDto> members,
         String thumbnailUrl
 ) {

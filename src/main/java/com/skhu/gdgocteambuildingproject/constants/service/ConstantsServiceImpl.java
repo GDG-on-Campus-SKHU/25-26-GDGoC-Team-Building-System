@@ -1,6 +1,8 @@
 package com.skhu.gdgocteambuildingproject.constants.service;
 
 import com.skhu.gdgocteambuildingproject.constants.dto.GenerationResponseDto;
+import com.skhu.gdgocteambuildingproject.constants.dto.PartResponseDto;
+import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -15,6 +17,14 @@ public class ConstantsServiceImpl implements ConstantsService {
         return Arrays.stream(Generation.values())
                 .sorted(Comparator.comparing(Generation::ordinal))
                 .map(GenerationResponseDto::from)
+                .toList();
+    }
+
+    @Override
+    public List<PartResponseDto> getParts() {
+        return Arrays.stream(Part.values())
+                .sorted(Comparator.comparing(Part::ordinal))
+                .map(PartResponseDto::from)
                 .toList();
     }
 }

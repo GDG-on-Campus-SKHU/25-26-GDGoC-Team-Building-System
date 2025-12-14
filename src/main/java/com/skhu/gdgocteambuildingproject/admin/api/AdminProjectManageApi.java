@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectNameUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -82,6 +83,17 @@ public interface AdminProjectManageApi {
     ResponseEntity<Void> updateProject(
             @Parameter(description = "프로젝트 ID", example = "1") long projectId,
             ProjectUpdateRequestDto requestDto
+    );
+
+    @Operation(
+            summary = "프로젝트 이름 수정",
+            description = """
+                    프로젝트의 이름을 수정합니다.
+                    """
+    )
+    ResponseEntity<Void> updateProjectName(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId,
+            ProjectNameUpdateRequestDto requestDto
     );
 
     @Operation(

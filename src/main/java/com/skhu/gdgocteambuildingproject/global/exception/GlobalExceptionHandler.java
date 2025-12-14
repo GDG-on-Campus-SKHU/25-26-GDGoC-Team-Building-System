@@ -1,6 +1,5 @@
 package com.skhu.gdgocteambuildingproject.global.exception;
 
-import com.fasterxml.jackson.databind.exc.ValueInstantiationException;
 import com.skhu.gdgocteambuildingproject.admin.exception.ActivityPostNotFoundException;
 import com.skhu.gdgocteambuildingproject.admin.exception.AdminUserManageNotExistException;
 import io.jsonwebtoken.JwtException;
@@ -94,22 +93,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<String> handleIllegalJson(HttpMessageNotReadableException exception) {
         log.warn("[ERROR RESPONSE] http message not readable", exception);
 
-        Throwable cause = exception.getCause();
-
-        if (cause instanceof ValueInstantiationException valueException) {
-            Throwable rootCause = valueException.getCause();
-
-            if (rootCause instanceof IllegalArgumentException) {
-                return ResponseEntity
-                        .status(BAD_REQUEST)
-                        .body(rootCause.getMessage());
-            }
-        }
-
-        return ResponseEntity
-                .status(BAD_REQUEST)
-                .body("JSON 파싱에 실패했습니다.");
-    }
+        return ResponseEntity.status(BAD_REQUEST).body("JSON 파싱에 실패했습니다."); }
 
     @ExceptionHandler(LockedException.class)
     public ResponseEntity<String> handleLockedException(LockedException exception) {

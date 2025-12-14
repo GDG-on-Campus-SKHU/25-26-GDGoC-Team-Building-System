@@ -4,6 +4,7 @@ import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectManageApi;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectNameUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
@@ -89,6 +90,17 @@ public class AdminProjectManageController implements AdminProjectManageApi {
             @Valid @RequestBody ProjectUpdateRequestDto requestDto
     ) {
         projectService.updateProject(projectId, requestDto);
+
+        return NO_CONTENT;
+    }
+
+    @Override
+    @PutMapping("/{projectId}/name")
+    public ResponseEntity<Void> updateProjectName(
+            @PathVariable long projectId,
+            @Valid @RequestBody ProjectNameUpdateRequestDto requestDto
+    ) {
+        projectService.updateProjectName(projectId, requestDto);
 
         return NO_CONTENT;
     }

@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.api;
 
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
@@ -12,6 +13,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.security.Principal;
 
 @Tag(
         name = "프로젝트 갤러리 API",
@@ -110,6 +113,21 @@ public interface GalleryProjectControllerApi {
             @PathVariable Long projectId,
             @RequestBody GalleryProjectSaveRequestDto requestDto
     );
+
+    @Operation(
+            summary = "프로젝트 갤러리 생성 시에 생성자의 정보 조회",
+            description =
+                    """
+                    프로젝트 갤러리에서 전시할 때에 생성자의 정보를 조회합니다.
+                    
+                    프로젝트 갤러리 용으로 생성된 API 입니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "정상적인 정보 조회 성공"),
+            @ApiResponse(responseCode = "404", description = "토큰으로 받아온 유저가 존재하지 않음")
+    })
+    ResponseEntity<TokenUserInfoForProjectBuildingResponseDto> findExhibitorFromToken(Principal principal);
 
 //    @Operation(
 //            summary = "프로젝트 갤러리에 존재하는 프로젝트 삭제",

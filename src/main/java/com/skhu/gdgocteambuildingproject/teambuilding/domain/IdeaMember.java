@@ -1,6 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaMemberRole;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
@@ -51,6 +52,9 @@ public class IdeaMember extends BaseEntity {
     @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private IdeaMemberRole role;
+
+    @Enumerated(EnumType.STRING)
+    private ScheduleType acceptedAt;
 
     public boolean isCreator() {
         return role == IdeaMemberRole.CREATOR;

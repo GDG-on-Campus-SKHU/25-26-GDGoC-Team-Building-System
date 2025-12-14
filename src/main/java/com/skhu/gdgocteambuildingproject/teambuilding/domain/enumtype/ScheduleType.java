@@ -1,5 +1,7 @@
 package com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.Supplier;
 import lombok.Getter;
 
@@ -63,6 +65,12 @@ public enum ScheduleType {
         this.ideaDeletable = ideaDeletable;
         this.announcement = announcement;
         this.prevScheduleType = prevScheduleType;
+    }
+
+    public static List<ScheduleType> enrollments() {
+        return Arrays.stream(values())
+                .filter(ScheduleType::isEnrollmentAvailable)
+                .toList();
     }
 
     public ScheduleType getPrevScheduleType() {

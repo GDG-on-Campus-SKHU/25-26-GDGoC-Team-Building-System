@@ -4,8 +4,10 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleTy
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
+import java.util.List;
 
 public interface EnrollmentService {
 
@@ -35,6 +37,8 @@ public interface EnrollmentService {
             long userId,
             ScheduleType scheduleType
     );
+
+    List<EnrollmentReadableResponseDto> getSentEnrollmentReadabilities(long userId);
 
     void cancelEnrollment(
             long userId,
