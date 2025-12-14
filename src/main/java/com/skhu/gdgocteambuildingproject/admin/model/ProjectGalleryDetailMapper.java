@@ -21,7 +21,7 @@ public class ProjectGalleryDetailMapper {
                 .serviceStatus(galleryProject.getServiceStatus())
                 .generation(galleryProject.getGeneration().getLabel())
                 .exhibited(galleryProject.getExhibited())
-                .leader(memberMapper.mapLeader(galleryProject.getUser()))
+                .leader(memberMapper.mapLeader(galleryProject.getMembers()))
                 .members(memberMapper.mapMembers(galleryProject.getMembers()))
                 .build();
     }

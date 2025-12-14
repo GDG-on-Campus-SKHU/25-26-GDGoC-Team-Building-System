@@ -2,9 +2,11 @@ package com.skhu.gdgocteambuildingproject.admin.api;
 
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -46,5 +48,15 @@ public interface AdminProjectGalleryApi {
     })
     ResponseEntity<ProjectGalleryDetailResponseDto> getProjectGallery(
             @Parameter(description = "프로젝트 ID", example = "1", required = true) Long projectId
+    );
+
+    @Operation(summary = "프로젝트 갤러리 정보 수정", description = "프로젝트 갤러리 ID를 통해 갤러리 정보를 수정합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "수정 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 프로젝트")
+    })
+    ResponseEntity<Void> updateProjectGallery(
+            @Parameter(description = "프로젝트 갤러리 ID", example = "1", required = true) Long projectId,
+            @RequestBody(description = "수정할 프로젝트 갤러리 정보", required = true) ProjectGalleryUpdateRequestDto dto
     );
 }
