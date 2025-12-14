@@ -1,14 +1,17 @@
 package com.skhu.gdgocteambuildingproject.mypage.service;
 
-import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
-import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
-import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.MypageProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.response.UserLinkOptionsResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoMapper;
 import com.skhu.gdgocteambuildingproject.mypage.model.ProfileInfoUpdateMapper;
+import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
+import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
@@ -31,6 +34,7 @@ public class MypageServiceImpl implements MypageService {
     private final ProfileInfoMapper profileInfoMapper;
     private final ProfileInfoUpdateMapper profileInfoUpdateMapper;
     private final IdeaMemberRepository ideaMemberRepository;
+    private final GalleryProjectMemberRepository galleryProjectMemberRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -76,11 +80,22 @@ public class MypageServiceImpl implements MypageService {
                 .toList();
     }
 
+    @Override
+    public List<MypageProjectGalleryResponseDto> getUserGalleryProjects(Long userId) {
+        List<GalleryProjectMember> members = galleryProjectMemberRepository.findAllByUserId(userId);
+
+        return members.stream()
+                .map(member -> MypageProjectGalleryResponseDto.from(
+                        member.getProject(),
+                        member.getRole()
+                ))
+                .toList();
+    }
+
     private User findUserByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_EXIST.getMessage()));
     }
-
 
 
 }
