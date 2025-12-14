@@ -80,7 +80,7 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
 
         updateProjectInfo(galleryProject, dto, leader);
 
-        replaceProjectMembers(galleryProject, dto.leaderId(), dto.leaderPart(), dto.members());
+        replaceProjectMembers(galleryProject, leader, dto.leaderPart(), dto.members());
         galleryProject.updateExhibited(dto.exhibited());
     }
 
@@ -95,11 +95,11 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
         );
     }
 
-    private void replaceProjectMembers(GalleryProject galleryProject, Long leaderId, String leaderPart,
+    private void replaceProjectMembers(GalleryProject galleryProject, User leader, String leaderPart,
                                        List<GalleryProjectMemberUpdateDto> members) {
         galleryProject.clearMembers();
 
-        addLeader(galleryProject, leaderId, leaderPart);
+        addLeader(galleryProject, leader, leaderPart);
         addMembers(galleryProject, members);
     }
 
@@ -120,9 +120,7 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
         }
     }
 
-    private void addLeader(GalleryProject project, Long leaderId, String leaderPart) {
-        User leader = getUserOrThrow(leaderId);
-
+    private void addLeader(GalleryProject project, User leader, String leaderPart) {
         addMember(
                 project,
                 leader,
