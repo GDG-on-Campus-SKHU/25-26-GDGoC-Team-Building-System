@@ -80,4 +80,8 @@ public class GalleryProject extends BaseEntity {
     public void clearMembers() {
         this.members.clear();
     }
+
+    public void updateExhibited(boolean exhibited) {
+        this.exhibited = exhibited;
+    }
 }

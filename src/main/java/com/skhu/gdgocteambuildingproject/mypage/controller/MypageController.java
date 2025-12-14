@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.mypage.controller;
 import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import com.skhu.gdgocteambuildingproject.mypage.api.MypageControllerApi;
 import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProfileInfoUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.mypage.dto.request.ProjectExhibitUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.MypageProjectGalleryResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.ProfileInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.mypage.dto.response.TechStackOptionsResponseDto;
@@ -57,14 +58,29 @@ public class MypageController implements MypageControllerApi {
         return ResponseEntity.ok(mypageService.getAllTechStackOptions());
     }
 
+    @Override
     @GetMapping("/userLinkOptions")
     public ResponseEntity<List<UserLinkOptionsResponseDto>> getLinkTypeOptions() {
         return ResponseEntity.ok(mypageService.getAllUserLinkOptions());
     }
 
+    @Override
     @GetMapping("/projects")
     public ResponseEntity<List<MypageProjectGalleryResponseDto>> getUserGalleryProjects(@AuthenticationPrincipal UserPrincipal userPrincipal) {
         Long currentUserId = userPrincipal.getUser().getId();
         return ResponseEntity.ok(mypageService.getUserGalleryProjects(currentUserId));
     }
+
+    @Override
+    @PutMapping("/mypage/projects/exhibit")
+    public ResponseEntity<MypageProjectGalleryResponseDto> updateProjectExhibit(
+            @AuthenticationPrincipal UserPrincipal userPrincipal,
+            @RequestBody ProjectExhibitUpdateRequestDto requestDto
+    ) {
+        MypageProjectGalleryResponseDto responseDto =
+                mypageService.updateProjectExhibit(userPrincipal.getUser().getId(), requestDto);
+
+        return ResponseEntity.ok(responseDto);
+    }
+
 }
