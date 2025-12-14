@@ -13,6 +13,7 @@ public record ProjectGalleryUpdateRequestDto(
         String description,
         Long leaderId,
         String leaderPart,
-        List<GalleryProjectMemberUpdateDto> members
+        List<GalleryProjectMemberUpdateDto> members,
+        String thumbnailUrl
 ) {
 }

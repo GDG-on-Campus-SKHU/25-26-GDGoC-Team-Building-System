@@ -85,12 +85,13 @@ public class AdminProjectGalleryServiceImpl implements AdminProjectGalleryServic
     }
 
     private void updateProjectInfo(GalleryProject galleryProject, ProjectGalleryUpdateRequestDto dto, User leader) {
-        galleryProject.updateByAdmin(
+        galleryProject.update(
                 dto.projectName(),
                 Generation.fromLabel(dto.generation()),
                 dto.shortDescription(),
                 dto.serviceStatus(),
                 dto.description(),
+                dto.thumbnailUrl(),
                 leader
         );
     }
