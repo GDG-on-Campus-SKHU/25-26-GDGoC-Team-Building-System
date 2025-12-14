@@ -23,7 +23,6 @@ import java.util.Date;
 @Slf4j
 @Component
 public class TokenProvider {
-
     private static final String ROLE_CLAIM = "Role";
     private static final int REFRESH_TOKEN_MULTIPLIER = 7;
     private final Key key;
@@ -141,7 +140,6 @@ public class TokenProvider {
                 .parseClaimsJws(token)
                 .getBody();
     }
-
 
     public long getRefreshTokenExpirySeconds() {
         return (accessTokenValidityTime * REFRESH_TOKEN_MULTIPLIER) / 1000;
