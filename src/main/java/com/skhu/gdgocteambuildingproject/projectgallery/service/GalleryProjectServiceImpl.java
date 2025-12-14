@@ -119,7 +119,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
         GalleryProject galleryProject = galleryProjectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
 
-        if (!galleryProject.isExhibited()) {
+        if (!galleryProject.getExhibited()) {
             throw new IllegalStateException(PROJECT_NOT_EXHIBITED.getMessage());
         }
 

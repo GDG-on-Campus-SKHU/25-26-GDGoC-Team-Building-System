@@ -16,7 +16,7 @@ public record MypageProjectGalleryResponseDto(
         return MypageProjectGalleryResponseDto.builder()
                 .thumbnailImageUrl(project.getThumbnailUrl())
                 .projectName(project.getProjectName())
-                .exhibited(project.isExhibited())
+                .exhibited(project.getExhibited())
                 .shortIntroduction(project.getShortDescription())
                 .myRole(myRole)
                 .build();
