@@ -6,6 +6,7 @@ import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -15,6 +16,7 @@ import org.springframework.web.filter.GenericFilterBean;
 import java.io.IOException;
 import java.util.List;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class JwtFilter extends GenericFilterBean {
@@ -52,14 +54,23 @@ public class JwtFilter extends GenericFilterBean {
             return;
         }
 
-        tokenProvider.validateToken(token);
+        try {
+            tokenProvider.validateToken(token);
 
-        if (!tokenProvider.isAccessToken(token)) {
-            throw new io.jsonwebtoken.JwtException("ACCESS_TOKEN_REQUIRED");
+            if (!tokenProvider.isAccessToken(token)) {
+                log.warn("[JWT FILTER] Invalid token type - ACCESS_TOKEN_REQUIRED");
+                chain.doFilter(request, response);
+                return;
+            }
+
+            Authentication authentication = tokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        } catch (Exception e) {
+            log.warn("[JWT FILTER] Invalid JWT token", e);
+            // 인증을 설정하지 않고 필터 체인을 계속 진행
+            // Spring Security가 인증이 없다고 판단하고 CustomAuthenticationEntryPoint를 호출함
         }
 
-        Authentication authentication = tokenProvider.getAuthentication(token);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
         chain.doFilter(request, response);
     }
 
