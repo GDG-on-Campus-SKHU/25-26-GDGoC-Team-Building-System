@@ -22,7 +22,10 @@ public enum Part {
 
     public static Part from(String value) {
         return Arrays.stream(values())
-                .filter(part -> part.name().equals(value))
+                .filter(part ->
+                        part.name().equalsIgnoreCase(value)
+                                || part.koreanName.equals(value)
+                )
                 .findFirst()
                 .orElseThrow(() ->
                         new IllegalArgumentException(
