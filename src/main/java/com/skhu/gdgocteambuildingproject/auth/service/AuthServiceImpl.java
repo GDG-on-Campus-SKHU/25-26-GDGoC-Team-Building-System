@@ -75,17 +75,26 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        RefreshToken storedToken = tokenService.validate(refreshToken);
-        User user = storedToken.getUser();
+        try {
+            RefreshToken storedToken = tokenService.validate(refreshToken);
+            User user = storedToken.getUser();
+            rotateRefreshToken(user, refreshToken, response);
 
-        rotateRefreshToken(user, refreshToken, response);
+            return LoginResponseDto.builder()
+                    .accessToken(tokenService.createAccessToken(user))
+                    .email(user.getEmail())
+                    .name(user.getName())
+                    .role(user.getRole().name())
+                    .build();
 
-        return LoginResponseDto.builder()
-                .accessToken(tokenService.createAccessToken(user))
-                .email(user.getEmail())
-                .name(user.getName())
-                .role(user.getRole().name())
-                .build();
+        } catch (Exception e) {
+            refreshTokenRepository.deleteByToken(refreshToken);
+            cookieWriter.clear(response);
+
+            throw new IllegalArgumentException(
+                    ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()
+            );
+        }
     }
 
     @Override
