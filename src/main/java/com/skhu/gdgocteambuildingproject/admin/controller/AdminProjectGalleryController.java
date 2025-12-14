@@ -53,7 +53,7 @@ public class AdminProjectGalleryController implements AdminProjectGalleryApi {
     @Override
     @PatchMapping("/{projectId}")
     public ResponseEntity<Void> updateProjectGallery(@PathVariable Long projectId,
-                                                  @RequestBody ProjectGalleryUpdateRequestDto dto) {
+                                                     @RequestBody ProjectGalleryUpdateRequestDto dto) {
         adminProjectGalleryService.updateProjectGallery(projectId, dto);
         return ResponseEntity.ok().build();
     }
