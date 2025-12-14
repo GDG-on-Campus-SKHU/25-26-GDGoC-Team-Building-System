@@ -8,7 +8,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-//DB에서 유저를 찾아서 UserDetails 객체로 반환
 @Service
 @RequiredArgsConstructor
 public class CustomUserDetailsService implements UserDetailsService {

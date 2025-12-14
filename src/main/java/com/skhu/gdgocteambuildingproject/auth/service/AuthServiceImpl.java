@@ -90,7 +90,6 @@ public class AuthServiceImpl implements AuthService {
         } catch (Exception e) {
             refreshTokenRepository.deleteByToken(refreshToken);
             cookieWriter.clear(response);
-
             throw new IllegalArgumentException(
                     ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()
             );
@@ -113,7 +112,6 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public void delete(Long userId, HttpServletResponse response) {
-
         User user = userRepository.findById(userId)
                 .orElseThrow(() ->
                         new EntityNotFoundException(

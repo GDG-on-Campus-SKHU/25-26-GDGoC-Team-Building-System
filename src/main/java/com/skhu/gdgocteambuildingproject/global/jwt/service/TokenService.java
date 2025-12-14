@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
 @Service
 @RequiredArgsConstructor
 public class TokenService {
@@ -25,11 +27,14 @@ public class TokenService {
     }
 
     @Transactional
-    public RefreshToken store(User user, String token) {
-        return refreshTokenRepository.findByToken(token)
-                .orElseGet(() ->
-                        refreshTokenRepository.save(RefreshToken.of(user, token))
-                );
+    public void store(User user, String token) {
+        LocalDateTime expiredAt =
+                LocalDateTime.now()
+                        .plusSeconds(tokenProvider.getRefreshTokenExpirySeconds());
+
+        refreshTokenRepository.save(
+                RefreshToken.of(user, token, expiredAt)
+        );
     }
 
     @Transactional(readOnly = true)
@@ -42,10 +47,6 @@ public class TokenService {
 
     public void deleteByToken(String token) {
         refreshTokenRepository.deleteByToken(token);
-    }
-
-    public void deleteAllByUser(User user) {
-        refreshTokenRepository.deleteAllByUser(user);
     }
 
     public long getRefreshTokenExpirySeconds() {
