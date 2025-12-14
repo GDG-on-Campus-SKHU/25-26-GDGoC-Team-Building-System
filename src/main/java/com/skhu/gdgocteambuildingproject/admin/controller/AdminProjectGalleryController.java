@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.admin.controller;
 import com.skhu.gdgocteambuildingproject.admin.api.AdminProjectGalleryApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryDetailResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryResponseDto;
+import com.skhu.gdgocteambuildingproject.admin.dto.projectGallery.ProjectGalleryUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminProjectGalleryService;
 import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import lombok.AccessLevel;
@@ -47,5 +48,13 @@ public class AdminProjectGalleryController implements AdminProjectGalleryApi {
     public ResponseEntity<ProjectGalleryDetailResponseDto> getProjectGallery(@PathVariable Long projectId) {
         ProjectGalleryDetailResponseDto projectGallery = adminProjectGalleryService.getProjectGallery(projectId);
         return ResponseEntity.ok(projectGallery);
+    }
+
+    @Override
+    @PatchMapping("/{projectId}")
+    public ResponseEntity<Void> updateProjectGallery(@PathVariable Long projectId,
+                                                  @RequestBody ProjectGalleryUpdateRequestDto dto) {
+        adminProjectGalleryService.updateProjectGallery(projectId, dto);
+        return ResponseEntity.ok().build();
     }
 }
