@@ -26,6 +26,7 @@ public interface MypageControllerApi {
             summary = "프로필 조회",
             description = """
                     마이페이지의 Profile 탭에서 현재 로그인한 사용자 본인의 프로필을 조회합니다.
+                    
                     현재 로그인한 사용자의 프로필만 조회가 가능합니다.
                     """
     )
@@ -37,7 +38,8 @@ public interface MypageControllerApi {
     @Operation(
             summary = "프로필 수정",
             description = """
-                    마이페이지의 Profile 탭에서 현재 로그인한 사용자 본인의 프로필을 수정합니다
+                    마이페이지의 Profile 탭에서 현재 로그인한 사용자 본인의 프로필을 수정합니다.
+                    
                     기술스택 혹은 링크를 입력하지 않으면 빈 리스트를 반환합니다
                     """
     )
@@ -51,6 +53,7 @@ public interface MypageControllerApi {
             summary = "아이디어 멤버 프로필 조회",
             description = """
                     아이디어 멤버 ID를 통해 해당 유저의 프로필을 조회합니다.
+                    
                     아이디어 멤버와 연결된 유저 객체를 찾아 해당 유저의 프로필 정보를 반환합니다.
                     """
     )
@@ -77,9 +80,14 @@ public interface MypageControllerApi {
             summary = "내 프로젝트 목록 조회",
             description = """
                     마이페이지의 my project 탭에서 현재 로그인한 사용자 본인의 프로젝트 목록을 조회합니다.
+                    
                     팀원일 경우 프로젝트의 정보만 반환, 팀장일 경우 프로젝트의 정보와 전시 여부 정보를 반환합니다.
+                    
                     현재 로그인한 사용자의 프로젝트 목록만 조회가 가능합니다.
+                    
                     가장 최근에 등록한 순서로 정렬됩니다.
+                    
+                    (중요) 참여한 프로젝트가 없다면 빈 리스트를 반환합니다.
                     """
     )
     @ApiResponse(responseCode = "200", description = "프로젝트 목록 조회 성공")
