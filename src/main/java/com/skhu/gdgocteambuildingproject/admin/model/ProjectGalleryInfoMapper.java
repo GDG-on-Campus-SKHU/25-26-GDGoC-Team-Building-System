@@ -10,7 +10,7 @@ public class ProjectGalleryInfoMapper {
         return ProjectGalleryResponseDto.builder()
                 .id(galleryProject.getId())
                 .projectName(galleryProject.getProjectName())
-                .exhibited(galleryProject.isExhibited())
+                .exhibited(galleryProject.getExhibited())
                 .generation(galleryProject.getGeneration().getLabel())
                 .createdAt(galleryProject.getCreatedAt())
                 .build();

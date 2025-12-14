@@ -49,7 +49,8 @@ public class GalleryProject extends BaseEntity {
     private String thumbnailUrl; // null일 결우 프론트에서 기본이미지 처리
 
     @Builder.Default
-    private boolean exhibited = true;
+    @Column(name = "is_exhibited", nullable = false)
+    private Boolean exhibited = false;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(nullable = false)
