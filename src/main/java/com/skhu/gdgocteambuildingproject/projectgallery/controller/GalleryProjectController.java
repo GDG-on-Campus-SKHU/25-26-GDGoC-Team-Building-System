@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.controller;
 import com.skhu.gdgocteambuildingproject.projectgallery.api.GalleryProjectControllerApi;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectIdResponse;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
@@ -33,7 +34,7 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
     @Override
     @PostMapping
     @PreAuthorize("hasAnyRole('SKHU_ADMIN', 'SKHU_MEMBER')")
-    public ResponseEntity<Long> exhibitProject(@RequestBody GalleryProjectSaveRequestDto requestDto) {
+    public ResponseEntity<GalleryProjectIdResponse> exhibitProject(@RequestBody GalleryProjectSaveRequestDto requestDto) {
         return ResponseEntity.status(HttpStatus.CREATED).body(galleryProjectService.exhibitProject(requestDto));
     }
 
@@ -61,7 +62,7 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
     @Override
     @PutMapping("/{projectId}")
     @PreAuthorize("@galleryProjectAccessChecker.checkLeaderOrAdminPermission(#projectId, authentication)")
-    public ResponseEntity<Long> updateProject(
+    public ResponseEntity<GalleryProjectIdResponse> updateProject(
             Principal principal,
             @PathVariable Long projectId,
             @RequestBody GalleryProjectSaveRequestDto requestDto
