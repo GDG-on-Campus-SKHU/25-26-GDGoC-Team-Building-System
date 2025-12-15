@@ -3,6 +3,7 @@ package com.skhu.gdgocteambuildingproject.projectgallery.api;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectIdResponse;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectListResponseDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -42,7 +43,7 @@ public interface GalleryProjectControllerApi {
             @ApiResponse(responseCode = "400", description = "요청 데이터가 유효하지 않거나, 필요한 필드를 입력하지 않음"),
             @ApiResponse(responseCode = "404", description = "leaderId에 해당하는 유저가 없음"),
     })
-    ResponseEntity<Long> exhibitProject(@RequestBody GalleryProjectSaveRequestDto requestDto);
+    ResponseEntity<GalleryProjectIdResponse> exhibitProject(@RequestBody GalleryProjectSaveRequestDto requestDto);
 
     @Operation(
             summary = "갤러리에 있는 프로젝트 상세 조회",
@@ -112,7 +113,7 @@ public interface GalleryProjectControllerApi {
             @ApiResponse(responseCode = "400", description = "요청 데이터가 유효하지 않거나, 필요한 필드를 입력하지 않음"),
             @ApiResponse(responseCode = "404", description = "leaderId에 해당하는 유저가 없거나, projectId에 해당하는 프로젝트가 없음"),
     })
-    ResponseEntity<Long> updateProject(
+    ResponseEntity<GalleryProjectIdResponse> updateProject(
             Principal principal,
             @PathVariable Long projectId,
             @RequestBody GalleryProjectSaveRequestDto requestDto

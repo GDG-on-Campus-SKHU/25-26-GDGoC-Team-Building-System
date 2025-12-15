@@ -12,6 +12,7 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRo
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectMemberAddDto;
+import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectIdResponse;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectSaveRequestDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.model.mapper.GalleryProjectInfoMapper;
@@ -47,12 +48,14 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional
-    public Long exhibitProject(GalleryProjectSaveRequestDto requestDto) {
+    public GalleryProjectIdResponse exhibitProject(GalleryProjectSaveRequestDto requestDto) {
         User leader = getUser(requestDto.leader().userId());
         GalleryProject project = createGalleryProjectEntity(requestDto, leader);
 
         saveProjectMembers(project, requestDto.leader(), requestDto.members());
-        return project.getId();
+        return GalleryProjectIdResponse.builder()
+                .galleryProjectId(project.getId())
+                .build();
     }
 
     @Override
@@ -83,7 +86,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional
-    public Long updateGalleryProjectByProjectId(
+    public GalleryProjectIdResponse updateGalleryProjectByProjectId(
             Principal principal,
             Long projectId,
             GalleryProjectSaveRequestDto requestDto
@@ -99,7 +102,9 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
                 getUser(requestDto.leader().userId())
         );
         updateProjectMembers(galleryProject, requestDto.leader(), requestDto.members());
-        return projectId;
+        return GalleryProjectIdResponse.builder()
+                .galleryProjectId(projectId)
+                .build();
     }
 
     @Override
