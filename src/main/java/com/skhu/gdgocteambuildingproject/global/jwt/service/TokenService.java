@@ -38,21 +38,14 @@ public class TokenService {
 
     @Transactional(readOnly = true)
     public RefreshToken validate(String token) {
-        try {
-            tokenProvider.validateJwtFormat(token);
+        tokenProvider.validateJwtFormat(token);
 
-            if (!tokenProvider.isRefreshToken(token)) {
-                throw new IllegalArgumentException();
-            }
-
-            return refreshTokenRepository.findByToken(token)
-                    .orElseThrow(IllegalArgumentException::new);
-
-        } catch (Exception e) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()
-            );
+        if (!tokenProvider.isRefreshToken(token)) {
+            throw new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage());
         }
+
+        return refreshTokenRepository.findByToken(token)
+                .orElseThrow(() -> new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()));
     }
 
     public void deleteByToken(String token) {
