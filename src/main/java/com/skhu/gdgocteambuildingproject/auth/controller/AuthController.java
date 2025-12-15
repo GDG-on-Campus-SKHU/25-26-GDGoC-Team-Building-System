@@ -9,6 +9,7 @@ import com.skhu.gdgocteambuildingproject.global.jwt.service.UserPrincipal;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +40,7 @@ public class AuthController implements AuthControllerApi {
 
     @Override
     public ResponseEntity<LoginResponseDto> reissueAccessToken(
-            String refreshToken,
+            @CookieValue(name = "refreshToken") String refreshToken,
             HttpServletResponse response
     ) {
         return ResponseEntity.ok(authService.refresh(refreshToken, response));
@@ -47,7 +48,7 @@ public class AuthController implements AuthControllerApi {
 
     @Override
     public ResponseEntity<Void> logout(
-            @CookieValue(name = "token", required = false) String refreshToken,
+            @CookieValue(name = "refreshToken", required = false) String refreshToken,
             HttpServletResponse response
     ) {
         authService.logout(refreshToken, response);
@@ -56,12 +57,13 @@ public class AuthController implements AuthControllerApi {
 
     @Override
     public ResponseEntity<Void> delete(HttpServletResponse response) {
+        Authentication authentication =
+                SecurityContextHolder.getContext().getAuthentication();
 
-        UserPrincipal principal =
-                (UserPrincipal) SecurityContextHolder
-                        .getContext()
-                        .getAuthentication()
-                        .getPrincipal();
+        if (authentication == null ||
+                !(authentication.getPrincipal() instanceof UserPrincipal principal)) {
+            throw new IllegalStateException("UNAUTHORIZED");
+        }
 
         authService.delete(principal.getUser().getId(), response);
         return ResponseEntity.noContent().build();

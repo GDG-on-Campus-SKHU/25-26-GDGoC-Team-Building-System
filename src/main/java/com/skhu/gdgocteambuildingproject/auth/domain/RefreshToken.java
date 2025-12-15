@@ -29,7 +29,7 @@ public class RefreshToken extends BaseEntity {
         this.expiredAt = expiredAt;
     }
 
-    public static RefreshToken of(User user, String token, LocalDateTime expiredAt) {
+    public static RefreshToken create(User user, String token, LocalDateTime expiredAt) {
         return new RefreshToken(user, token, expiredAt);
     }
 }

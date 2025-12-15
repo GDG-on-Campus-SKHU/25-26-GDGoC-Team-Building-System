@@ -32,16 +32,27 @@ public class TokenService {
                         .plusSeconds(tokenProvider.getRefreshTokenExpirySeconds());
 
         refreshTokenRepository.save(
-                RefreshToken.of(user, token, expiredAt)
+                RefreshToken.create(user, token, expiredAt)
         );
     }
 
     @Transactional(readOnly = true)
     public RefreshToken validate(String token) {
-        return refreshTokenRepository.findByToken(token)
-                .orElseThrow(() ->
-                        new IllegalArgumentException(ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage())
-                );
+        try {
+            tokenProvider.validateJwtFormat(token);
+
+            if (!tokenProvider.isRefreshToken(token)) {
+                throw new IllegalArgumentException();
+            }
+
+            return refreshTokenRepository.findByToken(token)
+                    .orElseThrow(IllegalArgumentException::new);
+
+        } catch (Exception e) {
+            throw new IllegalArgumentException(
+                    ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()
+            );
+        }
     }
 
     public void deleteByToken(String token) {
