@@ -69,31 +69,16 @@ public class AuthServiceImpl implements AuthService {
             );
         }
 
-        if (!tokenProvider.isRefreshToken(refreshToken)) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()
-            );
-        }
+        RefreshToken storedToken = tokenService.validate(refreshToken);
+        User user = storedToken.getUser();
+        rotateRefreshToken(user, refreshToken, response);
 
-        try {
-            RefreshToken storedToken = tokenService.validate(refreshToken);
-            User user = storedToken.getUser();
-            rotateRefreshToken(user, refreshToken, response);
-
-            return LoginResponseDto.builder()
-                    .accessToken(tokenService.createAccessToken(user))
-                    .email(user.getEmail())
-                    .name(user.getName())
-                    .role(user.getRole().name())
-                    .build();
-
-        } catch (Exception e) {
-            refreshTokenRepository.deleteByToken(refreshToken);
-            cookieWriter.clear(response);
-            throw new IllegalArgumentException(
-                    ExceptionMessage.REFRESH_TOKEN_INVALID.getMessage()
-            );
-        }
+        return LoginResponseDto.builder()
+                .accessToken(tokenService.createAccessToken(user))
+                .email(user.getEmail())
+                .name(user.getName())
+                .role(user.getRole().name())
+                .build();
     }
 
     @Override
@@ -146,6 +131,7 @@ public class AuthServiceImpl implements AuthService {
 
     private void rotateRefreshToken(User user, String oldRefreshToken, HttpServletResponse response) {
         tokenService.deleteByToken(oldRefreshToken);
+        cookieWriter.clear(response);
 
         String newRefreshToken = tokenService.createRefreshToken(user);
         tokenService.store(user, newRefreshToken);
