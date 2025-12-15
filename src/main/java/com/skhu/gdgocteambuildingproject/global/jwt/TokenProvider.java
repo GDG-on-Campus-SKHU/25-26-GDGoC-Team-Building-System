@@ -26,6 +26,7 @@ import java.util.Date;
 public class TokenProvider {
     private static final String ROLE_CLAIM = "Role";
     private static final String TOKEN_TYPE_CLAIM = "tokenType";
+    private static final String JTI_CLAIM = "jti";
     private static final String ACCESS_TOKEN = "ACCESS";
     private static final String REFRESH_TOKEN = "REFRESH";
 
@@ -54,6 +55,7 @@ public class TokenProvider {
                 .setSubject(user.getId().toString())
                 .claim(ROLE_CLAIM, user.getRole().name())
                 .claim(TOKEN_TYPE_CLAIM, ACCESS_TOKEN)
+                .claim(JTI_CLAIM, java.util.UUID.randomUUID().toString())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -67,6 +69,7 @@ public class TokenProvider {
         return Jwts.builder()
                 .setSubject(user.getId().toString())
                 .claim(TOKEN_TYPE_CLAIM, REFRESH_TOKEN)
+                .claim(JTI_CLAIM, java.util.UUID.randomUUID().toString())
                 .setIssuedAt(now)
                 .setExpiration(expiry)
                 .signWith(key, SignatureAlgorithm.HS256)

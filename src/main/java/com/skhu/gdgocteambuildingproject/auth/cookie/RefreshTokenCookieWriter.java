@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class RefreshTokenCookieWriter {
-
     private final TokenService tokenService;
 
     public void write(HttpServletResponse response, String refreshToken) {
