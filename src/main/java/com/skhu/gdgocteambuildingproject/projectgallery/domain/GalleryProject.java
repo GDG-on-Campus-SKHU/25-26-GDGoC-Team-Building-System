@@ -43,7 +43,7 @@ public class GalleryProject extends BaseEntity {
     private ServiceStatus serviceStatus;
 
     @Lob
-    @Column(nullable = false)
+    @Column(nullable = false, columnDefinition = "LONGTEXT")
     private String description;
 
     private String thumbnailUrl; // null일 결우 프론트에서 기본이미지 처리
