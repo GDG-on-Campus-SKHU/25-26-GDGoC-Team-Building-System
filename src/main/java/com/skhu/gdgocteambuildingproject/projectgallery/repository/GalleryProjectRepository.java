@@ -12,4 +12,6 @@ public interface GalleryProjectRepository extends JpaRepository<GalleryProject, 
     List<GalleryProject> findByProjectNameContainingAndExhibitedTrue(String keyword);
 
     List<GalleryProject> findByExhibitedTrueOrderByCreatedAtDesc();
+
+    List<GalleryProject> findByProjectNameContaining(String projectName);
 }
