@@ -74,11 +74,20 @@ public class AdminActivityServiceImpl implements AdminActivityService {
     public List<ActivityResponseDto> getActivitiesByCategory(Long categoryId) {
         ActivityCategory category = getCategoryOrThrow(categoryId);
 
-        List<Activity> activities = activityRepository.findByActivityCategory(category);
-
-        return activities.stream()
-                .map(activityMapper::toActivityResponseDto)
+        List<PostResponseDto> posts = activityRepository
+                .findByActivityCategory(category)
+                .stream()
+                .map(activityMapper::toPostResponseDto)
                 .toList();
+
+        return List.of(
+                ActivityResponseDto.builder()
+                        .categoryId(category.getId())
+                        .categoryTitle(category.getName())
+                        .publish(category.isPublished())
+                        .posts(posts)
+                        .build()
+        );
     }
 
     @Override
