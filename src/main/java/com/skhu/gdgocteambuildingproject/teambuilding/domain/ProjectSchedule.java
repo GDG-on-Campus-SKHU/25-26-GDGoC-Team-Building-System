@@ -79,6 +79,10 @@ public class ProjectSchedule extends BaseEntity {
     ) {
         validateDates(startDate, endDate);
 
+        if (type.isAnnouncement()) {
+            confirmed = false;
+        }
+
         this.startDate = startDate;
         this.endDate = endDate;
     }
