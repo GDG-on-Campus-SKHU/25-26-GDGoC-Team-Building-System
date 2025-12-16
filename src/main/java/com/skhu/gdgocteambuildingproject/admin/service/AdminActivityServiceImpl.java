@@ -35,7 +35,7 @@ public class AdminActivityServiceImpl implements AdminActivityService {
     @Override
     @Transactional
     public ActivityCategoryIdResponseDto createActivity(ActivityCategorySaveRequestDto requestDto) {
-        ActivityCategory category = getOrCreateCategory(requestDto);
+        ActivityCategory category = createCategory(requestDto);
 
         return ActivityCategoryIdResponseDto.builder()
                 .categoryId(category.getId())
@@ -137,11 +137,6 @@ public class AdminActivityServiceImpl implements AdminActivityService {
                 .build();
 
         activityRepository.save(activity);
-    }
-
-    private ActivityCategory getOrCreateCategory(ActivityCategorySaveRequestDto requestDto) {
-        return activityCategoryRepository.findByName(requestDto.categoryName())
-                .orElseGet(() -> createCategory(requestDto));
     }
 
     private ActivityCategory createCategory(ActivityCategorySaveRequestDto requestDto) {
