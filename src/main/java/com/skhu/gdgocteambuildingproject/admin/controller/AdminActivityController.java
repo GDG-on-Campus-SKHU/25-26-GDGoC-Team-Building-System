@@ -1,6 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.controller;
 
-import com.skhu.gdgocteambuildingproject.admin.api.AdminActivityControllerApi;
+import com.skhu.gdgocteambuildingproject.admin.api.AdminActivityApi;
 import com.skhu.gdgocteambuildingproject.admin.dto.activity.*;
 import com.skhu.gdgocteambuildingproject.admin.service.AdminActivityService;
 import lombok.AccessLevel;
@@ -15,7 +15,7 @@ import java.util.List;
 @RequestMapping("/admin/activity")
 @PreAuthorize("hasAnyRole('SKHU_ADMIN')")
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
-public class AdminActivityController implements AdminActivityControllerApi {
+public class AdminActivityController implements AdminActivityApi {
 
     private static final ResponseEntity<Void> NO_CONTENT = ResponseEntity.noContent().build();
 
@@ -23,9 +23,15 @@ public class AdminActivityController implements AdminActivityControllerApi {
 
     @Override
     @PostMapping
-    public ResponseEntity<Void> createActivity(@RequestBody ActivitySaveRequestDto activitySaveRequestDto) {
-        adminActivityService.createActivity(activitySaveRequestDto);
-        return ResponseEntity.ok().build();
+    public ResponseEntity<ActivityCategoryIdResponseDto> createActivityCategory(@RequestBody ActivityCategorySaveRequestDto dto) {
+        ActivityCategoryIdResponseDto categoryId = adminActivityService.createActivity(dto);
+        return ResponseEntity.ok().body(categoryId);
+    }
+
+    @PostMapping("/{categoryId}")
+    public ResponseEntity<Void> createActivityPost(@PathVariable Long categoryId, @RequestBody PostSaveDto dto) {
+        adminActivityService.createActivityPost(categoryId, dto);
+        return NO_CONTENT;
     }
 
     @Override
