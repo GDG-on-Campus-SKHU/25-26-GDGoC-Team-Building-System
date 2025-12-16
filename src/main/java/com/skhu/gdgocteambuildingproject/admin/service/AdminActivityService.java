@@ -5,7 +5,7 @@ import com.skhu.gdgocteambuildingproject.admin.dto.activity.*;
 import java.util.List;
 
 public interface AdminActivityService {
-    void createActivity(ActivitySaveRequestDto requestDto);
+    ActivityCategoryIdResponseDto createActivity(ActivityCategorySaveRequestDto requestDto);
 
     PostResponseDto updateActivityPost(Long postId, PostSaveDto requestDto);
 
@@ -20,4 +20,6 @@ public interface AdminActivityService {
     void updateCategoryTitleAndStatus(Long categoryId, ActivityUpdateRequestDto dto);
 
     PostResponseDto getActivityPost(Long postId);
+
+    void createActivityPost(Long categoryId, PostSaveDto dto);
 }
