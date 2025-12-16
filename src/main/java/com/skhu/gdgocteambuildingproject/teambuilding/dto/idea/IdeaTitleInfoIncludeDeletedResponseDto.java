@@ -7,6 +7,7 @@ public record IdeaTitleInfoIncludeDeletedResponseDto(
     long ideaId,
     String title,
     String introduction,
+    String creatorName,
     int currentMemberCount,
     int maxMemberCount,
     boolean deleted
