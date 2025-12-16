@@ -22,6 +22,7 @@ public class IdeaTitleInfoMapper {
                 .ideaId(idea.getId())
                 .title(idea.getTitle())
                 .introduction(idea.getIntroduction())
+                .creatorName(idea.getCreator().getName())
                 .currentMemberCount(idea.getCurrentMemberCount())
                 .maxMemberCount(idea.getMaxMemberCount())
                 .deleted(idea.isDeleted())
