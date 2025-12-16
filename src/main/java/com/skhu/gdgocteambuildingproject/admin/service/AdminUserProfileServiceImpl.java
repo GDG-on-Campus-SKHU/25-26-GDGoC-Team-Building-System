@@ -199,6 +199,7 @@ public class AdminUserProfileServiceImpl implements AdminUserProfileService {
                 .build();
 
         user.addGeneration(newGeneration);
+        userGenerationRepository.save(newGeneration);
     }
 
     private User getUserOrThrow(Long userId) {
