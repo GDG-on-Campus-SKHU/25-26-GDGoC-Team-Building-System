@@ -12,13 +12,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 
 @Tag(name = "관리자 액티비티 관리 API", description = "관리자용 액티비티 게시글 관리 API")
-public interface AdminActivityControllerApi {
+public interface AdminActivityApi {
 
-    @Operation(summary = "액티비티 게시글 생성", description = "카테고리와 액티비티 게시글 목록을 받아 한 번에 생성합니다.")
+    @Operation(summary = "액티비티 카테고리 생성", description = "카테고리와 게시물 전시 여부를 받아 카테고리를 먼저 생성합니다.")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "생성 성공"),
+            @ApiResponse(responseCode = "200", description = "생성 성공 후 카테고리 ID 반환"),
     })
-    ResponseEntity<Void> createActivity(@RequestBody ActivitySaveRequestDto activitySaveRequestDto);
+    ResponseEntity<ActivityCategoryIdResponseDto> createActivityCategory(@RequestBody ActivityCategorySaveRequestDto activitySaveRequestDto);
 
 
     @Operation(summary = "액티비티 게시글 수정", description = "특정 액티비티 게시글의 내용을 수정합니다.")
@@ -63,7 +63,7 @@ public interface AdminActivityControllerApi {
     ResponseEntity<Void> deleteCategory(
             @Parameter(description = "삭제할 카테고리의 ID", required = true) Long categoryId);
 
-    @Operation(summary = "카테고리 제목 및 게시 상태 수정", description = "특정 카테고리의 제목과 게시/미게시 상태를 수정합니다.")
+    @Operation(summary = "카테고리 제목 및 전시 여부 상태 수정", description = "특정 카테고리의 제목과 전시 여부 상태를 수정합니다.")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "204", description = "수정 성공, 응답 바디는 없습니다."),
             @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리 ID")
@@ -73,9 +73,19 @@ public interface AdminActivityControllerApi {
             @Parameter(description = "수정할 카테고리 정보", required = true) ActivityUpdateRequestDto dto
     );
 
-    @Operation(summary = "관리자의 액티비티 게시글 상세 조회", description = "게시글 ID를 이용하여 액티비티 활동 게시글의 상세 정보를 조회합니다.")
+    @Operation(summary = "액티비티 게시글 상세 조회", description = "게시글 ID를 이용하여 액티비티 활동 게시글의 상세 정보를 조회합니다.")
     ResponseEntity<PostResponseDto> getActivityPost(
             @Parameter(description = "조회할 게시글 ID", required = true, example = "1")
             Long postId
+    );
+
+    @Operation(summary = "액티비티 게시글 생성", description = "특정 카테고리 ID를 받아 해당 카테고리에 속하는 새로운 액티비티 게시글을 생성합니다.")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "생성 성공"),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 카테고리 ID")
+    })
+    ResponseEntity<Void> createActivityPost(
+            @Parameter(description = "게시글을 생성할 카테고리의 ID", required = true) Long categoryId,
+            @RequestBody PostSaveDto dto
     );
 }

@@ -34,10 +34,12 @@ public class AdminActivityServiceImpl implements AdminActivityService {
 
     @Override
     @Transactional
-    public void createActivity(ActivitySaveRequestDto requestDto) {
+    public ActivityCategoryIdResponseDto createActivity(ActivityCategorySaveRequestDto requestDto) {
         ActivityCategory category = getOrCreateCategory(requestDto);
 
-        createPosts(requestDto.posts(), category);
+        return ActivityCategoryIdResponseDto.builder()
+                .categoryId(category.getId())
+                .build();
     }
 
     @Override
@@ -121,34 +123,34 @@ public class AdminActivityServiceImpl implements AdminActivityService {
         return postInfoMapper.toPostResponseDto(activity);
     }
 
-    private ActivityCategory getOrCreateCategory(ActivitySaveRequestDto requestDto) {
+    @Override
+    @Transactional
+    public void createActivityPost(Long categoryId, PostSaveDto dto) {
+        ActivityCategory category = getCategoryOrThrow(categoryId);
+
+        Activity activity = Activity.builder()
+                .activityCategory(category)
+                .title(dto.title())
+                .generation(Generation.fromLabel(dto.generation()))
+                .speaker(dto.speaker())
+                .videoUrl(dto.videoUrl())
+                .build();
+
+        activityRepository.save(activity);
+    }
+
+    private ActivityCategory getOrCreateCategory(ActivityCategorySaveRequestDto requestDto) {
         return activityCategoryRepository.findByName(requestDto.categoryName())
                 .orElseGet(() -> createCategory(requestDto));
     }
 
-    private ActivityCategory createCategory(ActivitySaveRequestDto requestDto) {
+    private ActivityCategory createCategory(ActivityCategorySaveRequestDto requestDto) {
         ActivityCategory newCategory = ActivityCategory.builder()
                 .name(requestDto.categoryName())
                 .isPublished(requestDto.published())
                 .build();
 
         return activityCategoryRepository.save(newCategory);
-    }
-
-    private void createPosts(List<PostSaveDto> posts, ActivityCategory category) {
-        if (posts == null || posts.isEmpty()) return;
-
-        for (PostSaveDto postDto : posts) {
-            Activity activity = Activity.builder()
-                    .activityCategory(category)
-                    .title(postDto.title())
-                    .generation(Generation.fromLabel(postDto.generation()))
-                    .speaker(postDto.speaker())
-                    .videoUrl(postDto.videoUrl())
-                    .build();
-
-            activityRepository.save(activity);
-        }
     }
 
     private Activity getActivityPostOrThrow(Long postId) {
