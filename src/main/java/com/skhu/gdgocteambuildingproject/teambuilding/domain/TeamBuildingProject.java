@@ -2,7 +2,7 @@ package com.skhu.gdgocteambuildingproject.teambuilding.domain;
 
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_ALREADY_INITIALIZED;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.SCHEDULE_NOT_EXIST;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.toUnmodifiableSet;
 
 import com.skhu.gdgocteambuildingproject.global.entity.BaseEntity;
 import com.skhu.gdgocteambuildingproject.global.enumtype.Part;
@@ -34,7 +34,8 @@ public class TeamBuildingProject extends BaseEntity {
     @Column(nullable = false)
     private String name;
     @Column(nullable = false)
-    private Integer maxMemberCount;
+    @Builder.Default
+    private Integer maxMemberCount = 0;
 
     @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default

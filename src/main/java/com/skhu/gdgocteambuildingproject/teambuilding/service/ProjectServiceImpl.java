@@ -69,7 +69,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         TeamBuildingProject project = TeamBuildingProject.builder()
                 .name(requestDto.projectName())
-                .maxMemberCount(requestDto.maxMemberCount())
                 .build();
 
         project.initSchedules();
