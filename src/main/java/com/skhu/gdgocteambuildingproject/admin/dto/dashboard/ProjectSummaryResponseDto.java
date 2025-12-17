@@ -1,5 +1,6 @@
 package com.skhu.gdgocteambuildingproject.admin.dto.dashboard;
 
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
 import lombok.Builder;
 
 import java.time.LocalDateTime;
@@ -11,7 +12,7 @@ public record ProjectSummaryResponseDto(
         int ideaCount,
         int currentParticipants,
         int maxMemberCount,
-        String currentScheduleType,
+        ScheduleType currentScheduleType,
         LocalDateTime currentScheduleDeadline
 ) {
 }
