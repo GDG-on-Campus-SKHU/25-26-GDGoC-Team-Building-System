@@ -180,6 +180,18 @@ public class TeamBuildingProject extends BaseEntity {
                 .findAny();
     }
 
+    public Optional<ProjectSchedule> getNextScheduleOf(ScheduleType scheduleType) {
+        if (scheduleType == null) {
+            return Optional.empty();
+        }
+
+        ScheduleType nextScheduleType = scheduleType.getNextScheduleType();
+
+        return schedules.stream()
+                .filter(schedule -> schedule.getType() == nextScheduleType)
+                .findAny();
+    }
+
     public ProjectSchedule getScheduleFrom(ScheduleType scheduleType) {
         return schedules.stream()
                 .filter(schedule -> schedule.getType() == scheduleType)

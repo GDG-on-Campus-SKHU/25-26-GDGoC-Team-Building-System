@@ -7,6 +7,7 @@ import com.skhu.gdgocteambuildingproject.admin.model.ProjectSummaryMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import java.util.Objects;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -33,8 +34,8 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         long countByApprovalUser = userRepository.countByApprovalStatus(ApprovalStatus.APPROVED);
 
         List<ProjectSummaryResponseDto> activeProjects = teamBuildingProjectRepository.findAll().stream()
-                .filter(p -> p.getCurrentSchedule().isPresent())
                 .map(projectSummaryMapper::toSummaryResponse)
+                .filter(Objects::nonNull)
                 .toList();
 
         return dashboardResponseMapper.toDashboardResponse(

@@ -41,6 +41,17 @@ public class ProjectUtil {
         return currentProject.getCurrentSchedule();
     }
 
+    public Optional<ProjectSchedule> findUpcomingSchedule(TeamBuildingProject project) {
+        LocalDateTime now = LocalDateTime.now();
+
+        // 이후에 시작하는 일정 중 가장 빠른 일정을 반환
+        return project.getSchedules().stream()
+                .filter(ProjectSchedule::isScheduled)
+                .filter(schedule -> schedule.getStartDate() != null)
+                .filter(schedule -> schedule.getStartDate().isAfter(now))
+                .min(Comparator.comparing(ProjectSchedule::getStartDate));
+    }
+
     private List<TeamBuildingProject> findUnfinishedProjects() {
         // 아직 마지막 일정이 끝나지 않은 프로젝트들만 조회
         return projectRepository.findProjectsWithScheduleNotEndedBefore(
