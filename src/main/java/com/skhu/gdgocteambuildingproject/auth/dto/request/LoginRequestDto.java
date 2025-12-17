@@ -12,10 +12,6 @@ public class LoginRequestDto {
     @Schema(example = "test@example.com")
     private String email;
 
-    @Pattern(
-            regexp = "^(?=.*[!@#$%^&*(),.?\":{}|<>]).{8,}$",
-            message = "비밀번호는 8자 이상이며 특수문자를 1개 이상 포함해야 합니다."
-    )
     @Schema(example = "test1234!")
     private String password;
 }
