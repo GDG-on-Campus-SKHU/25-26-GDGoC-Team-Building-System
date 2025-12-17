@@ -91,7 +91,7 @@ public interface GalleryProjectControllerApi {
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "유저 목록 조회 성공")
     })
-    ResponseEntity<MemberSearchListResponseDto> searchMemberList(@RequestParam String name);
+    ResponseEntity<MemberSearchListResponseDto> searchMemberList(Principal principal, @RequestParam String name);
 
     @Operation(
             summary = "프로젝트 갤러리에 존재하는 프로젝트의 정보 수정",

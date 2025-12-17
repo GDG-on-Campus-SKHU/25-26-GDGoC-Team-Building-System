@@ -55,8 +55,8 @@ public class GalleryProjectController implements GalleryProjectControllerApi {
 
     @Override
     @GetMapping("/members/search")
-    public ResponseEntity<MemberSearchListResponseDto> searchMemberList(@RequestParam String name) {
-        return ResponseEntity.ok(galleryProjectService.searchMemberByName(name));
+    public ResponseEntity<MemberSearchListResponseDto> searchMemberList(Principal principal, @RequestParam String name) {
+        return ResponseEntity.ok(galleryProjectService.searchMemberByName(principal, name));
     }
 
     @Override
