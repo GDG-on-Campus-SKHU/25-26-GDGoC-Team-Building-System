@@ -78,8 +78,13 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberSearchListResponseDto searchMemberByName(String name) {
-        List<User> users = userRepository.findByNameContaining(name);
+    public MemberSearchListResponseDto searchMemberByName(Principal principal, String name) {
+        User user = getUser(PrincipalUtil.getUserIdFrom(principal));
+
+        List<User> users = userRepository.findByNameContaining(name)
+                .stream()
+                .filter(u -> !u.getId().equals(user.getId()))
+                .toList();
 
         return galleryProjectMemberMapper.mapSearchMembers(users);
     }

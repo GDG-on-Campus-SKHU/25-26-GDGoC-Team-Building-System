@@ -16,7 +16,7 @@ public interface GalleryProjectService {
 
     GalleryProjectListResponseDto findGalleryProjects(String generation);
 
-    MemberSearchListResponseDto searchMemberByName(String name);
+    MemberSearchListResponseDto searchMemberByName(Principal principal, String name);
 
     GalleryProjectIdResponse updateGalleryProjectByProjectId(
             Principal principal,
