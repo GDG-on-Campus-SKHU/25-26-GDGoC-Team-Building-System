@@ -191,6 +191,7 @@ public class User extends BaseEntity {
     }
 
     public void ban(String reason) {
+        this.unbannedAt = null;
         this.userStatus = UserStatus.BANNED;
         this.banReason = reason;
         this.bannedAt = LocalDate.now();
