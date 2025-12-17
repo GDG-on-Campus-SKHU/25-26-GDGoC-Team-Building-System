@@ -602,7 +602,11 @@ public class IdeaServiceImpl implements IdeaService {
             Idea idea,
             List<IdeaMemberCompositionRequestDto> compositions
     ) {
-        for (IdeaMemberCompositionRequestDto composition : compositions) {
+        List<IdeaMemberCompositionRequestDto> recruitingCompositions = compositions.stream()
+                .filter(composition -> composition.maxCount() > 0)
+                .toList();
+
+        for (IdeaMemberCompositionRequestDto composition : recruitingCompositions) {
             Part part = composition.part();
             int maxCount = composition.maxCount();
 
