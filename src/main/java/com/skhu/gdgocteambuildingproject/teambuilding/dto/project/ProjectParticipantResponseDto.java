@@ -6,6 +6,7 @@ import lombok.Builder;
 @Builder
 public record ProjectParticipantResponseDto(
         long participantId,
+        long userId,
         String name,
         String school,
         String generation,

@@ -25,6 +25,7 @@ public class ProjectParticipantMapper {
 
         return ProjectParticipantResponseDto.builder()
                 .participantId(participant.getId())
+                .userId(user.getId())
                 .name(user.getName())
                 .school(user.getSchool())
                 .generation(generation)
