@@ -47,9 +47,9 @@ public class MypageController implements MypageControllerApi {
     }
 
     @Override
-    @GetMapping("/profile/{ideaMemberId}")
-    public ResponseEntity<ProfileInfoResponseDto> getProfileByIdeaMemberId(@PathVariable Long ideaMemberId) {
-        return ResponseEntity.ok(mypageService.getProfileByIdeaMemberId(ideaMemberId));
+    @GetMapping("/profile/{userId}")
+    public ResponseEntity<ProfileInfoResponseDto> getProfileByIdeaMemberId(@PathVariable Long userId) {
+        return ResponseEntity.ok(mypageService.getProfileByIdeaMemberId(userId));
     }
 
     @Override
