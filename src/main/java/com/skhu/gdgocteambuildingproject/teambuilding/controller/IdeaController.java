@@ -14,6 +14,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.TemporaryIdeaDeta
 import com.skhu.gdgocteambuildingproject.teambuilding.service.IdeaService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import java.security.Principal;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -58,7 +59,7 @@ public class IdeaController {
     public ResponseEntity<TemporaryIdeaDetailResponseDto> createIdea(
             Principal principal,
             @PathVariable long projectId,
-            @RequestBody IdeaCreateRequestDto requestDto
+            @Valid @RequestBody IdeaCreateRequestDto requestDto
     ) {
         long userId = getUserIdFrom(principal);
 
@@ -176,7 +177,7 @@ public class IdeaController {
             Principal principal,
             @PathVariable long projectId,
             @PathVariable long ideaId,
-            @RequestBody IdeaUpdateRequestDto requestDto
+            @Valid @RequestBody IdeaUpdateRequestDto requestDto
     ) {
         long userId = getUserIdFrom(principal);
 
@@ -198,7 +199,7 @@ public class IdeaController {
             Principal principal,
             @PathVariable long projectId,
             @PathVariable long ideaId,
-            @RequestBody IdeaTextUpdateRequestDto requestDto
+            @Valid @RequestBody IdeaTextUpdateRequestDto requestDto
     ) {
         long userId = getUserIdFrom(principal);
 
