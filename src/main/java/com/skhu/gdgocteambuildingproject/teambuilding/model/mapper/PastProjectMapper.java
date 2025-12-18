@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 public class PastProjectMapper {
     public PastProjectResponseDto map(TeamBuildingProject project) {
         return PastProjectResponseDto.builder()
+                .projectId(project.getId())
                 .name(project.getName())
                 .startDate(project.getStartDate())
                 .endDate(project.getEndDate())

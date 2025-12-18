@@ -5,6 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record PastProjectResponseDto(
+        long projectId,
         String name,
         LocalDateTime startDate,
         LocalDateTime endDate
