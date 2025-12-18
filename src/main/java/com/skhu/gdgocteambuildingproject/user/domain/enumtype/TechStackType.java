@@ -153,20 +153,20 @@ public enum TechStackType {
 
     public String getTechStackIconUrl() {
         return switch (this) {
-            case ABLETON_LIVE -> "/icons/techstackicons/ableton_icon.svg";
-            case ADOBE_AFTER_EFFECTS -> "/icons/techstackicons/aftereffects_icon.svg";
+            case ABLETON_LIVE -> "/icons/techstackicons/abletonlive_icon.svg";
+            case ADOBE_AFTER_EFFECTS -> "/icons/techstackicons/adobeaftereffects_icon.svg";
             case ATOM -> "/icons/techstackicons/atom_icon.svg";
             case AWS -> "/icons/techstackicons/aws_icon.svg";
             case AZURE -> "/icons/techstackicons/azure_icon.svg";
             case CODEPEN -> "/icons/techstackicons/codepen_icon.svg";
             case CSHARP -> "/icons/techstackicons/csharp_icon.svg";
-            case CSS -> "/icons/techstackicons/css_icon.svg";
+            case CSS -> "/icons/techstackicons/css3_icon.svg";
             case DYNAMODB -> "/icons/techstackicons/dynamodb_icon.svg";
             case HEROKU -> "/icons/techstackicons/heroku_icon.svg";
             case JAVA -> "/icons/techstackicons/java_icon.svg";
-            case NUXT_JS -> "/icons/techstackicons/nuxtjs_icon.svg";
+            case NUXT_JS -> "/icons/techstackicons/nuxtdotjs_icon.svg";
             case UNITY -> "/icons/techstackicons/unity_icon.svg";
-            case VS_CODE -> "/icons/techstackicons/vscode_icon.svg";
+            case VS_CODE -> "/icons/techstackicons/visualstudiocode_icon.svg";
 
             default -> SIMPLE_ICONS_BASE_URL + getIconSlug();
         };
