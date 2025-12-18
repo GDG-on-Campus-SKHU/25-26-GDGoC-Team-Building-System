@@ -25,6 +25,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentA
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.IdeaEnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
@@ -40,6 +41,7 @@ import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -108,6 +110,62 @@ public class EnrollmentServiceImpl implements EnrollmentService {
         } else {
             idea.rejectEnrollment(enrollment);
         }
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public IdeaEnrollmentAvailabilityResponseDto canEnroll(long ideaId, long userId) {
+        TeamBuildingProject currentProject = findCurrentProject();
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
+        User applicant = findUserBy(userId);
+        Idea idea = findIdeaBy(ideaId);
+
+        // 아이디어가 현재 프로젝트에 속하는지 확인
+        if (!idea.getProject().equals(currentProject)) {
+            return IdeaEnrollmentAvailabilityResponseDto.builder()
+                    .canEnroll(false)
+                    .build();
+        }
+
+        // 현재 일정 조회 (일정이 없으면 false)
+        Optional<ProjectSchedule> currentScheduleOpt = currentProject.getCurrentSchedule();
+        if (currentScheduleOpt.isEmpty()) {
+            return IdeaEnrollmentAvailabilityResponseDto.builder()
+                    .canEnroll(false)
+                    .build();
+        }
+
+        ProjectSchedule currentSchedule = currentScheduleOpt.get();
+
+        // 지원 가능한 일정인지 확인
+        if (!currentSchedule.isEnrollmentAvailable()) {
+            return IdeaEnrollmentAvailabilityResponseDto.builder()
+                    .canEnroll(false)
+                    .build();
+        }
+
+        // 이미 다른 아이디어에 소속되어 있는지 확인
+        if (applicant.isMemberOf(currentProject)) {
+            return IdeaEnrollmentAvailabilityResponseDto.builder()
+                    .canEnroll(false)
+                    .build();
+        }
+
+        // 이미 해당 아이디어에 지원했는지 확인
+        boolean alreadyEnrolled = applicant.getEnrollments().stream()
+                .filter(enrollment -> currentSchedule.equals(enrollment.getSchedule()))
+                .anyMatch(enrollment -> enrollment.getIdea().equals(idea));
+
+        if (alreadyEnrolled) {
+            return IdeaEnrollmentAvailabilityResponseDto.builder()
+                    .canEnroll(false)
+                    .build();
+        }
+
+        return IdeaEnrollmentAvailabilityResponseDto.builder()
+                .canEnroll(true)
+                .build();
     }
 
     @Override
