@@ -4,22 +4,21 @@ import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessag
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST;
 import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.USER_NOT_EXIST;
 
+import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
+import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.Idea;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectInfoResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ModifiableProjectResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectNameUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectTotalResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ScheduleUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.SchoolResponseDto;
-import com.skhu.gdgocteambuildingproject.global.pagination.PageInfo;
-import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
-import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleType;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.PastProjectResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectCreateRequestDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.ProjectParticipationAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.project.TeamBuildingInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
@@ -32,13 +31,12 @@ import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
-import jakarta.persistence.EntityManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -139,9 +137,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     @Transactional(readOnly = true)
     public List<PastProjectResponseDto> findPastProjects() {
-        LocalDateTime now = LocalDateTime.now();
-
-        List<TeamBuildingProject> pastProjects = findProjectsEndedBeforeThan(now);
+        List<TeamBuildingProject> pastProjects = projectUtil.findPastProjects();
 
         return pastProjects.stream()
                 .map(pastProjectMapper::map)
@@ -153,6 +149,14 @@ public class ProjectServiceImpl implements ProjectService {
     public ModifiableProjectResponseDto findModifiableProject() {
         TeamBuildingProject project = projectUtil.findModifiableProject()
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
+
+        return modifiableProjectMapper.map(project);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public ModifiableProjectResponseDto findProjectDetailById(long projectId) {
+        TeamBuildingProject project = findProjectBy(projectId);
 
         return modifiableProjectMapper.map(project);
     }
@@ -216,13 +220,6 @@ public class ProjectServiceImpl implements ProjectService {
     private TeamBuildingProject findProjectBy(long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
-    }
-
-    private List<TeamBuildingProject> findProjectsEndedBeforeThan(LocalDateTime criteriaTime) {
-        return projectRepository.findProjectsWithScheduleEndedBefore(
-                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
-                criteriaTime
-        );
     }
 
     private Pageable setupPagination(

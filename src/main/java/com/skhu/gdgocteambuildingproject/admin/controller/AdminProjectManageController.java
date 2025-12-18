@@ -76,6 +76,16 @@ public class AdminProjectManageController implements AdminProjectManageApi {
     }
 
     @Override
+    @GetMapping("/{projectId}")
+    public ResponseEntity<ModifiableProjectResponseDto> getProjectDetail(
+            @PathVariable long projectId
+    ) {
+        ModifiableProjectResponseDto response = projectService.findProjectDetailById(projectId);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
     @GetMapping("/schools")
     public ResponseEntity<List<SchoolResponseDto>> getSchools() {
         List<SchoolResponseDto> response = projectService.findSchools();
