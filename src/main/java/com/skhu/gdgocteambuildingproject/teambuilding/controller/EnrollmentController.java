@@ -65,7 +65,7 @@ public class EnrollmentController {
         return NO_CONTENT;
     }
 
-    @GetMapping("/ideas/{ideaId}/canEnroll")
+    @GetMapping("/ideas/{ideaId}/can-enroll")
     @Operation(
             summary = "아이디어 지원 가능 여부 조회",
             description = """
