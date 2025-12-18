@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleTy
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
+import jakarta.validation.Valid;
 import java.util.List;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
@@ -54,7 +55,7 @@ public class EnrollmentController {
     public ResponseEntity<Void> enroll(
             Principal principal,
             @PathVariable long ideaId,
-            @RequestBody EnrollmentRequestDto requestDto
+            @RequestBody @Valid EnrollmentRequestDto requestDto
     ) {
         long userId = getUserIdFrom(principal);
 
