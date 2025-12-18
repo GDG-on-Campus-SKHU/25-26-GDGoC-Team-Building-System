@@ -1,9 +1,5 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.service;
 
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_LIST_NOT_EXIST_IN_GALLERY;
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXHIBITED;
-import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.PROJECT_NOT_EXIST_IN_GALLERY;
-
 import com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage;
 import com.skhu.gdgocteambuildingproject.global.util.PrincipalUtil;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
@@ -35,6 +31,8 @@ import org.springframework.transaction.annotation.Transactional;
 import java.security.Principal;
 import java.util.List;
 
+import static com.skhu.gdgocteambuildingproject.global.exception.ExceptionMessage.*;
+
 @Service
 @RequiredArgsConstructor(access = AccessLevel.PROTECTED)
 public class GalleryProjectServiceImpl implements GalleryProjectService {
@@ -60,11 +58,21 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 
     @Override
     @Transactional(readOnly = true)
-    public GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(Principal principal, Long projectId) {
-        GalleryProject galleryProject = findGalleryProjectById(principal, projectId);
+    public GalleryProjectInfoResponseDto findCurrentGalleryProjectInfoByProjectId(
+            Principal principal,
+            Long projectId
+    ) {
+        GalleryProject galleryProject;
+
+        if (principal == null) {
+            galleryProject = findGalleryProjectForGuest(projectId);
+        } else {
+            galleryProject = findGalleryProjectForMember(principal, projectId);
+        }
 
         return galleryProjectInfoMapper.mapToInfo(galleryProject);
     }
+
 
     @Override
     @Transactional(readOnly = true)
@@ -96,7 +104,7 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
             Long projectId,
             GalleryProjectSaveRequestDto requestDto
     ) {
-        GalleryProject galleryProject = findGalleryProjectById(principal, projectId);
+        GalleryProject galleryProject = findGalleryProjectForUpdate(principal, projectId);
         galleryProject.update(
                 requestDto.projectName(),
                 Generation.fromLabel(requestDto.generation()),
@@ -127,16 +135,63 @@ public class GalleryProjectServiceImpl implements GalleryProjectService {
 //        galleryProjectRepository.delete(galleryProject);
 //    }
 
-    private GalleryProject findGalleryProjectById(Principal principal, Long projectId) {
-        GalleryProject galleryProject = galleryProjectRepository.findById(projectId)
+    private GalleryProject findGalleryProject(Long projectId) {
+        return galleryProjectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST_IN_GALLERY.getMessage()));
+    }
+
+    private GalleryProject findGalleryProjectForUpdate(
+            Principal principal,
+            Long projectId
+    ) {
+        if (principal == null) {
+            throw new IllegalStateException(LOGIN_REQUIRED.getMessage());
+        }
+
+        GalleryProject galleryProject = findGalleryProject(projectId);
         User user = getUser(PrincipalUtil.getUserIdFrom(principal));
 
-        if (!galleryProject.getExhibited() && !galleryProject.getUser().equals(user) && !user.getRole().equals(UserRole.ROLE_SKHU_ADMIN)) {
+        if (galleryProject.getUser().equals(user) || user.getRole() == UserRole.ROLE_SKHU_ADMIN) {
+            return galleryProject;
+        }
+
+        throw new IllegalStateException(ONLY_LEADER_CAN_UPDATE_PROJECT_EXHIBIT.getMessage());
+    }
+
+    private GalleryProject findGalleryProjectForGuest(Long projectId) {
+        GalleryProject galleryProject = findGalleryProject(projectId);
+
+        if (!galleryProject.getExhibited()) {
             throw new IllegalStateException(PROJECT_NOT_EXHIBITED.getMessage());
         }
 
         return galleryProject;
+    }
+
+    private GalleryProject findGalleryProjectForMember(
+            Principal principal,
+            Long projectId
+    ) {
+        GalleryProject galleryProject = findGalleryProject(projectId);
+        User user = getUser(PrincipalUtil.getUserIdFrom(principal));
+
+        if (canAccessProject(galleryProject, user)) {
+            return galleryProject;
+        }
+
+        throw new IllegalStateException(PROJECT_NOT_EXHIBITED.getMessage());
+    }
+
+    private boolean canAccessProject(GalleryProject galleryProject, User user) {
+        if (galleryProject.getExhibited()) {
+            return true;
+        }
+
+        if (galleryProject.getUser().equals(user)) {
+            return true;
+        }
+
+        return user.getRole() == UserRole.ROLE_SKHU_ADMIN;
     }
 
     private GalleryProjectListResponseDto findAllGalleryProjects() {
