@@ -76,7 +76,7 @@ public class EnrollmentController {
     public ResponseEntity<Void> determine(
             Principal principal,
             @PathVariable long enrollmentId,
-            @RequestBody EnrollmentDetermineRequestDto requestDto
+            @Valid @RequestBody EnrollmentDetermineRequestDto requestDto
     ) {
         long userId = getUserIdFrom(principal);
 
