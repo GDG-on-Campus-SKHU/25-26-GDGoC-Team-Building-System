@@ -141,7 +141,7 @@ public class ProjectServiceImpl implements ProjectService {
     public List<PastProjectResponseDto> findPastProjects() {
         LocalDateTime now = LocalDateTime.now();
 
-        List<TeamBuildingProject> pastProjects = findProjectsEndedBeforeThan(now);
+        List<TeamBuildingProject> pastProjects = projectUtil.findPastProjects();
 
         return pastProjects.stream()
                 .map(pastProjectMapper::map)
@@ -216,13 +216,6 @@ public class ProjectServiceImpl implements ProjectService {
     private TeamBuildingProject findProjectBy(long projectId) {
         return projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException(PROJECT_NOT_EXIST.getMessage()));
-    }
-
-    private List<TeamBuildingProject> findProjectsEndedBeforeThan(LocalDateTime criteriaTime) {
-        return projectRepository.findProjectsWithScheduleEndedBefore(
-                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
-                criteriaTime
-        );
     }
 
     private Pageable setupPagination(

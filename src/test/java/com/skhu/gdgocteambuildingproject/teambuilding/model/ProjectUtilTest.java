@@ -45,7 +45,7 @@ class ProjectUtilTest {
         when(earlierProject.getStartDate()).thenReturn(NOW);
         when(laterProject.getStartDate()).thenReturn(AFTER_THAN_NOW);
 
-        when(projectRepository.findProjectsWithScheduleNotEndedBefore(any(), any())).thenReturn(
+        when(projectRepository.findProjectsWithScheduleNotStartedBefore(any(), any())).thenReturn(
                 List.of(earlierProject, laterProject)
         );
 
@@ -64,7 +64,7 @@ class ProjectUtilTest {
 
         setAsUnscheduled(unscheduledProject);
 
-        when(projectRepository.findProjectsWithScheduleNotEndedBefore(any(), any())).thenReturn(
+        when(projectRepository.findProjectsWithScheduleNotStartedBefore(any(), any())).thenReturn(
                 List.of(unscheduledProject)
         );
 

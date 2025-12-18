@@ -52,9 +52,17 @@ public class ProjectUtil {
                 .min(Comparator.comparing(ProjectSchedule::getStartDate));
     }
 
+    public List<TeamBuildingProject> findPastProjects() {
+        // 최종 발표 일정의 시작일이 현재보다 과거인 프로젝트들만 조회
+        return projectRepository.findProjectsWithScheduleStartedBefore(
+                ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
+                LocalDateTime.now()
+        );
+    }
+
     private List<TeamBuildingProject> findUnfinishedProjects() {
-        // 아직 마지막 일정이 끝나지 않은 프로젝트들만 조회
-        return projectRepository.findProjectsWithScheduleNotEndedBefore(
+        // 아직 최종 발표 시작일이 지나지 않은 프로젝트들만 조회
+        return projectRepository.findProjectsWithScheduleNotStartedBefore(
                 ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
                 LocalDateTime.now()
         );
