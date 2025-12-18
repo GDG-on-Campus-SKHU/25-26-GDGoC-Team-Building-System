@@ -68,6 +68,20 @@ public interface AdminProjectManageApi {
     ResponseEntity<ModifiableProjectResponseDto> getModifiableProject();
 
     @Operation(
+            summary = "프로젝트 상세 조회",
+            description = """
+                    ID를 기반으로 프로젝트를 조회합니다.
+                    
+                    과거 프로젝트도 조회할 수 있습니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    ResponseEntity<ModifiableProjectResponseDto> getProjectDetail(
+            @Parameter(description = "프로젝트 ID", example = "1") long projectId
+    );
+
+    @Operation(
             summary = "프로젝트 정보 수정",
             description = """
                     프로젝트를 수정합니다.

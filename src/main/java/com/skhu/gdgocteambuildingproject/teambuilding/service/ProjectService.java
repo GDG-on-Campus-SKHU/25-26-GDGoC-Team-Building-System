@@ -33,6 +33,8 @@ public interface ProjectService {
 
     ModifiableProjectResponseDto findModifiableProject();
 
+    ModifiableProjectResponseDto findProjectDetailById(long projectId);
+
     void updateProject(long projectId, ProjectUpdateRequestDto requestDto);
 
     void updateProjectName(long projectId, ProjectNameUpdateRequestDto requestDto);
