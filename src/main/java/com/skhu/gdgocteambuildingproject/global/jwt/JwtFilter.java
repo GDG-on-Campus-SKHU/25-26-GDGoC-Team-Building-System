@@ -41,6 +41,12 @@ public class JwtFilter extends GenericFilterBean {
     ) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         String path = httpRequest.getRequestURI();
+        String method = httpRequest.getMethod();
+
+        if (method.equals("GET") && path.matches("^/project-gallery/\\d+$")) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         if (isExcluded(path)) {
             chain.doFilter(request, response);

@@ -58,6 +58,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                         .requestMatchers("/auth/signup","/auth/login","/auth/token/access","/auth/logout",
                                  "/project-gallery/projects", "/swagger-ui/**","/v3/api-docs/**", "/email/**", "/icons/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/project-gallery/*").permitAll()
                         .requestMatchers("/constants/**").permitAll() // 상수 조회용 엔드포인트
                         .anyRequest().authenticated()
                 )
