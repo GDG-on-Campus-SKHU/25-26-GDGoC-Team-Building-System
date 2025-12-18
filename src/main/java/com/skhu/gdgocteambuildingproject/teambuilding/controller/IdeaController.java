@@ -6,6 +6,7 @@ import com.skhu.gdgocteambuildingproject.global.pagination.SortOrder;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaCreateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTextUpdateRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaUpdateRequestDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaConfigurationResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
@@ -62,6 +63,27 @@ public class IdeaController {
         long userId = getUserIdFrom(principal);
 
         TemporaryIdeaDetailResponseDto response = ideaService.createIdea(projectId, userId, requestDto);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/projects/current/ideas/configurations")
+    @Operation(
+            summary = "아이디어 등록 설정(조건) 조회",
+            description = """
+                    현재 진행중인 프로젝트에서 아이디어 등록시 요구하는 조건을 조회합니다.
+                    
+                    주제 목록, 모집 가능 파트, 팀 최대 인원수를 응답합니다.
+                    
+                    part: PM, DESIGN, WEB, MOBILE, BACKEND, AI
+                    """
+    )
+    public ResponseEntity<IdeaConfigurationResponseDto> findIdeaConfiguration(
+            Principal principal
+    ) {
+        long userId = getUserIdFrom(principal);
+
+        IdeaConfigurationResponseDto response = ideaService.findIdeaConfiguration(userId);
 
         return ResponseEntity.ok(response);
     }

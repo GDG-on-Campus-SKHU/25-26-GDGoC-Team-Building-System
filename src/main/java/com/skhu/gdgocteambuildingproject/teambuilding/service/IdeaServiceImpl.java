@@ -25,6 +25,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.TemporaryIdea
 import java.time.LocalDateTime;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.EnrollmentStatus;
 import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.IdeaStatus;
+import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaConfigurationMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaDetailInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.IdeaTitleInfoMapper;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.mapper.RosterMapper;
@@ -48,6 +49,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaUpdateRequest
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaDetailInfoResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoPageResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaTitleInfoResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.IdeaConfigurationResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.idea.RosterResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ParticipationUtil;
 import com.skhu.gdgocteambuildingproject.teambuilding.model.ProjectUtil;
@@ -83,6 +85,7 @@ public class IdeaServiceImpl implements IdeaService {
     private final IdeaDetailInfoMapper ideaDetailInfoMapper;
     private final TemporaryIdeaMapper temporaryIdeaMapper;
     private final RosterMapper rosterMapper;
+    private final IdeaConfigurationMapper ideaConfigurationMapper;
 
     @Override
     @Transactional
@@ -110,6 +113,16 @@ public class IdeaServiceImpl implements IdeaService {
                 .orElseGet(() -> saveNewIdea(creator, project, requestDto));
 
         return temporaryIdeaMapper.map(postedIdea);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public IdeaConfigurationResponseDto findIdeaConfiguration(long userId) {
+        TeamBuildingProject currentProject = findCurrentProject();
+
+        participationUtil.validateParticipation(userId, currentProject.getId());
+
+        return ideaConfigurationMapper.map(currentProject);
     }
 
     @Override
