@@ -14,6 +14,7 @@ public enum ExceptionMessage {
     INVALID_USER_ROLE("유효하지 않은 사용자 권한(UserRole)입니다."),
     INVALID_USER_POSITION("유효하지 않은 사용자 포지션(UserPosition)입니다."),
     INVALID_PART("유효하지 않은 Part 값입니다."),
+    LOGIN_REQUIRED("로그인이 필요합니다."),
 
     //Auth
     EMAIL_ALREADY_EXISTS("이미 가입된 이메일입니다."),
