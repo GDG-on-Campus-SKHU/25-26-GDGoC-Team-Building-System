@@ -52,11 +52,9 @@ public interface MypageControllerApi {
     );
 
     @Operation(
-            summary = "아이디어 멤버 프로필 조회",
+            summary = "다른 사용자의 프로필 조회",
             description = """
-                    아이디어 멤버 ID를 통해 해당 유저의 프로필을 조회합니다.
-                    
-                    아이디어 멤버와 연결된 유저 객체를 찾아 해당 유저의 프로필 정보를 반환합니다.
+                    다른 사용자의 userId를 통해 해당 유저의 프로필을 조회합니다.
                     """
     )
     @ApiResponse(responseCode = "200")

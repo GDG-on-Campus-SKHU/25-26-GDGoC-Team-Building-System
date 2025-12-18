@@ -14,8 +14,6 @@ import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProject;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.repository.GalleryProjectMemberRepository;
-import com.skhu.gdgocteambuildingproject.teambuilding.domain.IdeaMember;
-import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.TechStack;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserLink;
@@ -23,22 +21,19 @@ import com.skhu.gdgocteambuildingproject.user.domain.enumtype.LinkType;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.TechStackType;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class MypageServiceImpl implements MypageService {
 
     private final UserRepository userRepository;
-    private final IdeaMemberRepository ideaMemberRepository;
     private final GalleryProjectMemberRepository galleryProjectMemberRepository;
     private final ProfileInfoMapper profileInfoMapper;
     private final ProfileInfoUpdateMapper profileInfoUpdateMapper;
@@ -70,11 +65,11 @@ public class MypageServiceImpl implements MypageService {
 
     @Override
     @Transactional(readOnly = true)
-    public ProfileInfoResponseDto getProfileByIdeaMemberId(Long ideaMemberId) {
-        IdeaMember ideaMember = ideaMemberRepository.findByIdWithUser(ideaMemberId)
-                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.IDEA_MEMBER_NOT_FOUND.getMessage()));
+    public ProfileInfoResponseDto getProfileByIdeaMemberId(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException(ExceptionMessage.USER_NOT_FOUND.getMessage()));
 
-        return profileInfoMapper.toDto(ideaMember.getUser());
+        return profileInfoMapper.toDto(user);
     }
 
     @Override
