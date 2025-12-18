@@ -14,6 +14,7 @@ public record IdeaUpdateRequestDto(
         String introduction,
         @NotBlank(message = "설명은 필수입니다.")
         String description,
+        @NotNull(message = "주제는 필수입니다.")
         Long topicId,
         @NotNull(message = "생성자 파트는 필수입니다.")
         Part creatorPart,
