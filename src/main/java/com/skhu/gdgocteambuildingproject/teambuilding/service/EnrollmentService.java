@@ -5,7 +5,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentA
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.IdeaEnrollmentAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilitySimpleResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.ReceivedEnrollmentsResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.SentEnrollmentsResponseDto;
 import java.util.List;
@@ -24,7 +24,7 @@ public interface EnrollmentService {
             EnrollmentDetermineRequestDto requestDto
     );
 
-    IdeaEnrollmentAvailabilityResponseDto canEnroll(long ideaId, long userId);
+    EnrollmentAvailabilitySimpleResponseDto canEnroll(long ideaId, long userId);
 
     EnrollmentAvailabilityResponseDto getAvailabilityInfo(
             long ideaId,
