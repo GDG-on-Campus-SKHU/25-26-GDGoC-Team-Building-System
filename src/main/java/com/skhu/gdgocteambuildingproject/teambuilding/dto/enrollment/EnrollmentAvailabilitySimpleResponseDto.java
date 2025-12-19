@@ -3,8 +3,9 @@ package com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment;
 import lombok.Builder;
 
 @Builder
-public record IdeaEnrollmentAvailabilityResponseDto(
-        boolean canEnroll
+public record EnrollmentAvailabilitySimpleResponseDto(
+        boolean canEnroll,
+        boolean isCreator
 ) {
 }
 

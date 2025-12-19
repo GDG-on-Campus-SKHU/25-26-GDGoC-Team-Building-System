@@ -6,7 +6,7 @@ import com.skhu.gdgocteambuildingproject.teambuilding.domain.enumtype.ScheduleTy
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilityResponseDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentDetermineRequestDto;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentReadableResponseDto;
-import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.IdeaEnrollmentAvailabilityResponseDto;
+import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentAvailabilitySimpleResponseDto;
 import jakarta.validation.Valid;
 import java.util.List;
 import com.skhu.gdgocteambuildingproject.teambuilding.dto.enrollment.EnrollmentRequestDto;
@@ -70,17 +70,20 @@ public class EnrollmentController {
             summary = "아이디어 지원 가능 여부 조회",
             description = """
                     해당 아이디어에 지원할 수 있는지 여부를 조회합니다.
+                    본인이 해당 아이디어의 게시자인지 같이 조회합니다.
                     
                     이미 해당 아이디어에 지원했거나, 지금이 지원 기간이 아니라면 false를 응답합니다.
+                    
+                    isCreator: 본인이 해당 아이디어의 게시자인지 여부
                     """
     )
-    public ResponseEntity<IdeaEnrollmentAvailabilityResponseDto> canEnroll(
+    public ResponseEntity<EnrollmentAvailabilitySimpleResponseDto> canEnroll(
             Principal principal,
             @PathVariable long ideaId
     ) {
         long userId = getUserIdFrom(principal);
 
-        IdeaEnrollmentAvailabilityResponseDto response = enrollmentService.canEnroll(ideaId, userId);
+        EnrollmentAvailabilitySimpleResponseDto response = enrollmentService.canEnroll(ideaId, userId);
 
         return ResponseEntity.ok(response);
     }
