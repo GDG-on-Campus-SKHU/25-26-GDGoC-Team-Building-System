@@ -19,4 +19,11 @@ public interface IdeaMemberRepository extends JpaRepository<IdeaMember, Long> {
     @Modifying
     @Query("DELETE FROM IdeaMember im WHERE im.idea.id = :ideaId")
     void deleteAllByIdeaId(@Param("ideaId") long ideaId);
+
+    @Query("""
+                select count(im)
+                from IdeaMember im
+                where im.idea.project.id = :projectId
+            """)
+    int countConfirmedMembers(@Param("projectId") Long projectId);
 }
