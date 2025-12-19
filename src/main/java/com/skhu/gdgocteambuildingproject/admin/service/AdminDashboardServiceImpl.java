@@ -4,6 +4,8 @@ import com.skhu.gdgocteambuildingproject.admin.dto.dashboard.DashboardSummaryRes
 import com.skhu.gdgocteambuildingproject.admin.dto.dashboard.ProjectSummaryResponseDto;
 import com.skhu.gdgocteambuildingproject.admin.model.DashboardResponseMapper;
 import com.skhu.gdgocteambuildingproject.admin.model.ProjectSummaryMapper;
+import com.skhu.gdgocteambuildingproject.teambuilding.domain.TeamBuildingProject;
+import com.skhu.gdgocteambuildingproject.teambuilding.repository.IdeaMemberRepository;
 import com.skhu.gdgocteambuildingproject.teambuilding.repository.TeamBuildingProjectRepository;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.ApprovalStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
@@ -21,6 +23,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
 
     private final UserRepository userRepository;
     private final TeamBuildingProjectRepository teamBuildingProjectRepository;
+    private final IdeaMemberRepository ideaMemberRepository;
 
     private final ProjectSummaryMapper projectSummaryMapper;
     private final DashboardResponseMapper dashboardResponseMapper;
@@ -34,7 +37,7 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
         long countByApprovalUser = userRepository.countByApprovalStatus(ApprovalStatus.APPROVED);
 
         List<ProjectSummaryResponseDto> activeProjects = teamBuildingProjectRepository.findAll().stream()
-                .map(projectSummaryMapper::toSummaryResponse)
+                .map(this::toProjectSummary)
                 .filter(Objects::nonNull)
                 .toList();
 
@@ -42,5 +45,16 @@ public class AdminDashboardServiceImpl implements AdminDashboardService {
                 countByWaitingUser,
                 countByApprovalUser,
                 activeProjects);
+    }
+
+    private ProjectSummaryResponseDto toProjectSummary(TeamBuildingProject project) {
+
+        int confirmedMemberCount =
+                ideaMemberRepository.countConfirmedMembers(project.getId());
+
+        return projectSummaryMapper.toSummaryResponse(
+                project,
+                confirmedMemberCount
+        );
     }
 }

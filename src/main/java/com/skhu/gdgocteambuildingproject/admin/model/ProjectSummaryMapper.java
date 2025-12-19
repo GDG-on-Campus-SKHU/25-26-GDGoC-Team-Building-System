@@ -14,27 +14,27 @@ public class ProjectSummaryMapper {
 
     private final ProjectUtil projectUtil;
 
-    public ProjectSummaryResponseDto toSummaryResponse(TeamBuildingProject project) {
+    public ProjectSummaryResponseDto toSummaryResponse(TeamBuildingProject project, int confirmedMemberCount) {
         return project.getCurrentSchedule()
-                .map(schedule -> map(project, schedule))
-                .orElseGet(() -> mapWithUpcomingSchedule(project));
+                .map(schedule -> map(project, schedule, confirmedMemberCount))
+                .orElseGet(() -> mapWithUpcomingSchedule(project, confirmedMemberCount));
     }
 
-    private ProjectSummaryResponseDto map(TeamBuildingProject project, ProjectSchedule schedule) {
+    private ProjectSummaryResponseDto map(TeamBuildingProject project, ProjectSchedule schedule, int confirmedMemberCount) {
         return ProjectSummaryResponseDto.builder()
                 .id(project.getId())
                 .projectName(project.getName())
                 .ideaCount(project.getIdeas().size())
-                .currentParticipants(project.getParticipants().size())
-                .maxMemberCount(project.getMaxMemberCount())
+                .currentParticipants(confirmedMemberCount)
+                .maxMemberCount(project.getParticipants().size())
                 .currentScheduleType(schedule.getType())
                 .currentScheduleDeadline(getDeadline(project, schedule))
                 .build();
     }
 
-    private ProjectSummaryResponseDto mapWithUpcomingSchedule(TeamBuildingProject project) {
+    private ProjectSummaryResponseDto mapWithUpcomingSchedule(TeamBuildingProject project, int confirmedMemberCount) {
         return projectUtil.findUpcomingSchedule(project)
-                .map(upcomingSchedule -> map(project, upcomingSchedule))
+                .map(upcomingSchedule -> map(project, upcomingSchedule, confirmedMemberCount))
                 .orElse(null);
     }
 
