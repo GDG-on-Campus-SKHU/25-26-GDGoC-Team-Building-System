@@ -11,6 +11,7 @@ public class IdeaCreatorInfoMapper {
         User creator = idea.getCreator();
 
         return IdeaCreatorInfoResponseDto.builder()
+                .creatorId(creator.getId())
                 .creatorName(creator.getName())
                 // 회원가입시 파트와 Idea에 등록한 파트가 다를 수 있기 때문에 Idea를 통해 조회
                 .part(idea.getCreatorPart())

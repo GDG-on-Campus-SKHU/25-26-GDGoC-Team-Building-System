@@ -5,6 +5,7 @@ import lombok.Builder;
 
 @Builder
 public record IdeaCreatorInfoResponseDto(
+        Long creatorId,
         String creatorName,
         Part part,
         String school
