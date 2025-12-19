@@ -17,6 +17,7 @@ import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserRole;
 import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserStatus;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
 import com.skhu.gdgocteambuildingproject.user.repository.UserRepository;
+import com.skhu.gdgocteambuildingproject.user.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -37,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenCookieWriter cookieWriter;
     private final TokenProvider tokenProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final UserService userService;
 
     @Override
     @Transactional
@@ -78,6 +80,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())
+                .isParticipated(userService.isUserParticipated(user))
                 .build();
     }
 
@@ -126,6 +129,7 @@ public class AuthServiceImpl implements AuthService {
                 .email(user.getEmail())
                 .name(user.getName())
                 .role(user.getRole().name())
+                .isParticipated(userService.isUserParticipated(user))
                 .build();
     }
 
