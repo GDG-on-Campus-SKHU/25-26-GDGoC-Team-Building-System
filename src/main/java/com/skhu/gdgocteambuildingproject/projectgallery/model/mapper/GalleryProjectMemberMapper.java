@@ -1,29 +1,26 @@
 package com.skhu.gdgocteambuildingproject.projectgallery.model.mapper;
 
+import com.skhu.gdgocteambuildingproject.admin.util.GenerationMapper;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.GalleryProjectMember;
 import com.skhu.gdgocteambuildingproject.projectgallery.domain.enumtype.MemberRole;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchListResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.MemberSearchResponseDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.member.TokenUserInfoForProjectBuildingResponseDto;
-import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.req.GalleryProjectMemberAddDto;
 import com.skhu.gdgocteambuildingproject.projectgallery.dto.project.res.GalleryProjectMemberResponseDto;
 import com.skhu.gdgocteambuildingproject.user.domain.User;
 import com.skhu.gdgocteambuildingproject.user.domain.UserGeneration;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.Generation;
-import com.skhu.gdgocteambuildingproject.user.domain.enumtype.UserPosition;
 import com.skhu.gdgocteambuildingproject.user.repository.UserGenerationRepository;
-import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
 public class GalleryProjectMemberMapper {
 
     private final UserGenerationRepository userGenerationRepository;
+    private final GenerationMapper generationMapper;
 
     public List<GalleryProjectMemberResponseDto> mapMembersInfo(List<GalleryProjectMember> members) {
         return members.stream()
@@ -42,8 +39,8 @@ public class GalleryProjectMemberMapper {
     public MemberSearchListResponseDto mapSearchMembers(List<User> users) {
         return mapToListDto(
                 users.stream()
-                .map(this::userFromEntity)
-                .toList());
+                        .map(this::userFromEntity)
+                        .toList());
     }
 
     public TokenUserInfoForProjectBuildingResponseDto mapExhibitor(User user, UserGeneration userGeneration) {
@@ -81,8 +78,10 @@ public class GalleryProjectMemberMapper {
 
     private String joinGenerationAndPositions(User user) {
         return user.getGeneration().stream()
+                .filter(UserGeneration::isMain)
+                .findFirst()
                 .map(gen -> gen.getGeneration().getLabel() + " " + gen.getPosition().name())
-                .collect(Collectors.joining(", "));
+                .orElse("");
     }
 
     private MemberSearchListResponseDto mapToListDto(List<MemberSearchResponseDto> memberSearchResponseDtos) {
