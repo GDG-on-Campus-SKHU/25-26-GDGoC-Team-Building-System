@@ -13,7 +13,7 @@ import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 
-@Tag(name = "관리자 멤버관리 API", description = "관리자용 멤버관리 API입니다")
+@Tag(name = "관리자 가입심사 API", description = "관리자용 가입심사 API입니다")
 public interface AdminUserManageApi {
 
     String DEFAULT_PAGE = "0";
@@ -69,5 +69,23 @@ public interface AdminUserManageApi {
     ResponseEntity<List<UserSearchResponseDto>> searchUsers(
             @Parameter(description = "기수 (22-23, 23-24 등)") String generation,
             @Parameter(description = "학교명 (여러 개 가능)") List<String> schools
+    );
+
+    @Operation(summary = "가입 대기 중인 회원 조회", description = "승인 대기(WAITING) 상태인 회원 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
+    ResponseEntity<UserInfoPageResponseDto> getWaitingUsers(
+            @Parameter(description = "페이지 번호 (0부터 시작)") int page,
+            @Parameter(description = "페이지 당 항목 수") int size,
+            @Parameter(description = "정렬 기준 필드명") String sortBy,
+            @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
+    );
+
+    @Operation(summary = "승인/거절 완료된 회원 조회", description = "가입 승인(APPROVED) 또는 거절(REJECTED) 처리가 완료된 회원 목록을 조회합니다.")
+    @ApiResponse(responseCode = "200", description = "조회 성공")
+    ResponseEntity<UserInfoPageResponseDto> getApprovedAndRejectedUsers(
+            @Parameter(description = "페이지 번호 (0부터 시작)") int page,
+            @Parameter(description = "페이지 당 항목 수") int size,
+            @Parameter(description = "정렬 기준 필드명") String sortBy,
+            @Parameter(description = "정렬 순서 (ASC 또는 DESC)") SortOrder order
     );
 }
