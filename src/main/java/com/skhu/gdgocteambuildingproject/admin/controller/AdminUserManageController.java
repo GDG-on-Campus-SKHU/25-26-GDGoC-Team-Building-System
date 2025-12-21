@@ -56,6 +56,32 @@ public class AdminUserManageController implements AdminUserManageApi {
     }
 
     @Override
+    @GetMapping("/waiting/users")
+    public ResponseEntity<UserInfoPageResponseDto> getWaitingUsers(
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        UserInfoPageResponseDto response = adminUserManageService.getWaitingUsers(page, size, sortBy, order);
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
+    @GetMapping("/decided/users")
+    public ResponseEntity<UserInfoPageResponseDto> getApprovedAndRejectedUsers(
+            @RequestParam(defaultValue = DEFAULT_PAGE) int page,
+            @RequestParam(defaultValue = DEFAULT_SIZE) int size,
+            @RequestParam(defaultValue = DEFAULT_SORT_BY) String sortBy,
+            @RequestParam(defaultValue = DEFAULT_ORDER) SortOrder order
+    ) {
+        UserInfoPageResponseDto response =
+                adminUserManageService.getApprovedAndRejectedUsers(page, size, sortBy, order);
+
+        return ResponseEntity.ok(response);
+    }
+
+    @Override
     @GetMapping("/users/search")
     public ResponseEntity<List<UserSearchResponseDto>> searchUsers(
             @RequestParam(required = false) String generation,

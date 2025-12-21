@@ -24,4 +24,8 @@ public interface AdminUserManageService {
     );
 
     void resetRejectedUser(Long userId);
+
+    UserInfoPageResponseDto getWaitingUsers(int page, int size, String sortBy, SortOrder order);
+
+    UserInfoPageResponseDto getApprovedAndRejectedUsers(int page, int size, String sortBy, SortOrder order);
 }
