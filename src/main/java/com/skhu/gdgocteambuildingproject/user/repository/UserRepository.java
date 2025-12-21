@@ -23,6 +23,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByApprovalStatus(ApprovalStatus approvalStatus, Pageable pageable);
 
+    Page<User> findAllByApprovalStatusIn(List<ApprovalStatus> statuses, Pageable pageable);
+
     List<User> findByNameContaining(String query);
 
     Page<User> findByNameContainingAndApprovalStatus(
