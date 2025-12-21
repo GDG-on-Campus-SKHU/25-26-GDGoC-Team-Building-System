@@ -106,6 +106,48 @@ public class AdminUserManageServiceImpl implements AdminUserManageService {
         user.resetToWaiting();
     }
 
+    @Override
+    @Transactional(readOnly = true)
+    public UserInfoPageResponseDto getWaitingUsers(int page, int size, String sortBy, SortOrder order) {
+        Pageable pageable = PageRequest.of(page, size, order.sort(sortBy));
+
+        Page<User> userPage = userRepository.findAllByApprovalStatus(ApprovalStatus.WAITING, pageable);
+
+        List<UserResponseDto> userResponseDtos = userPage
+                .stream()
+                .map(userInfoMapper::toUserResponseDto)
+                .toList();
+
+        return UserInfoPageResponseDto.builder()
+                .users(userResponseDtos)
+                .pageInfo(PageInfo.from(userPage))
+                .build();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public UserInfoPageResponseDto getApprovedAndRejectedUsers(int page, int size, String sortBy, SortOrder order) {
+        Pageable pageable = PageRequest.of(page, size, order.sort(sortBy));
+
+        List<ApprovalStatus> statuses = List.of(
+                ApprovalStatus.APPROVED,
+                ApprovalStatus.REJECTED
+        );
+
+        Page<User> userPage =
+                userRepository.findAllByApprovalStatusIn(statuses, pageable);
+
+        List<UserResponseDto> userResponseDtos = userPage
+                .stream()
+                .map(userInfoMapper::toUserResponseDto)
+                .toList();
+
+        return UserInfoPageResponseDto.builder()
+                .users(userResponseDtos)
+                .pageInfo(PageInfo.from(userPage))
+                .build();
+    }
+
     private User findUserByIdOrThrow(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> new AdminUserManageNotExistException(ExceptionMessage.USER_NOT_FOUND));
