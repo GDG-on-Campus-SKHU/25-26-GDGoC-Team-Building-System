@@ -22,11 +22,9 @@ public class AuthController implements AuthControllerApi {
     private final AuthService authService;
 
     @Override
-    public ResponseEntity<Void> signUp(
-            SignUpRequestDto dto,
-            HttpServletResponse response
-    ) {
-        return ResponseEntity.ok(authService.signUp(dto, response));
+    public ResponseEntity<Void> signUp(SignUpRequestDto dto) {
+        authService.signUp(dto);
+        return ResponseEntity.ok().build();
     }
 
     @Override
