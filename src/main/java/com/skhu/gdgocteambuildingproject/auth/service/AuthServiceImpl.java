@@ -42,13 +42,11 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     @Transactional
-    public LoginResponseDto signUp(SignUpRequestDto dto, HttpServletResponse response) {
+    public void signUp(SignUpRequestDto dto) {
         validateSignUp(dto);
 
         User user = createUser(dto);
         createMainGeneration(user, dto);
-
-        return issueTokens(user, response);
     }
 
     @Override

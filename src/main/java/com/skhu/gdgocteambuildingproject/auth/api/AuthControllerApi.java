@@ -42,9 +42,8 @@ public interface AuthControllerApi {
             }
     )
     @PostMapping("/signup")
-    ResponseEntity<LoginResponseDto> signUp(
-            @Valid @RequestBody SignUpRequestDto dto,
-            HttpServletResponse response
+    ResponseEntity<Void> signUp(
+            @Valid @RequestBody SignUpRequestDto dto
     );
 
     @Operation(
