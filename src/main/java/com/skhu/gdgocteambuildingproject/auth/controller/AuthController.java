@@ -22,7 +22,7 @@ public class AuthController implements AuthControllerApi {
     private final AuthService authService;
 
     @Override
-    public ResponseEntity<LoginResponseDto> signUp(
+    public ResponseEntity<Void> signUp(
             SignUpRequestDto dto,
             HttpServletResponse response
     ) {
