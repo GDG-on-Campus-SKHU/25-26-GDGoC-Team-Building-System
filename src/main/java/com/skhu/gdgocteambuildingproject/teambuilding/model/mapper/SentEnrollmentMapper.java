@@ -37,6 +37,7 @@ public class SentEnrollmentMapper {
 
         return SentEnrollmentResponseDto.builder()
                 .enrollmentId(enrollment.getId())
+                .ideaId(idea.getId())
                 .choice(enrollment.getChoice())
                 .enrollmentStatus(enrollment.getStatus().forApplicant())
                 .ideaTitle(idea.getTitle())
