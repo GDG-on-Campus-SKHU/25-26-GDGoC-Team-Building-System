@@ -29,6 +29,7 @@ public class ApprovedUserDetailMapper {
     private ApprovedUserInfoResponseDto toDeletedDto(User user) {
         return ApprovedUserInfoResponseDto.builder()
                 .name(user.getName())
+                .approveAt(user.getApprovedAt())
                 .status(UserStatus.DELETED)
                 .deletedAt(user.getDeletedAt())
                 .build();
