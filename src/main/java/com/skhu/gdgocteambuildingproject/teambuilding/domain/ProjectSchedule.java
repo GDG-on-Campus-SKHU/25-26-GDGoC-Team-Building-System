@@ -58,7 +58,7 @@ public class ProjectSchedule extends BaseEntity {
     }
 
     public boolean isScheduled() {
-        if (type.isAnnouncement()) {
+        if (!type.hasEndDate()) {
             return startDate != null;
         }
 
@@ -66,7 +66,7 @@ public class ProjectSchedule extends BaseEntity {
     }
 
     public boolean isUnscheduled() {
-        if (type.isAnnouncement()) {
+        if (!type.hasEndDate()) {
             return startDate == null;
         }
 
@@ -96,20 +96,20 @@ public class ProjectSchedule extends BaseEntity {
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
         }
 
-        if (type.isAnnouncement()) {
-            validateAnnouncementEndDate(endDate);
+        if (!type.hasEndDate()) {
+            validateNoEndDateSchedule(endDate);
         } else {
-            validateNonAnnouncementEndDate(startDate, endDate);
+            validateHasEndDateSchedule(startDate, endDate);
         }
     }
 
-    private void validateAnnouncementEndDate(LocalDateTime endDate) {
+    private void validateNoEndDateSchedule(LocalDateTime endDate) {
         if (endDate != null) {
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
         }
     }
 
-    private void validateNonAnnouncementEndDate(LocalDateTime startDate, LocalDateTime endDate) {
+    private void validateHasEndDateSchedule(LocalDateTime startDate, LocalDateTime endDate) {
         if (endDate == null) {
             throw new IllegalArgumentException(ExceptionMessage.ILLEGAL_SCHEDULE_DATE.getMessage());
         }
