@@ -132,25 +132,25 @@ public class TeamBuildingProject extends BaseEntity {
     }
 
     private boolean isCurrentSchedule(LocalDateTime now, ProjectSchedule schedule) {
-        if (schedule.getType().isAnnouncement()) {
-            return isCurrentAnnouncementSchedule(now, schedule);
+        if (schedule.getType().hasEndDate()) {
+            return isCurrentHasEndDateSchedule(now, schedule);
         }
 
-        return isCurrentNonAnnouncementSchedule(now, schedule);
+        return isCurrentHasNotDateSchedule(now, schedule);
     }
 
-    private boolean isCurrentAnnouncementSchedule(LocalDateTime now, ProjectSchedule schedule) {
+    private boolean isCurrentHasNotDateSchedule(LocalDateTime now, ProjectSchedule schedule) {
         if (!now.isAfter(schedule.getStartDate())) {
             return false;
         }
 
-        // 발표 일정의 endDate는, 그 다음 일정의 startDate로 간주함
+        // endDate가 없는 일정의 종료일은, 그 다음 일정의 startDate로 간주함
         LocalDateTime endDate = getNextScheduleStartDate(schedule.getType());
 
         return endDate != null && now.isBefore(endDate);
     }
 
-    private boolean isCurrentNonAnnouncementSchedule(LocalDateTime now, ProjectSchedule schedule) {
+    private boolean isCurrentHasEndDateSchedule(LocalDateTime now, ProjectSchedule schedule) {
         return now.isAfter(schedule.getStartDate()) && now.isBefore(schedule.getEndDate());
     }
 

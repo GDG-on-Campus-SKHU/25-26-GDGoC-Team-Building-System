@@ -85,7 +85,8 @@ public interface AdminProjectManageApi {
             summary = "프로젝트 정보 수정",
             description = """
                     프로젝트를 수정합니다.
-                    발표 일정(`ANNOUNCEMENT`)의 endAt 값은 null이어야 합니다.
+                    FIRST_TEAM_BUILDING_ANNOUNCEMENT, SECOND_TEAM_BUILDING_ANNOUNCEMENT의 endAt 값은 null이어야 합니다.
+                    나머지 일정의 endAt 값은 null일 수 없습니다.
                     
                     발표 일정은 수정시 초기화되므로, 해당 일정에 대한 팀빌딩 지원을 다시 처리할 수 있는 상태가 됩니다.
                     

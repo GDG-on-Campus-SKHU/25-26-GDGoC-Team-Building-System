@@ -11,41 +11,48 @@ public enum ScheduleType {
             false,
             true,
             false,
+            true,
             () -> null
     ),
     FIRST_TEAM_BUILDING(
             true,
             true,
             false,
+            true,
             () -> IDEA_REGISTRATION
     ),
     FIRST_TEAM_BUILDING_ANNOUNCEMENT(
             false,
             false,
             true,
+            false,
             () -> FIRST_TEAM_BUILDING
     ),
     SECOND_TEAM_BUILDING(
             true,
             false,
             false,
+            true,
             () -> FIRST_TEAM_BUILDING_ANNOUNCEMENT
     ),
     SECOND_TEAM_BUILDING_ANNOUNCEMENT(
             false,
             false,
             true,
+            false,
             () -> SECOND_TEAM_BUILDING
     ),
     THIRD_TEAM_BUILDING(
             false,
             false,
             false,
+            true,
             () -> SECOND_TEAM_BUILDING_ANNOUNCEMENT
     ),
     FINAL_RESULT_ANNOUNCEMENT(
             false,
             false,
+            true,
             true,
             () -> THIRD_TEAM_BUILDING
     );
@@ -53,17 +60,20 @@ public enum ScheduleType {
     private final boolean enrollmentAvailable;
     private final boolean ideaDeletable;
     private final boolean announcement;
+    private final boolean hasEndDate;
     private final Supplier<ScheduleType> prevScheduleType;
 
     ScheduleType(
             boolean enrollmentAvailable,
             boolean ideaDeletable,
             boolean announcement,
+            boolean hasEndDate,
             Supplier<ScheduleType> prevScheduleType
     ) {
         this.enrollmentAvailable = enrollmentAvailable;
         this.ideaDeletable = ideaDeletable;
         this.announcement = announcement;
+        this.hasEndDate = hasEndDate;
         this.prevScheduleType = prevScheduleType;
     }
 
@@ -87,5 +97,9 @@ public enum ScheduleType {
             case THIRD_TEAM_BUILDING -> FINAL_RESULT_ANNOUNCEMENT;
             case FINAL_RESULT_ANNOUNCEMENT -> null;
         };
+    }
+
+    public boolean hasEndDate() {
+        return hasEndDate;
     }
 }
