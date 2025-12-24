@@ -9,7 +9,6 @@ public record ScheduleUpdateRequestDto(
         ScheduleType scheduleType,
         @NotNull
         LocalDateTime startAt,
-        @NotNull
         LocalDateTime endAt
 ) {
 }
