@@ -43,6 +43,7 @@ public class User extends BaseEntity {
     @Column(nullable = true, unique = true)
     private String number;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String introduction;
     private String school;
 
