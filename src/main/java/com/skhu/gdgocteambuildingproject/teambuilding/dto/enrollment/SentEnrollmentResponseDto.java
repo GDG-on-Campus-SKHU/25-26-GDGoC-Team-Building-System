@@ -8,6 +8,7 @@ import lombok.Builder;
 @Builder
 public record SentEnrollmentResponseDto(
         long enrollmentId,
+        long ideaId,
         Choice choice,
         EnrollmentStatus enrollmentStatus,
 
