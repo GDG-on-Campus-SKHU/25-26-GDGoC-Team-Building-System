@@ -35,14 +35,4 @@ public class ResetPasswordService {
         user.updatePassword(passwordEncoder.encode(newPassword));
         emailVerificationService.consumeCode(email);
     }
-
-    private void validateRequest(String email, String code, String newPassword) {
-        if (email == null || email.isBlank()
-                || code == null || code.isBlank()
-                || newPassword == null || newPassword.isBlank()) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.PASSWORD_INVALID_FORMAT.getMessage()
-            );
-        }
-    }
 }
