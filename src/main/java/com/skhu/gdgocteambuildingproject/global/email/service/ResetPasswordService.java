@@ -18,8 +18,6 @@ public class ResetPasswordService {
 
     @Transactional
     public void resetPassword(String email, String code, String newPassword) {
-        emailVerificationService.validateCode(email, code);
-
         User user = userRepository.findByEmailAndDeletedFalse(email)
                 .orElseThrow(() ->
                         new IllegalArgumentException(
@@ -32,17 +30,8 @@ public class ResetPasswordService {
                     ExceptionMessage.PASSWORD_SAME_AS_OLD.getMessage()
             );
         }
+        emailVerificationService.validateCode(email, code);
         user.updatePassword(passwordEncoder.encode(newPassword));
         emailVerificationService.consumeCode(email);
-    }
-
-    private void validateRequest(String email, String code, String newPassword) {
-        if (email == null || email.isBlank()
-                || code == null || code.isBlank()
-                || newPassword == null || newPassword.isBlank()) {
-            throw new IllegalArgumentException(
-                    ExceptionMessage.PASSWORD_INVALID_FORMAT.getMessage()
-            );
-        }
     }
 }
