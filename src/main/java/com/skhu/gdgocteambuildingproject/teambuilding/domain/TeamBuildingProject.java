@@ -90,7 +90,7 @@ public class TeamBuildingProject extends BaseEntity {
     public LocalDateTime getEndDate() {
         return schedules.stream()
                 .filter(schedule -> schedule.getType() == ScheduleType.FINAL_RESULT_ANNOUNCEMENT)
-                .map(ProjectSchedule::getStartDate)
+                .map(ProjectSchedule::getEndDate)
                 .filter(Objects::nonNull)
                 .findAny()
                 .orElse(null);
