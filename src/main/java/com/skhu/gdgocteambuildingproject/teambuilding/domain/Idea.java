@@ -49,8 +49,8 @@ public class Idea extends BaseEntity {
     private static final BiFunction<Part, Integer, Integer> INCREASE_COUNT = (part, prevCount) -> prevCount + 1;
 
     private String title;
-    @Column(columnDefinition = "LONGTEXT")
     private String introduction;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
     @Builder.Default
     private boolean recruiting = true;
