@@ -53,6 +53,23 @@ public interface TeamBuildingProjectRepository extends JpaRepository<TeamBuildin
         FROM ProjectSchedule s
         WHERE s.project = p
           AND s.type = :type
+          AND (s.endDate IS NULL OR s.endDate > :criteria)
+    )
+    """)
+    List<TeamBuildingProject> findProjectsWithScheduleNotEndedBefore(
+            @Param("type") ScheduleType type,
+            @Param("criteria") LocalDateTime criteria
+    );
+
+    @Query("""
+    SELECT DISTINCT p
+    FROM TeamBuildingProject p
+    LEFT JOIN FETCH p.schedules
+    WHERE EXISTS (
+        SELECT 1
+        FROM ProjectSchedule s
+        WHERE s.project = p
+          AND s.type = :type
           AND s.startDate IS NOT NULL
           AND s.startDate < :criteria
     )

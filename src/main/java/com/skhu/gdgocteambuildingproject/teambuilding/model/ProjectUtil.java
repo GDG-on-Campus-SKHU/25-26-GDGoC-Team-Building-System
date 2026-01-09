@@ -62,7 +62,7 @@ public class ProjectUtil {
 
     private List<TeamBuildingProject> findUnfinishedProjects() {
         // 아직 최종 발표 종료일이 지나지 않은 프로젝트들만 조회
-        return projectRepository.findProjectsWithScheduleEndedBefore(
+        return projectRepository.findProjectsWithScheduleNotEndedBefore(
                 ScheduleType.FINAL_RESULT_ANNOUNCEMENT,
                 LocalDateTime.now()
         );
